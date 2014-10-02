@@ -38,7 +38,7 @@ public class MainActivity extends ActionBarActivity {
                 counterText.setText(String.valueOf(--counter));
             }
         });
-
+        //change test
     }
 
 
