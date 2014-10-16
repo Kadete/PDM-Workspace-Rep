@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="D:\ISEL\14_15_SInv\PDM\1415i-LI51D-Imported\Samples\HttpExample\app\build\intermediates\pre-dexed\debug\classes-7f889a91db669ee760ab70c9d0129f9d0a36c3cf.jar"
+        jar="D:\ISEL\14_15_SInv\PDM\1415i-LI51D-Imported\Samples\HttpExample\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
+    <item
+        dex="D:\ISEL\14_15_SInv\PDM\1415i-LI51D-Imported\Samples\HttpExample\app\build\intermediates\pre-dexed\debug\support-annotations-20.0.0-7090ac539ec4c81b92231da0aa4a09ccbb62df77.jar"
+        jar="C:\Users\Kadete\AppData\Local\Android\android-studio\sdk\extras\android\m2repository\com\android\support\support-annotations\20.0.0\support-annotations-20.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="9d9013e9ff35fc3756411e62873c363c70c638fa"/>
+    <item
+        dex="D:\ISEL\14_15_SInv\PDM\1415i-LI51D-Imported\Samples\HttpExample\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-17b7d913196d95c455a212b427e240873d40d0c9.jar"
+        jar="D:\ISEL\14_15_SInv\PDM\1415i-LI51D-Imported\Samples\HttpExample\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\libs\internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
+
+</pre-dex-items>

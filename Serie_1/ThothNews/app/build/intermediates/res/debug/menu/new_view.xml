@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.thothNews.NewViewActivity" >
+    <item android:id="@+id/action_settings"
+        android:title="@string/title_action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+</menu>
+<!-- From: file:/D:/ISEL/14_15_SInv/PDM/MyRep/Serie_1/ThothNews/app/src/main/res/menu/new_view.xml -->

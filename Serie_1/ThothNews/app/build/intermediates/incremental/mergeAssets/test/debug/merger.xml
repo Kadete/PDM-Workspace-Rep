@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="2" >
+
+    <dataSet config="main" >
+        <source path="D:\ISEL\14_15_SInv\PDM\MyRep\Serie_1\ThothNews\app\src\androidTest\assets" />
+    </dataSet>
+
+</merger>
