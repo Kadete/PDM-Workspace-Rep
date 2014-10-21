@@ -28,10 +28,6 @@ public class SettingsFragment extends PreferenceFragment {
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
-        //verifica se a lista já foi preenchida
-//        if(getPreferenceScreen().findPreference("multi_select_list_key") != null)
-//            return;
-
         ThothClasses c = new ThothClasses(){
             @Override
             protected void onPostExecute(ThothClass[] result){
@@ -50,6 +46,9 @@ public class SettingsFragment extends PreferenceFragment {
 
                     lp.setEntries(entries);
                     lp.setEntryValues(entryValues);
+
+
+
                 }
             }
         };

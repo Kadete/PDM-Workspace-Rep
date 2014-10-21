@@ -3,9 +3,11 @@ package isel.pdm.serie1.thothNews;
  * Created by Kadete on 08/10/2014.
  */
 import android.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.util.Log;
+import android.view.MenuItem;
 
 public class PreferencesActivity extends PreferenceActivity {
 
@@ -18,6 +20,19 @@ public class PreferencesActivity extends PreferenceActivity {
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

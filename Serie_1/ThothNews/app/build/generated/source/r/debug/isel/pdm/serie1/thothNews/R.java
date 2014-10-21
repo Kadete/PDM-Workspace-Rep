@@ -10,6 +10,9 @@ package isel.pdm.serie1.thothNews;
 public final class R {
     public static final class array {
         public static final int empty_array=0x7f050000;
+        /**  TODO: como introduzir item em runtime ?? 
+         */
+        public static final int news_id_read=0x7f050001;
     }
     public static final class attr {
     }
@@ -22,12 +25,14 @@ public final class R {
         public static final int thoth_icon=0x7f020001;
     }
     public static final class id {
-        public static final int action_settings=0x7f0a0009;
+        public static final int action_settings=0x7f0a000b;
         public static final int divider1=0x7f0a0001;
         public static final int listView1=0x7f0a0002;
+        public static final int new_item_checkread=0x7f0a0007;
+        public static final int new_item_class_name=0x7f0a0008;
         public static final int new_item_id=0x7f0a0006;
-        public static final int new_item_title=0x7f0a0008;
-        public static final int new_item_when=0x7f0a0007;
+        public static final int new_item_title=0x7f0a000a;
+        public static final int new_item_when=0x7f0a0009;
         public static final int new_view_content=0x7f0a0005;
         public static final int new_view_title=0x7f0a0004;
         public static final int new_view_when=0x7f0a0003;
@@ -49,15 +54,16 @@ public final class R {
         public static final int label_activity_preferences=0x7f070002;
         public static final int label_app_name=0x7f070003;
         public static final int label_news_view=0x7f070004;
-        public static final int new_item_title=0x7f070005;
-        public static final int new_item_when=0x7f070006;
-        public static final int new_view_content=0x7f070007;
-        public static final int new_view_title=0x7f070008;
-        public static final int new_view_when=0x7f070009;
-        public static final int text_news_view=0x7f07000a;
-        public static final int thoth_classes_summary=0x7f07000b;
-        public static final int thoth_classes_title=0x7f07000c;
-        public static final int title_action_settings=0x7f07000d;
+        public static final int new_item_class_name=0x7f070005;
+        public static final int new_item_title=0x7f070006;
+        public static final int new_item_when=0x7f070007;
+        public static final int new_view_content=0x7f070008;
+        public static final int new_view_title=0x7f070009;
+        public static final int new_view_when=0x7f07000a;
+        public static final int text_news_view=0x7f07000b;
+        public static final int thoth_classes_summary=0x7f07000c;
+        public static final int thoth_classes_title=0x7f07000d;
+        public static final int title_action_settings=0x7f07000e;
     }
     public static final class style {
         /**  API 14 theme customizations can go here. 

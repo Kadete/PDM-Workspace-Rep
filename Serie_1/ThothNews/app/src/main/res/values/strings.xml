@@ -15,11 +15,14 @@
     <!-- layout: new_item_layout -->
     <string name="new_item_when">new_item_when</string>
     <string name="new_item_title">new_item_title</string>
+    <string name="new_item_class_name">new_item_class_name</string>
 
     <!-- layout: activity_new_view -->
     <string name="new_view_when"></string>
     <string name="new_view_title"></string>
     <string name="new_view_content"></string>
+
+
 
     <!-- menu: main & new_view -->
     <string name="title_action_settings">Settings</string>

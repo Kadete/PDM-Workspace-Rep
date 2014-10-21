@@ -28,10 +28,10 @@
         <activity
             android:name=".PreferencesActivity"
             android:label="@string/label_activity_preferences"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".MainActivity"/>
 
             <intent-filter>
                 <action android:name=".PreferencesActivity" />
@@ -42,10 +42,10 @@
         <activity
             android:name=".NewViewActivity"
             android:label="@string/label_activity_new_view"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".MainActivity"/>
 
             <intent-filter>
                 <action android:name=".NewViewActivity" />

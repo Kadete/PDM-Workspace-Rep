@@ -9,9 +9,6 @@ import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,10 +21,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import static isel.pdm.serie1.thothNews.Utils.readAllFrom;
 
@@ -45,7 +38,7 @@ public class NewViewActivity extends Activity {
 
         Intent intent = getIntent();
         String newId = intent.getStringExtra(TAG);
-        Toast.makeText(getBaseContext(), newId, Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), newId, Toast.LENGTH_SHORT).show();
 
         ThothNew c = new ThothNew(newId){
             @Override
@@ -65,6 +58,12 @@ public class NewViewActivity extends Activity {
         };
         c.execute();
     }
+
+    @Override
+    public void onBackPressed(){
+        finish();
+    }
+
 
     @Override
     protected void onStart(){
@@ -113,14 +112,18 @@ public class NewViewActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(NewViewActivity.this, PreferencesActivity.class));
-            return true;
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.action_settings:
+                startActivity(new Intent(NewViewActivity.this, PreferencesActivity.class));
+                return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
-
 
     class ThothClassNew{
         public int id;

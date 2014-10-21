@@ -76,6 +76,10 @@
             <file
                 path="D:\ISEL\14_15_SInv\PDM\MyRep\Serie_1\ThothNews\app\src\main\res\values\arrays.xml"
                 qualifiers="" >
+                <string-array name="news_id_read" >
+
+                    <!-- TODO: como introduzir item em runtime ?? -->
+                </string-array>
                 <string-array name="empty_array" />
             </file>
             <file
@@ -89,6 +93,8 @@
             <file
                 path="D:\ISEL\14_15_SInv\PDM\MyRep\Serie_1\ThothNews\app\src\main\res\values\strings.xml"
                 qualifiers="" >
+                <string name="new_item_class_name" >new_item_class_name
+                </string>
                 <string name="label_activity_preferences" >Settings
                 </string>
                 <string name="new_view_title" ></string>

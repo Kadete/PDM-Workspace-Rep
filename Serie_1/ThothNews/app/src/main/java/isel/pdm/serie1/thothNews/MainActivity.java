@@ -3,17 +3,13 @@ package isel.pdm.serie1.thothNews;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -27,19 +23,21 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
-import static android.widget.AdapterView.OnItemClickListener;
 import static isel.pdm.serie1.thothNews.Utils.readAllFrom;
 
 public class MainActivity extends Activity {
 
     private ListView _listView;
     ArrayList<ThothClassNewItem> rowItems;
-
-
-    static private final String TAG = "New-Selected-ID";
+    static private final String TAG = "mainActivityTag";
+    CustomListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,37 +46,27 @@ public class MainActivity extends Activity {
 
         Log.d("DEBUG", "MainActivity, onCreate Called");
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Set<String> classesSelected = sharedPrefs.getStringSet("multi_select_list_key", null);
+        settingListAdapter();
 
+    }
+
+    protected void settingListAdapter(){
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Set<String> classesIDSelected = sharedPrefs.getStringSet("multi_select_list_key", null);
+
+        if(classesIDSelected == null)
+            return;
+
+        Log.d("DEBUG",String.valueOf(classesIDSelected.size()));
 
         _listView = (ListView) findViewById(R.id.listView1);
         rowItems = new ArrayList<ThothClassNewItem>();
 
-        new ThothNewsExtractor().execute(classesSelected);
+        new ThothNewsExtractor().execute(classesIDSelected);
 
-        //TODO : guardar estado das noticias já lidas
-
-        CustomListAdapter cAdapter = new CustomListAdapter(getApplicationContext(), R.layout.new_item_layout, rowItems);
-        _listView.setAdapter(cAdapter);
-
-        _listView.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView textView = (TextView) view.findViewById(R.id.new_item_id);
-                TextView tv_title = (TextView) view.findViewById(R.id.new_item_title);
-                TextView tv_when = (TextView) view.findViewById(R.id.new_item_when);
-
-                tv_title.setTypeface(null, Typeface.NORMAL);
-                tv_when.setTypeface(null, Typeface.NORMAL);
-
-                String newId = textView.getText().toString();
-
-                Intent i = new Intent(MainActivity.this, NewViewActivity.class);
-                i.putExtra(TAG, newId);
-                startActivity(i);
-            }
-        });
-
+        adapter = new CustomListAdapter(MainActivity.this, R.layout.new_item_layout, rowItems);
+        _listView.setAdapter(adapter);
     }
 
     @Override
@@ -90,6 +78,20 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume(){
         super.onResume();
+        if(_listView.getAdapter() != null){
+            Log.d("DEBUG","_listView.getAdapter() != null");
+
+
+
+            adapter = new CustomListAdapter( getApplicationContext(), R.layout.new_item_layout, rowItems);
+            _listView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            _listView.refreshDrawableState();
+
+        }else{
+            settingListAdapter();
+        }
+
         Log.d("DEBUG", "MainActivity, onResume Called");
     }
 
@@ -134,14 +136,47 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    protected void sortRowItems(){
+        Collections.sort(rowItems, new Comparator<ThothClassNewItem>() {
+            public int compare(ThothClassNewItem tc1, ThothClassNewItem tc2) {
+                return tc1.getStatus().compareTo(tc2.getStatus());
+            }
+        });
+    }
+
+    protected void sortRowItemsFromResult(ArrayList<ThothClassNewItem> result){
+
+        List readItems = new ArrayList();
+
+        for(ThothClassNewItem newItem : result){
+            if(newItem.getStatus() == ThothClassNewItem.Status.READ)
+                readItems.add(newItem);
+            else
+                rowItems.add(newItem);
+        }
+
+        Collections.sort(rowItems, new Comparator<ThothClassNewItem>() {
+            public int compare(ThothClassNewItem tc1, ThothClassNewItem tc2) {
+                return tc2.getWhen().compareTo(tc1.getWhen());
+            }
+        });
+
+        Collections.sort(readItems, new Comparator<ThothClassNewItem>() {
+            public int compare(ThothClassNewItem tc1, ThothClassNewItem tc2) {
+                return tc2.getWhen().compareTo(tc1.getWhen());
+            }
+        });
+
+        rowItems.addAll(readItems);
+    }
+
+
     public class ThothNewsExtractor extends AsyncTask<Set<String>, Void, ArrayList<ThothClassNewItem>> {
 
         final static String urlString = "http://thoth.cc.e.ipl.pt/api/v1/classes/";
-        int newsCount = 0;
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
@@ -187,13 +222,13 @@ public class MainActivity extends Activity {
                 return;
             }
 
-            for(ThothClassNewItem newItem : result)
-                rowItems.add(newItem);
+            sortRowItemsFromResult(result);
 
-            CustomListAdapter adapter = new CustomListAdapter( getApplicationContext(), R.layout.new_item_layout, rowItems);
+            adapter = new CustomListAdapter( getApplicationContext(), R.layout.new_item_layout, rowItems);
             _listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             _listView.refreshDrawableState();
+
             Toast.makeText(getApplicationContext(), "Last News Updated", Toast.LENGTH_SHORT).show();
 
         }
@@ -209,7 +244,7 @@ public class MainActivity extends Activity {
                 int id = jnew.getInt("id");
                 String title = jnew.getString("title");
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-                String when = dateFormat.parse(jnew.getString("when")).toString();
+                Date when = dateFormat.parse(jnew.getString("when"));
                 String self = jnew.getJSONObject("_links").getString("self");
 
                 news.add(new ThothClassNewItem(id, title, when, self));

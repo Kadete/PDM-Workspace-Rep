@@ -9,15 +9,11 @@
         android:key="first_category">
 
         <MultiSelectListPreference
-            android:key="multi_select_list_key"
-            android:title="@string/thoth_classes_title"
-            android:summary="@string/thoth_classes_summary"
-            android:defaultValue="@array/empty_array"
-            />
-        <!--
-        android:dialogTitle="@string/select_classes"
-
-        -->
+        android:key="multi_select_list_key"
+        android:title="@string/thoth_classes_title"
+        android:summary="@string/thoth_classes_summary"
+        android:defaultValue="@array/empty_array"
+        />
 
     </PreferenceCategory>
 </PreferenceScreen>

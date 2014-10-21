@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="empty_array" />
+
+    <string-array name="news_id_read" >
+        <!-- TODO: como introduzir item em runtime ?? -->
+    </string-array>
 </resources>
