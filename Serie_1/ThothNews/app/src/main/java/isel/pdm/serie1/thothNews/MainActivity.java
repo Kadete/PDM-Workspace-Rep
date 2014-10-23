@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +29,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static isel.pdm.serie1.thothNews.Utils.readAllFrom;
@@ -54,6 +56,7 @@ public class MainActivity extends Activity {
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Set<String> classesIDSelected = sharedPrefs.getStringSet("multi_select_list_key", null);
+        Map<String, ?> x = sharedPrefs.getAll();
 
         if(classesIDSelected == null)
             return;

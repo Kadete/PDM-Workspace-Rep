@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="isel.pdm.serie1.birthdayreminder.AddBirthday"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp">
+
+
+    <TextView
+        android:id="@+id/TitleLabel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:text="@string/title_string"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="10dp">
+    </TextView>
+
+<!-- Contact -->
+
+    <ImageView
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:id="@+id/contactImageView"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/TitleLabel"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/ic_launcher"/>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_Select_Contact"
+        android:id="@+id/btnSelectContact"
+        android:gravity="center"
+        android:layout_below="@+id/contactImageView"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/contact_info_string"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_below="@+id/btnSelectContact"
+        android:textSize="14sp">
+    </TextView>
+
+
+
+    <!-- DATE -->
+
+
+    <Button
+        android:id="@+id/date_picker_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/choose_date_string"
+        android:layout_below="@+id/title"
+        android:layout_marginTop="15dp"/>
+
+    <TextView
+        android:id="@+id/dateView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/no_date_set_string"
+        android:layout_below="@+id/date_picker_button" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/cancel_string" />
+
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/reset_string" />
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/submit_string" />
+
+
+</RelativeLayout>
