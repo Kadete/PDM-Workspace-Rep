@@ -68,7 +68,7 @@ public class BirthdayItem {
         return mImage;
     }
 
-    public void setImageId(Bitmap id) { mImage = id; }
+    public void setImageId(Bitmap bitmap) { mImage = bitmap; }
 
     public static void packageIntent(Intent intent, String title, Bitmap bitmapPhoto ,String date) {
         intent.putExtra(TITLE, title);
