@@ -31,7 +31,6 @@ class CustomListAdapter extends ArrayAdapter<ThothClassNewItem> {
 
     static private final String TAG = "New-Selected-ID";
     Context context;
-    SharedPreferences sharedPref;
 
     public CustomListAdapter(Context context, int layout, List<ThothClassNewItem> listData) {
         super(context, layout, listData);
@@ -67,39 +66,6 @@ class CustomListAdapter extends ArrayAdapter<ThothClassNewItem> {
         String idStr = String.valueOf(newItem.getId());
 
         holder.id.setText(idStr);
-
-
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-
-
-        Map<String, ?> allEntries = sharedPref.getAll();
-        Set<String> classesNameSelected = sharedPref.getStringSet("multi_select_list_key", null);
-        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-
-
-            Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
-        }
-
-
-
-        if(classesNameSelected != null) {
-
-            String[] selected = classesNameSelected.toArray(new String[] {});
-            Toast.makeText(context, selected[0], Toast.LENGTH_LONG).show();
-
-
-//        holder.class_name.setText(String.valueOf(it.next()));
-
-//        while(it.hasNext()){
-//            if(it.next() == idStr)
-//
-//
-//        }
-//
-//        String name = sharedPref.getString(idStr, "N/A");
-
-        }
-
 
         holder.title.setTypeface(null,
                 (newItem.getStatus() == Status.NOTREAD) ? Typeface.BOLD : Typeface.NORMAL);

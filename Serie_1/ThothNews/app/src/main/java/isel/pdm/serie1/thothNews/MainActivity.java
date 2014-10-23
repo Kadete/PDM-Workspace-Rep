@@ -38,7 +38,6 @@ public class MainActivity extends Activity {
 
     private ListView _listView;
     ArrayList<ThothClassNewItem> rowItems;
-    static private final String TAG = "mainActivityTag";
     CustomListAdapter adapter;
 
     @Override
@@ -56,12 +55,11 @@ public class MainActivity extends Activity {
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Set<String> classesIDSelected = sharedPrefs.getStringSet("multi_select_list_key", null);
-        Map<String, ?> x = sharedPrefs.getAll();
 
         if(classesIDSelected == null)
             return;
 
-        Log.d("DEBUG",String.valueOf(classesIDSelected.size()));
+        Log.d("DEBUG","Classes selected: " + String.valueOf(classesIDSelected.size()));
 
         _listView = (ListView) findViewById(R.id.listView1);
         rowItems = new ArrayList<ThothClassNewItem>();
@@ -75,6 +73,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart(){
         super.onStart();
+
         Log.d("DEBUG", "MainActivity, onStart Called");
     }
 
@@ -84,8 +83,6 @@ public class MainActivity extends Activity {
         if(_listView.getAdapter() != null){
             Log.d("DEBUG","_listView.getAdapter() != null");
 
-
-
             adapter = new CustomListAdapter( getApplicationContext(), R.layout.new_item_layout, rowItems);
             _listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -94,7 +91,7 @@ public class MainActivity extends Activity {
         }else{
             settingListAdapter();
         }
-
+        sortRowItems();
         Log.d("DEBUG", "MainActivity, onResume Called");
     }
 

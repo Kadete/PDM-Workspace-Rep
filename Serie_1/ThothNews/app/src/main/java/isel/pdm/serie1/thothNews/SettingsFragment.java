@@ -46,9 +46,6 @@ public class SettingsFragment extends PreferenceFragment {
 
                     lp.setEntries(entries);
                     lp.setEntryValues(entryValues);
-
-
-
                 }
             }
         };
