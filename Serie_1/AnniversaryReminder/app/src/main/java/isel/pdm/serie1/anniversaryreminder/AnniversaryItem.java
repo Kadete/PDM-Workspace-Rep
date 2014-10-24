@@ -1,12 +1,7 @@
-package isel.pdm.serie1.birthdayreminder;
+package isel.pdm.serie1.anniversaryreminder;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.LightingColorFilter;
-import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,7 +11,7 @@ import java.util.Locale;
 /**
  * Created by Kadete on 21/10/2014.
  */
-public class BirthdayItem {
+public class AnniversaryItem {
 
     public static final String ITEM_SEP = System.getProperty("line.separator");
 
@@ -32,22 +27,30 @@ public class BirthdayItem {
     private Date mDate = new Date();
 
 
-    BirthdayItem(String title, Date date) {
+    AnniversaryItem(String title, Date date) {
         this.mTitle = title;
         this.mDate = date;
     }
 
-    BirthdayItem(Intent intent) {
+    AnniversaryItem(Intent intent) {
 
         mTitle = intent.getStringExtra(TITLE);
 
         mImage = intent.getParcelableExtra(IMAGE);
 
-        try {
-            mDate = FORMAT.parse(intent.getStringExtra(DATE));
-        } catch (ParseException e) {
-            mDate = new Date();
-        }
+        String date = intent.getStringExtra(DATE);
+        mDate = getDateFromData(date);
+    }
+
+    private Date getDateFromData(String dateString){
+        String[] anniversaryInfo = dateString.split(":");
+
+        int year = Integer.valueOf(anniversaryInfo[0]);
+        int month = Integer.valueOf(anniversaryInfo[1]);
+        month--;
+        int day = Integer.parseInt(anniversaryInfo[2],10);
+
+        return new Date(year, month, day);
     }
 
     public String getTitle() {
@@ -58,7 +61,11 @@ public class BirthdayItem {
         mTitle = title;
     }
 
-    public Date getDate() { return mDate; }
+    public Date getDate() {
+
+        return mDate;
+
+    }
 
     public void setDate(Date date) {
         mDate = date;

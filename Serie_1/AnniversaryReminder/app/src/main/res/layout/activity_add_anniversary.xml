@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="isel.pdm.serie1.birthdayreminder.AddBirthday"
+    tools:context="isel.pdm.serie1.anniversaryreminder.AddAnniversary"
     android:layout_marginLeft="30dp"
     android:layout_marginRight="30dp">
 
@@ -22,13 +22,13 @@
 <!-- Contact -->
 
     <ImageView
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
         android:id="@+id/contactImageView"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/TitleLabel"
         android:layout_marginTop="20dp"
-        android:src="@drawable/ic_launcher"/>
+        android:src="@drawable/ic_user_default"/>
 
     <Button
         android:layout_width="fill_parent"

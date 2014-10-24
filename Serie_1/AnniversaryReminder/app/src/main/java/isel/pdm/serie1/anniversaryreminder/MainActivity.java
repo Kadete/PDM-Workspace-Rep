@@ -1,4 +1,4 @@
-package isel.pdm.serie1.birthdayreminder;
+package isel.pdm.serie1.anniversaryreminder;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -21,25 +21,25 @@ import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.Date;
 
-import static isel.pdm.serie1.birthdayreminder.BirthdayItem.*;
+import static isel.pdm.serie1.anniversaryreminder.AnniversaryItem.*;
 
 
 public class MainActivity extends ListActivity {
 
-    private static final int ADD_BIRTHDAY_ITEM_REQUEST = 0;
-    private static final String FILE_NAME = "BirthdayActivityData.txt";
+    private static final int ADD_ANNIVERSARY_ITEM_REQUEST = 0;
+    private static final String FILE_NAME = "AnniversaryActivityData.txt";
     private static final String TAG = "Lab-UserInterface";
 
     private static final int MENU_DELETE = Menu.FIRST;
     private static final int MENU_DUMP = Menu.FIRST + 1;
 
-    BirthdayAdapter bAdapter;
+    AnniversaryAdapter bAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        bAdapter = new BirthdayAdapter(getApplicationContext());
+        bAdapter = new AnniversaryAdapter(getApplicationContext());
 
         getListView().setHeaderDividersEnabled(true);
 
@@ -58,8 +58,8 @@ public class MainActivity extends ListActivity {
 
                 Log.i(TAG, "Entered footerView.OnClickListener.onClick()");
 
-                Intent i = new Intent(MainActivity.this, AddBirthday.class);
-                startActivityForResult(i, ADD_BIRTHDAY_ITEM_REQUEST);
+                Intent i = new Intent(MainActivity.this, AddAnniversary.class);
+                startActivityForResult(i, ADD_ANNIVERSARY_ITEM_REQUEST);
             }
         });
 
@@ -71,9 +71,9 @@ public class MainActivity extends ListActivity {
 
         Log.i(TAG,"Entered onActivityResult()");
 
-        if(resultCode == RESULT_OK && requestCode == ADD_BIRTHDAY_ITEM_REQUEST){
+        if(resultCode == RESULT_OK && requestCode == ADD_ANNIVERSARY_ITEM_REQUEST){
 
-            BirthdayItem item = new BirthdayItem(data);
+            AnniversaryItem item = new AnniversaryItem(data);
             bAdapter.add(item);
         }
     }
@@ -119,7 +119,7 @@ public class MainActivity extends ListActivity {
     private void dump() {
 
         for (int i = 0; i < bAdapter.getCount(); i++) {
-            String data = ((BirthdayItem) bAdapter.getItem(i)).toLog();
+            String data = ((AnniversaryItem) bAdapter.getItem(i)).toLog();
             Log.i(TAG,	"Item " + i + ": " + data.replace(ITEM_SEP, ","));
         }
 
@@ -136,7 +136,7 @@ public class MainActivity extends ListActivity {
 
             while (null != (title = reader.readLine())) {
                 date = FORMAT.parse(reader.readLine());
-                bAdapter.add(new BirthdayItem(title, date));
+                bAdapter.add(new AnniversaryItem(title, date));
             }
 
         } catch (FileNotFoundException e) {

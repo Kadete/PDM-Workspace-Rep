@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="isel.pdm.serie1.anniversaryreminder.MainActivity">
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/photoImageView"
+        android:layout_alignParentStart="true"
+        android:contentDescription="@string/photo_descriptor"
+        android:layout_marginRight="10dp"/>
+
+    <TextView
+        android:id="@+id/titleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/photoImageView">
+    </TextView>
+
+    <TextView
+        android:id="@+id/DateLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/date_string"
+        android:layout_below="@+id/titleView"
+        android:layout_toEndOf="@+id/photoImageView">
+    </TextView>
+
+    <TextView
+        android:id="@+id/dateView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/DateLabel"
+        android:layout_toRightOf="@+id/DateLabel">
+    </TextView>
+
+
+
+
+</RelativeLayout>
