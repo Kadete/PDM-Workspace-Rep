@@ -80,18 +80,20 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume(){
         super.onResume();
-        if(_listView.getAdapter() != null){
+        if(_listView != null && _listView.getAdapter() != null){
             Log.d("DEBUG","_listView.getAdapter() != null");
 
             adapter = new CustomListAdapter( getApplicationContext(), R.layout.new_item_layout, rowItems);
             _listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             _listView.refreshDrawableState();
+            sortRowItems();
 
         }else{
             settingListAdapter();
+            sortRowItems();
         }
-        sortRowItems();
+
         Log.d("DEBUG", "MainActivity, onResume Called");
     }
 
@@ -137,6 +139,9 @@ public class MainActivity extends Activity {
     }
 
     protected void sortRowItems(){
+        if (rowItems == null || rowItems.isEmpty())
+            return;
+
         Collections.sort(rowItems, new Comparator<ThothClassNewItem>() {
             public int compare(ThothClassNewItem tc1, ThothClassNewItem tc2) {
                 return tc1.getStatus().compareTo(tc2.getStatus());

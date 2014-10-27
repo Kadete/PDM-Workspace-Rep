@@ -42,7 +42,7 @@ public class AddAnniversary extends Activity {
 
     private static final int REQUEST_CODE_PICK_CONTACT = 0;
     public static final SimpleDateFormat ANNIVERSARY_FORMATTER = new SimpleDateFormat("yyyy:MM:dd", Locale.US);
-    private static final String TAG = "Lab-UserInterface";
+    private static final String TAG_DEBUG = "DEBUG";
 
     private TextView contactTextView;
 
@@ -52,7 +52,6 @@ public class AddAnniversary extends Activity {
 
     private long contactID;
     private String contactName;
-    private String contactNumber; // contacts unique ID
 
     private Bitmap photo;
     private Uri _contactUri;
@@ -63,9 +62,9 @@ public class AddAnniversary extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_anniversary);
+        setContentView(R.layout.layout_add_anniversary);
 
-        contactTextView = (TextView) findViewById(R.id.title);
+        contactTextView = (TextView) findViewById(R.id.name);
         addContactImageView = (ImageView) findViewById(R.id.contactImageView);
         dateView = (TextView) findViewById(R.id.dateView);
 
@@ -98,7 +97,7 @@ public class AddAnniversary extends Activity {
             @Override
             public void onClick(View v) {
 
-                Log.i(TAG, "Entered cancelButton.OnClickListener.onClick()");
+                Log.d(TAG_DEBUG, "Entered cancelButton.OnClickListener.onClick()");
 
                 setResult(RESULT_CANCELED);
                 finish();
@@ -109,7 +108,7 @@ public class AddAnniversary extends Activity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "Entered resetButton.OnClickListener.onClick()");
+                Log.d(TAG_DEBUG, "Entered resetButton.OnClickListener.onClick()");
 
                 contactTextView.setText("N/A");
 
@@ -123,11 +122,11 @@ public class AddAnniversary extends Activity {
             @Override
             public void onClick(View v) {
 
-                Log.i(TAG, "Entered submitButton.OnClickListener.onClick()");
+                Log.d(TAG_DEBUG, "Entered submitButton.OnClickListener.onClick()");
 
-                String titleString = getToDoTitle();
+                String name = getName();
 
-                if(titleString.compareToIgnoreCase("N/A") == 0 || dateString.compareTo("N/A") == 0){
+                if(name.compareToIgnoreCase("N/A") == 0 || dateString.compareTo("N/A") == 0){
                     Toast.makeText(getBaseContext(), "Select an contact and CHANGE / ADD his Anniversary!!", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -135,7 +134,7 @@ public class AddAnniversary extends Activity {
                 changeContactAnniversary();
 
                 Intent data = new Intent();
-                AnniversaryItem.packageIntent(data, titleString, photo, dateString);
+                AnniversaryItem.packageIntent(data, name, photo, dateString);
 
                 setResult(Activity.RESULT_OK, data);
                 finish();
@@ -164,7 +163,7 @@ public class AddAnniversary extends Activity {
 
     }
 
-    private String getToDoTitle() {
+    private String getName() {
         return contactTextView.getText().toString();
     }
 
@@ -177,7 +176,6 @@ public class AddAnniversary extends Activity {
             final Calendar c = Calendar.getInstance();
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
-            month--;
             int day = c.get(Calendar.DAY_OF_MONTH);
 
             return new DatePickerDialog(getActivity(), this, year, month, day);
@@ -259,7 +257,7 @@ public class AddAnniversary extends Activity {
     }
 
     private void retrieveContactData(){
-        retrieveContactNumberNameAndId();
+        retrieveContactNameAndId();
         retrieveContactPhoto();
         retrieveAnniversaryDetails();
 
@@ -279,8 +277,8 @@ public class AddAnniversary extends Activity {
     }
 
 
-    //Get the contact number of the selected contact.
-    private void retrieveContactNumberNameAndId() {
+    //Get the contact Name and Id of the selected contact.
+    private void retrieveContactNameAndId() {
 
         // getting contacts ID
         Cursor cursorID = getContentResolver().query(
@@ -298,26 +296,8 @@ public class AddAnniversary extends Activity {
 
         cursorID.close();
 
-        Log.d(TAG, "Contact ID: " + contactID);
+        Log.d(TAG_DEBUG, "Contact ID: " + contactID);
 
-//        // Using the contact ID now we will get contact phone number
-
-        Cursor pCur = getContentResolver().query(
-                Phone.CONTENT_URI,
-                null,
-                Phone.CONTACT_ID + " = ? AND " + Phone.TYPE + " = " + Phone.TYPE_MOBILE,
-                new String[]{String.valueOf(contactID)},
-                null
-        );
-
-        if (pCur!= null && pCur.moveToFirst())
-        {
-            contactNumber = pCur.getString(pCur.getColumnIndex(Phone.NUMBER));
-        }
-        pCur.close();
-
-
-        Log.d(TAG, "Contact Phone Number: " + contactNumber);
     }
 
     //Retrieve the Contact photo based on the contactId
@@ -389,7 +369,7 @@ public class AddAnniversary extends Activity {
 
                     retrieveContactData();
 
-                    contactTextView.setText(contactName + ": " + contactNumber);
+                    contactTextView.setText(contactName);
 
                     showDatePickerDialog();
 

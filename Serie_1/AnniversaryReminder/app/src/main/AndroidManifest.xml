@@ -28,6 +28,21 @@
             android:name="isel.pdm.serie1.anniversaryreminder.AddAnniversary"
             android:label="@string/title_activity_add_anniversary" >
         </activity>
+        <activity
+            android:name=".PreferencesActivity"
+            android:label="@string/label_activity_preferences"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+
+            <intent-filter>
+                <action android:name=".PreferencesActivity" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

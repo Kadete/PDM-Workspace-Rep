@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="listentries">
+        <item>1 week</item>
+        <item>2 weeks</item>
+        <item>3 weeks</item>
+        <item>4 weeks</item>
+    </string-array>
+    <string-array name="listvalues">
+        <item>7</item>
+        <item>14</item>
+        <item>21</item>
+        <item>28</item>
+    </string-array>
+</resources>

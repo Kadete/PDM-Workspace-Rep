@@ -30,4 +30,9 @@
     <string name="btn_Select_Contact">Select the Contact</string>
     <string name="photo_descriptor">photo</string>
 
+    <string name="label_activity_preferences">Settings</string>
+    <string name="setting_choose">Settings</string>
+
+
+
 </resources>

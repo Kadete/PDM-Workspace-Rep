@@ -3,7 +3,6 @@ package isel.pdm.serie1.anniversaryreminder;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -15,26 +14,26 @@ public class AnniversaryItem {
 
     public static final String ITEM_SEP = System.getProperty("line.separator");
 
-    public final static String TITLE = "title";
+    public final static String NAME = "name";
     public final static String DATE = "date";
     public final static String IMAGE = "image";
 
     public final static SimpleDateFormat FORMAT = new SimpleDateFormat(
             "MMMM-dd", Locale.US);
 
-    private String mTitle = new String();
+    private String mName = new String();
     private Bitmap mImage;
     private Date mDate = new Date();
 
 
-    AnniversaryItem(String title, Date date) {
-        this.mTitle = title;
+    public AnniversaryItem(String name, Date date) {
+        this.mName = name;
         this.mDate = date;
     }
 
     AnniversaryItem(Intent intent) {
 
-        mTitle = intent.getStringExtra(TITLE);
+        mName = intent.getStringExtra(NAME);
 
         mImage = intent.getParcelableExtra(IMAGE);
 
@@ -53,12 +52,12 @@ public class AnniversaryItem {
         return new Date(year, month, day);
     }
 
-    public String getTitle() {
-        return mTitle;
+    public String getName() {
+        return mName;
     }
 
     public void setTitle(String title) {
-        mTitle = title;
+        mName = title;
     }
 
     public Date getDate() {
@@ -78,17 +77,17 @@ public class AnniversaryItem {
     public void setImageId(Bitmap bitmap) { mImage = bitmap; }
 
     public static void packageIntent(Intent intent, String title, Bitmap bitmapPhoto ,String date) {
-        intent.putExtra(TITLE, title);
+        intent.putExtra(NAME, title);
         intent.putExtra(IMAGE, bitmapPhoto);
         intent.putExtra(DATE, date);
     }
 
     public String toString() {
-        return mTitle  + ITEM_SEP + FORMAT.format(mDate);
+        return mName + ITEM_SEP + FORMAT.format(mDate);
     }
 
     public String toLog() {
-        return "Title: " + mTitle + ITEM_SEP + "Date: " + FORMAT.format(mDate);
+        return "Title: " + mName + ITEM_SEP + "Date: " + FORMAT.format(mDate);
     }
 
 
