@@ -2,7 +2,5 @@
 <resources>
     <string-array name="empty_array" />
 
-    <string-array name="news_id_read" >
-        <!-- TODO: como introduzir item em runtime ?? -->
-    </string-array>
+    <string-array name="news_id_read" />
 </resources>

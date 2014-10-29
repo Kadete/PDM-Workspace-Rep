@@ -5,4 +5,8 @@
         android:title="@string/title_action_settings"
         android:orderInCategory="100"
         android:showAsAction="never" />
+    <item android:id="@+id/action_refresh_all"
+        android:title="@string/title_action_refresh_all"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
 </menu>

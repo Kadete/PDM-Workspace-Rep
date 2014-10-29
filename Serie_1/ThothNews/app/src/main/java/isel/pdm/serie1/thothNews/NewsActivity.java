@@ -3,30 +3,42 @@ package isel.pdm.serie1.thothNews;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.Date;
 
-import static isel.pdm.serie1.thothNews.ClassesListAdapter.*;
+import static isel.pdm.serie1.thothNews.ClassesListAdapter.TAG_SELECT_CLASS_ID;
+import static isel.pdm.serie1.thothNews.ClassesListAdapter.TAG_SELECT_CLASS_NAME;
+import static isel.pdm.serie1.thothNews.ThothClassNewListItem.Status;
 import static isel.pdm.serie1.thothNews.Utils.*;
+import static isel.pdm.serie1.thothNews.Utils.d;
 
 public class NewsActivity extends Activity {
 
     private ListView _listView;
-    ArrayList<ThothClassNewItem> rowItems;
+    ArrayList<ThothClassNewListItem> rowItems;
     NewsListAdapter nAdapter;
+
+    static String classId;
+    private static String FILE_NAME;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,24 +48,35 @@ public class NewsActivity extends Activity {
         d("MainActivity, onCreate Called");
 
         settingListAdapter();
+        loadItems();
+
+        if(nAdapter.getCount()== 0){
+            extractThothNews();
+        }
 
     }
 
     protected void settingListAdapter(){
 
         _listView = (ListView) findViewById(R.id.listView1);
-        rowItems = new ArrayList<ThothClassNewItem>();
+        rowItems = new ArrayList<ThothClassNewListItem>();
 
         Intent intent = getIntent();
-        String classId = intent.getStringExtra(TAG_SELECT_CLASS_ID);
+        classId = intent.getStringExtra(TAG_SELECT_CLASS_ID);
         String className = intent.getStringExtra(TAG_SELECT_CLASS_NAME);
+        FILE_NAME= "NewsActivityData" + classId + ".txt";
 
         TextView tv_title = (TextView) this.findViewById(R.id.class_news_title);
         tv_title.setText(className);
 
+        nAdapter = new NewsListAdapter(NewsActivity.this, R.layout.layout_new_item, rowItems);
+        _listView.setAdapter(nAdapter);
+    }
+
+    private void extractThothNews(){
         new ExtractorThothNews(){
             @Override
-            protected void onPostExecute(ArrayList<ThothClassNewItem> result){
+            protected void onPostExecute(ArrayList<ThothClassNewListItem> result){
 
                 if (result == null || result.size() < 1) {
                     Toast.makeText(getApplicationContext(),
@@ -61,19 +84,19 @@ public class NewsActivity extends Activity {
                     return;
                 }
 
-                sortRowItemsFromResult(result);
+                rowItems.clear();
+                rowItems.addAll(result);
 
-                nAdapter = new NewsListAdapter( getApplicationContext(), R.layout.layout_new_item, rowItems);
-                _listView.setAdapter(nAdapter);
+                sortAdapter();
+
                 nAdapter.notifyDataSetChanged();
+
+                _listView.setAdapter(nAdapter);
                 _listView.refreshDrawableState();
 
                 Toast.makeText(getApplicationContext(), "Last News Updated", Toast.LENGTH_SHORT).show();
             }
         }.execute(classId);
-
-        nAdapter = new NewsListAdapter(NewsActivity.this, R.layout.layout_new_item, rowItems);
-        _listView.setAdapter(nAdapter);
     }
 
     @Override
@@ -81,33 +104,31 @@ public class NewsActivity extends Activity {
         super.onStart();
         ActionBar actionbar = this.getActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
-        Log.d("DEBUG", "MainActivity, onStart Called");
+        d("MainActivity, onStart Called");
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        if(_listView != null && _listView.getAdapter() != null){
-            d("_listView.getAdapter() != null");
+        d("MainActivity, onResume Called");
 
-            nAdapter = new NewsListAdapter( getApplicationContext(), R.layout.layout_new_item, rowItems);
-            _listView.setAdapter(nAdapter);
-            nAdapter.notifyDataSetChanged();
-            _listView.refreshDrawableState();
-            sortRowItems();
-
-        }else{
+        if(_listView == null || _listView.getAdapter() == null){
+            d("_listView.getAdapter() == null");
             settingListAdapter();
-            sortRowItems();
         }
 
-        d("MainActivity, onResume Called");
+        if(nAdapter.getCount() == 0)
+            loadItems();
+        else
+            sortAdapter();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
         d("MainActivity, onPause Called");
+        if(nAdapter.getCount() != 0)
+            saveItems();
     }
 
     @Override
@@ -136,50 +157,122 @@ public class NewsActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(NewsActivity.this, PreferencesActivity.class));
-            return true;
+        switch (id){
+            case R.id.action_settings:
+                startActivity(new Intent(NewsActivity.this, PreferencesActivity.class));
+                return true;
+            case R.id.action_refresh_all:
+                try {
+                    FileOutputStream fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+                    PrintWriter writer = new PrintWriter(fos);
+                    writer.print("");
+                    writer.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                extractThothNews();
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
-    protected void sortRowItems(){
-        if (rowItems == null || rowItems.isEmpty())
-            return;
+    private void loadItems() {
+        BufferedReader reader = null;
+        try {
+            FileInputStream fis = openFileInput(FILE_NAME);
+            reader = new BufferedReader(new InputStreamReader(fis));
 
-        Collections.sort(rowItems, new Comparator<ThothClassNewItem>() {
-            public int compare(ThothClassNewItem tc1, ThothClassNewItem tc2) {
+            String class_id;
+            String new_id;
+            String title;
+            Date when;
+            Status status;
+
+//            rowItems.clear();
+
+            while (null != (class_id = reader.readLine())) {
+                if(classId.compareToIgnoreCase(class_id) != 0)
+                    continue;
+
+                new_id = reader.readLine();
+                title = reader.readLine();
+
+                /*TODO Fix Exception */
+                when = Utils.SIMPLE_DATE_FORMAT.parse(reader.readLine());
+
+                status = (reader.readLine().compareToIgnoreCase(String.valueOf(Status.READ)) == 0)
+                        ? Status.READ
+                        : Status.NOTREAD;
+
+                rowItems.add(new ThothClassNewListItem(Integer.valueOf(new_id), title, when, status));
+            }
+
+            if(rowItems.isEmpty())
+                return;
+
+            nAdapter = new NewsListAdapter(NewsActivity.this, R.layout.layout_new_item, rowItems);
+            _listView.setAdapter(nAdapter);
+
+            sortAdapter();
+
+            nAdapter.notifyDataSetChanged();
+            _listView.refreshDrawableState();
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } finally {
+            if (null != reader) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void sortAdapter() {
+
+        nAdapter.sort(new Comparator<ThothClassNewListItem>() {
+            public int compare(ThothClassNewListItem tc1, ThothClassNewListItem tc2) {
+                return tc2.getWhen().compareTo(tc1.getWhen());
+            };
+        });
+
+        nAdapter.sort(new Comparator<ThothClassNewListItem>() {
+            public int compare(ThothClassNewListItem tc1, ThothClassNewListItem tc2) {
                 return tc1.getStatus().compareTo(tc2.getStatus());
-            }
+            };
         });
     }
 
-    protected void sortRowItemsFromResult(ArrayList<ThothClassNewItem> result){
+    private void saveItems() {
+        PrintWriter writer = null;
+        try {
+            FileOutputStream fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+            writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+                    fos)));
 
-        List readItems = new ArrayList();
+            for(ThothClassNewListItem thothClass : rowItems){
+                writer.println(thothClass.GetInfoToStore(classId));
+            }
 
-        for(ThothClassNewItem newItem : result){
-            if(newItem.getStatus() == ThothClassNewItem.Status.READ)
-                readItems.add(newItem);
-            else
-                rowItems.add(newItem);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (null != writer) {
+                writer.close();
+            }
         }
-
-        Collections.sort(rowItems, new Comparator<ThothClassNewItem>() {
-            public int compare(ThothClassNewItem tc1, ThothClassNewItem tc2) {
-                return tc2.getWhen().compareTo(tc1.getWhen());
-            }
-        });
-
-        Collections.sort(readItems, new Comparator<ThothClassNewItem>() {
-            public int compare(ThothClassNewItem tc1, ThothClassNewItem tc2) {
-                return tc2.getWhen().compareTo(tc1.getWhen());
-            }
-        });
-
-        rowItems.addAll(readItems);
     }
 
 }

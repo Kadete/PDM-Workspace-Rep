@@ -12,26 +12,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import static isel.pdm.serie1.thothNews.Utils.*;
 import static isel.pdm.serie1.thothNews.Utils.readAllFrom;
 
 /**
  * Created by Kadete on 28/10/2014.
  */
-class ThothClassNew{
-    public int id;
-    public String title;
-    public String when;
-    public String content;
-    public LinksClass _links;
-}
-
-class LinksClass{
-    public String self;
-    public String classNewsItems;
-    public String clazz;
-    public String root;
-}
 
 class ExtractorThothNew extends AsyncTask<String,Void,ThothClassNew> {
 
@@ -68,8 +56,10 @@ class ExtractorThothNew extends AsyncTask<String,Void,ThothClassNew> {
             root = new JSONObject(s);
             _new.id = root.getInt("id");
             _new.title = root.getString("title");
+
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-            _new.when = dateFormat.parse(root.getString("when")).toString();
+            _new.when = dateFormat.parse(root.getString("when"));
+            //_new.when = root.getString("when");
             _new.content = String.valueOf(Html.fromHtml(root.getString("content")));
             _new._links = new LinksClass();
 
@@ -81,8 +71,26 @@ class ExtractorThothNew extends AsyncTask<String,Void,ThothClassNew> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return _new;
     }
 
+}
+
+class ThothClassNew{
+    protected int id;
+    protected String title;
+    protected Date when;
+    protected String content;
+    protected LinksClass _links;
+
+    public String getFormattedWhen() {
+        return Utils.SIMPLE_DATE_FORMAT.format(when);
+    }
+}
+
+class LinksClass{
+    public String self;
+    public String classNewsItems;
+    public String clazz;
+    public String root;
 }

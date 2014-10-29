@@ -34,7 +34,7 @@ public class ClassesListAdapter extends ArrayAdapter<ThothClass> {
         View _new = convertView;
         LayoutInflater mInflater = (LayoutInflater)context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         if(_new == null){
-            _new = mInflater.inflate(R.layout.layout_class_item,null);
+            _new = mInflater.inflate(R.layout.layout_class_item, null);
             holder = new ClassViewHolder();
 
             holder.id = (TextView)_new.findViewById(R.id.class_item_id);
