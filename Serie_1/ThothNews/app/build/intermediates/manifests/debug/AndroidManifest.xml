@@ -17,8 +17,8 @@
         android:label="@string/label_app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="isel.pdm.serie1.thothNews.MainActivity"
-            android:label="@string/label_app_name" >
+            android:name="isel.pdm.serie1.thothNews.ClassesActivity"
+            android:label="@string/title_activity_classes" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,9 +26,23 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="isel.pdm.serie1.thothNews.NewsActivity"
+            android:label="@string/label_app_name"
+            android:parentActivityName="isel.pdm.serie1.thothNews.ClassesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ClassesActivity" />
+
+            <intent-filter>
+                <action android:name=".NewViewActivity" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name="isel.pdm.serie1.thothNews.PreferencesActivity"
             android:label="@string/label_activity_preferences"
-            android:parentActivityName="isel.pdm.serie1.thothNews.MainActivity" >
+            android:parentActivityName="isel.pdm.serie1.thothNews.ClassesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -40,9 +54,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="isel.pdm.serie1.thothNews.NewViewActivity"
+            android:name="isel.pdm.serie1.thothNews.NewItemActivity"
             android:label="@string/label_activity_new_view"
-            android:parentActivityName="isel.pdm.serie1.thothNews.MainActivity" >
+            android:parentActivityName="isel.pdm.serie1.thothNews.ClassesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

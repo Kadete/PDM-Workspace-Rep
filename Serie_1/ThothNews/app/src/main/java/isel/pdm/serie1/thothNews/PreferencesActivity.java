@@ -3,6 +3,7 @@ package isel.pdm.serie1.thothNews;
  * Created by Kadete on 08/10/2014.
  */
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -33,6 +34,14 @@ public class PreferencesActivity extends PreferenceActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent();
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     @Override
