@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import static isel.pdm.serie1.thothNews.NewsListAdapter.*;
+import static isel.pdm.serie1.thothNews.Utils.*;
 
 
 public class NewItemActivity extends Activity {
@@ -20,7 +21,7 @@ public class NewItemActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_activity_new);
 
-        Log.d("DEBUG", "NewViewActivity, onCreate Called");
+        d("NewViewActivity, onCreate Called");
 
         Intent intent = getIntent();
         String newId = intent.getStringExtra(TAG_SELECT_NEW_ID);
@@ -36,7 +37,7 @@ public class NewItemActivity extends Activity {
                 }else{
                     TextView _tvWhen = (TextView) findViewById(R.id.new_view_when);
                     TextView _tvContent = (TextView) findViewById(R.id.new_view_content);
-                    _tvWhen.setText(result.when);
+                    _tvWhen.setText(result.getFormattedWhen());
                     _tvTitle.setText(result.title);
                     _tvContent.setText(result.content);
                 }
@@ -53,7 +54,7 @@ public class NewItemActivity extends Activity {
     @Override
     protected void onStart(){
         super.onStart();
-        Log.d("DEBUG", "NewViewActivity, onStart Called");
+        d("NewViewActivity, onStart Called");
         ActionBar actionbar = this.getActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
     }
@@ -61,31 +62,31 @@ public class NewItemActivity extends Activity {
     @Override
     protected void onResume(){
         super.onResume();
-        Log.d("DEBUG", "NewViewActivity, onResume Called");
+        d("NewViewActivity, onResume Called");
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        Log.d("DEBUG","NewViewActivity, onPause Called");
+        d("NewViewActivity, onPause Called");
     }
 
     @Override
     protected void onStop(){
         super.onStop();
-        Log.d("DEBUG","NewViewActivity, onStop Called");
+        d("NewViewActivity, onStop Called");
     }
 
     @Override
     protected void onRestart(){
         super.onRestart();
-        Log.d("DEBUG", "NewViewActivity, onRestart Called");
+        d( "NewViewActivity, onRestart Called");
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        Log.d("DEBUG", "NewViewActivity, onDestroy Called");
+        d("NewViewActivity, onDestroy Called");
     }
 
     @Override

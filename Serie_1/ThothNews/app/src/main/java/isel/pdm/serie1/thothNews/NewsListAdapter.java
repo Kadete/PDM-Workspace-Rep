@@ -13,19 +13,19 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import static isel.pdm.serie1.thothNews.ThothClassNewItem.Status;
+import static isel.pdm.serie1.thothNews.ThothClassNewListItem.Status;
 
 /**
  * Created by Kadete on 15/10/2014.
  */
 
-class NewsListAdapter extends ArrayAdapter<ThothClassNewItem> {
+class NewsListAdapter extends ArrayAdapter<ThothClassNewListItem> {
 
     static protected final String TAG_SELECT_NEW_ID = "New-Selected-ID";
 
     Context context;
 
-    public NewsListAdapter(Context context, int layout, List<ThothClassNewItem> listData) {
+    public NewsListAdapter(Context context, int layout, List<ThothClassNewListItem> listData) {
         super(context, layout, listData);
         this.context = context;
     }
@@ -34,7 +34,7 @@ class NewsListAdapter extends ArrayAdapter<ThothClassNewItem> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final NewItemHolder holder;
-        final ThothClassNewItem newItem = getItem(position);
+        final ThothClassNewListItem newItem = getItem(position);
         View _new = convertView;
         LayoutInflater mInflater = (LayoutInflater)context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         if(_new == null){
@@ -43,7 +43,6 @@ class NewsListAdapter extends ArrayAdapter<ThothClassNewItem> {
 
             holder.title = (TextView)_new.findViewById(R.id.new_item_title);
             holder.new_id = (TextView)_new.findViewById(R.id.new_item_id);
-            //holder.full_name = (TextView)_new.findViewById(R.id.new_item_class_name);
             holder.when = (TextView)_new.findViewById(R.id.new_item_when);
             holder.checkRead = (CheckBox)_new.findViewById(R.id.new_item_checkread);
 
@@ -52,12 +51,10 @@ class NewsListAdapter extends ArrayAdapter<ThothClassNewItem> {
             holder = (NewItemHolder)_new.getTag();
         }
         holder.title.setText(newItem.getTitle());
-
         holder.when.setText(String.valueOf(newItem.getWhen()));
         holder.checkRead.setChecked(newItem.getStatus() == Status.READ);
 
         String idStr = String.valueOf(newItem.getId());
-
         holder.new_id.setText(idStr);
 
         holder.title.setTypeface(null,

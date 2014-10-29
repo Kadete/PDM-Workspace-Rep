@@ -5,5 +5,9 @@
         android:title="@string/title_action_settings"
         android:orderInCategory="100"
         android:showAsAction="never" />
+    <item android:id="@+id/action_refresh_all"
+        android:title="@string/title_action_refresh_all"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
 </menu>
 <!-- From: file:/D:/ISEL/14_15_SInv/PDM/MyRep/Serie_1/ThothNews/app/src/main/res/menu/main.xml -->

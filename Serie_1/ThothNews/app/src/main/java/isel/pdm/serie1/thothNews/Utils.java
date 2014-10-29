@@ -8,7 +8,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -17,6 +22,8 @@ import java.util.Scanner;
 public class Utils {
 
     private static final String TAG_DEBUG = "DEBUG";
+
+    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US);
 
     protected static String readAllFrom(InputStream is){
         Scanner s = new Scanner(is);

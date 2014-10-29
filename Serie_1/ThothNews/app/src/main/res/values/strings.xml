@@ -34,6 +34,7 @@
 
     <!-- menu: main & new_view -->
     <string name="title_action_settings">Settings</string>
+    <string name="title_action_delete">Delete All</string>
 
     <!-- xml: preferences -->
     <string name="category_title">Multi Select Classes</string>
@@ -42,7 +43,7 @@
     <string name="title_activity_classes">ClassesActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+    <string name="title_action_refresh_all">Refresh All</string>
 
 
 </resources>

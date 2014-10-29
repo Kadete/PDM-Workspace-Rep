@@ -10,8 +10,6 @@ package isel.pdm.serie1.thothNews;
 public final class R {
     public static final class array {
         public static final int empty_array=0x7f050000;
-        /**  TODO: como introduzir item em runtime ?? 
-         */
         public static final int news_id_read=0x7f050001;
     }
     public static final class attr {
@@ -25,6 +23,7 @@ public final class R {
         public static final int thoth_icon=0x7f020001;
     }
     public static final class id {
+        public static final int action_refresh_all=0x7f0a000f;
         public static final int action_settings=0x7f0a000e;
         public static final int class_item_full_name=0x7f0a0008;
         public static final int class_item_id=0x7f0a0007;
@@ -73,10 +72,12 @@ public final class R {
         public static final int new_view_when=0x7f07000f;
         public static final int thoth_classes_summary=0x7f070010;
         public static final int thoth_classes_title=0x7f070011;
-        public static final int title_action_settings=0x7f070012;
-        public static final int title_activity_classes=0x7f070013;
-        public static final int title_classes_view=0x7f070014;
-        public static final int title_news_view=0x7f070015;
+        public static final int title_action_delete=0x7f070012;
+        public static final int title_action_refresh_all=0x7f070013;
+        public static final int title_action_settings=0x7f070014;
+        public static final int title_activity_classes=0x7f070015;
+        public static final int title_classes_view=0x7f070016;
+        public static final int title_news_view=0x7f070017;
     }
     public static final class style {
         /**  API 14 theme customizations can go here. 

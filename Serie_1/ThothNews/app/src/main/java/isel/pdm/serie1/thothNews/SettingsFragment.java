@@ -5,16 +5,11 @@ import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * Created by Kadete on 14/10/2014.
  */
 public class SettingsFragment extends PreferenceFragment {
 
-
-    //List<ThothClass> list = new LinkedList<ThothClass>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,7 +18,7 @@ public class SettingsFragment extends PreferenceFragment {
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
-        QueryThothClasses c = new QueryThothClasses(){
+        ExtractorThothClassesSettings c = new ExtractorThothClassesSettings(){
             @Override
             protected void onPostExecute(ThothClass[] result){
                 if(result == null){
@@ -35,7 +30,6 @@ public class SettingsFragment extends PreferenceFragment {
                     for(int i = 0 ; i < result.length ; ++i){
                         entries[i] = result[i]._fullname;
                         entryValues[i] = String.valueOf(result[i]._id);
-                        //list.add(result[i]);
                     }
 
                     MultiSelectListPreference lp = (MultiSelectListPreference)findPreference("multi_select_list_key");
