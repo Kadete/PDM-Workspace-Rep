@@ -29,8 +29,6 @@ public class MainActivity extends ListActivity {
     private static final int ADD_ANNIVERSARY_ITEM_REQUEST = 0;
     private static final int FILTER_ANNIVERSARY_SETTING_REQUEST = 1;
 
-//    public static final SimpleDateFormat ANNIVERSARY_FORMATTER = new SimpleDateFormat("yyyy:MM:dd", Locale.US);
-//    private static final String FILE_NAME = "AnniversaryActivityData.txt";
     private static final String TAG_DEBUG = "DEBUG";
 
     private static final int MENU_SETTINGS = Menu.FIRST;
@@ -46,7 +44,8 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        daysToFilter = Integer.valueOf(sharedPreferences.getString("PREF_LIST", "no selection"));
+        String aux = sharedPreferences.getString("PREF_LIST", "14");
+        daysToFilter = Integer.valueOf(aux);
 
         Calendar localCalendar = Calendar.getInstance(TimeZone.getDefault());
         currentDayOfYear = localCalendar.get(Calendar.DAY_OF_YEAR);
@@ -111,20 +110,36 @@ public class MainActivity extends ListActivity {
     }
 
     @Override
-    public void onResume() {
+    protected void onResume(){
         super.onResume();
-
-//        if (bAdapter.getCount() == 0)
-            loadItems();
+        Log.d("DEBUG", "MainActivity, onResume Called");
+        loadItems();
     }
-
 
     @Override
-    protected void onPause() {
+    protected void onPause(){
         super.onPause();
-
-//        saveItems();
+        Log.d("DEBUG","MainActivity, onPause Called");
     }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        Log.d("DEBUG","MainActivity, onStop Called");
+    }
+
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        Log.d("DEBUG", "MainActivity, onRestart Called");
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        Log.d("DEBUG", "MainActivity, onDestroy Called");
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -212,64 +227,13 @@ public class MainActivity extends ListActivity {
     }
 
     private void loadItems() {
-//        BufferedReader reader = null;
-//        try {
-//            FileInputStream fis = openFileInput(FILE_NAME);
-//            reader = new BufferedReader(new InputStreamReader(fis));
 
-//            String title;
-//            Date anniversaryDate;
+        for (AnniversaryItem item : getAnniversaryList()) {
+            if (isToFilter(item.getDate()))
+                bAdapter.add(item);
+        }
 
-            /** Guardar num ficheiro vs query **/
-            /*-------------------file-------------------*/
-//            while (null != (title = reader.readLine())) {
-//                anniversaryDate = FORMAT.parse(reader.readLine());
-//
-//                if(isToFilter(anniversaryDate))
-//                    bAdapter.add(new AnniversaryItem(title, anniversaryDate));
-//            }
-            /*-------------------query-------------------*/
-            for(AnniversaryItem item : getAnniversaryList()){
-                if(isToFilter(item.getDate()))
-                    bAdapter.add(item);
-            }
+        bAdapter.orderList();
 
-            bAdapter.orderList();
-
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (null != reader) {
-//                try {
-//                    reader.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
     }
-
-//    private void saveItems() {
-//        PrintWriter writer = null;
-//        try {
-//            FileOutputStream fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
-//            writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-//                    fos)));
-//
-//            for (int idx = 0; idx < bAdapter.getCount(); idx++) {
-//                writer.println(bAdapter.getItem(idx));
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (null != writer) {
-//                writer.close();
-//            }
-//        }
-//    }
-
 }

@@ -231,7 +231,9 @@ public class AddAnniversary extends Activity {
         mValues.put(Data.MIMETYPE,Event.CONTENT_ITEM_TYPE);
         mValues.put(Event.START_DATE,annidate);
         mValues.put(Event.TYPE,Event.TYPE_ANNIVERSARY);
+
         getContentResolver().insert(ContactsContract.Data.CONTENT_URI, mValues);
+
     }
 
     private void updateAnniversaryDetails(int year,int month,int date)

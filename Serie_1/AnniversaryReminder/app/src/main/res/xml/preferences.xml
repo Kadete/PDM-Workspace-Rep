@@ -9,7 +9,9 @@
             android:title="Filter Settings"
             android:summary="Select the amount of weeks you want to filter the anniversarys"
             android:entries="@array/listentries"
-            android:entryValues="@array/listvalues" />
+            android:entryValues="@array/listvalues"
+            android:defaultValue="14"
+            />
     </PreferenceCategory>
 
 </PreferenceScreen>
