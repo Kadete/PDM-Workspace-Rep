@@ -10,14 +10,14 @@ import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
+import static isel.pdm.serie1.anniversaryreminder.Utils.*;
+
 public class PreferencesActivity extends PreferenceActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Log.d("DEBUG", "PreferencesActivity, onCreate Called");
-
+        d("PreferencesActivity, onCreate Called");
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
@@ -25,21 +25,18 @@ public class PreferencesActivity extends PreferenceActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
-
             case android.R.id.home:
                 onBackPressed();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("DEBUG", "PreferencesActivity, onStart Called");
+        d( "PreferencesActivity, onStart Called");
         ActionBar actionbar = this.getActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
     }
@@ -55,31 +52,31 @@ public class PreferencesActivity extends PreferenceActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        Log.d("DEBUG", "PreferencesActivity, onResume Called");
+        d("PreferencesActivity, onResume Called");
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        Log.d("DEBUG","PreferencesActivity, onPause Called");
+        d("PreferencesActivity, onPause Called");
     }
 
     @Override
     protected void onStop(){
         super.onStop();
-        Log.d("DEBUG","PreferencesActivity, onStop Called");
+        d("PreferencesActivity, onStop Called");
     }
 
     @Override
     protected void onRestart(){
         super.onRestart();
-        Log.d("DEBUG", "PreferencesActivity, onRestart Called");
+        d("PreferencesActivity, onRestart Called");
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        Log.d("DEBUG", "PreferencesActivity, onDestroy Called");
+        d("PreferencesActivity, onDestroy Called");
     }
 
 }

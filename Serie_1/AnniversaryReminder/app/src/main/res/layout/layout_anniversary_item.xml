@@ -10,7 +10,8 @@
         android:id="@+id/photoImageView"
         android:layout_alignParentStart="true"
         android:contentDescription="@string/photo_descriptor"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="10dp"
+        android:src="@drawable/ic_user_default"/>
 
     <TextView
         android:id="@+id/titleView"

@@ -31,6 +31,9 @@ class ExtractorThothClasses extends AsyncTask<Set<String>, Void, List<ThothClass
             List<ThothClass> newItems = new LinkedList<ThothClass>();
             URL url;
 
+            if(sets[0] == null)
+
+                return null;
             Iterator it = sets[0].iterator();
             while(it.hasNext()){
 

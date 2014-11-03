@@ -12,8 +12,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
+
+import static isel.pdm.serie1.anniversaryreminder.Utils.*;
 
 public class AnniversaryAdapter extends BaseAdapter {
 
@@ -34,44 +35,27 @@ public class AnniversaryAdapter extends BaseAdapter {
     }
 
     public void add(AnniversaryItem item) {
-
-        /*TODO: melhorar performance*/
-        Iterator<AnniversaryItem> it = mItems.iterator();
-        while(it.hasNext()){
-            AnniversaryItem annItem = it.next();
-            if(annItem.getName().compareTo(item.getName()) == 0){
-                mItems.remove(annItem);
-                break;
-            }
-        }
-
         mItems.add(item);
         notifyDataSetChanged();
     }
 
     public void clear() {
-
         mItems.clear();
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-
         return mItems.size();
-
     }
 
     @Override
     public Object getItem(int pos) {
-
         return mItems.get(pos);
-
     }
 
     @Override
     public long getItemId(int pos) {
-
         return pos;
     }
 
@@ -83,14 +67,14 @@ public class AnniversaryAdapter extends BaseAdapter {
         LayoutInflater _layoutInflater = (LayoutInflater)mContext.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
         RelativeLayout itemLayout = (RelativeLayout) _layoutInflater.inflate(R.layout.layout_anniversary_item, null);
 
-        final TextView titleView = (TextView) itemLayout.findViewById(R.id.titleView);
-        titleView.setText(anniversaryItem.getName());
-
-        final ImageView imageView = (ImageView) itemLayout.findViewById(R.id.photoImageView);
-        imageView.setImageBitmap(anniversaryItem.getImageBitmap());
+        final TextView nameView = (TextView) itemLayout.findViewById(R.id.titleView);
+        nameView.setText(anniversaryItem.getName());
 
         final TextView dateView = (TextView) itemLayout.findViewById(R.id.dateView);
-        dateView.setText(AnniversaryItem.FORMAT.format(anniversaryItem.getDate()));
+        dateView.setText(SHOW_DATE_FORMATTER.format(anniversaryItem.getDate()));
+
+        final ImageView imageView = (ImageView) itemLayout.findViewById(R.id.photoImageView);
+        imageView.setImageURI(anniversaryItem.getThumbnailUri());
 
         return itemLayout;
     }

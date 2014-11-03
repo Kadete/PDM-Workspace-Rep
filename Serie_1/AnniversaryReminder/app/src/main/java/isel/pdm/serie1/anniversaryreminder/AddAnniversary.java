@@ -5,12 +5,9 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,41 +20,35 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import android.provider.ContactsContract.Contacts.Data;
 
 import static android.provider.ContactsContract.Contacts.*;
 import static android.provider.ContactsContract.CommonDataKinds.*;
+import static isel.pdm.serie1.anniversaryreminder.Utils.*;
 
 
 public class AddAnniversary extends Activity {
 
     private static final int REQUEST_CODE_PICK_CONTACT = 0;
-    public static final SimpleDateFormat ANNIVERSARY_FORMATTER = new SimpleDateFormat("yyyy:MM:dd", Locale.US);
-    private static final String TAG_DEBUG = "DEBUG";
 
-    private TextView contactTextView;
-
-    private static ImageView addContactImageView;
-    private static TextView dateView;
+    private static ImageView contactImageView;
+    private static TextView dateView, contactTextView;
     private static String dateString;
 
     private long contactID;
+    private int rawContactID = -1;
     private String contactName;
 
-    private Bitmap photo;
     private Uri _contactUri;
-    static Calendar mCalendar = Calendar.getInstance();
+    private Uri contactPhotoUri;
 
+    static Calendar mCalendar = Calendar.getInstance();
     ContentValues mValues = new ContentValues();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +56,10 @@ public class AddAnniversary extends Activity {
         setContentView(R.layout.layout_add_anniversary);
 
         contactTextView = (TextView) findViewById(R.id.name);
-        addContactImageView = (ImageView) findViewById(R.id.contactImageView);
+        contactImageView = (ImageView) findViewById(R.id.contactImageView);
         dateView = (TextView) findViewById(R.id.dateView);
 
+        setDefaultName();
         setDefaultImage();
         setDefaultDate();
 
@@ -96,8 +88,7 @@ public class AddAnniversary extends Activity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Log.d(TAG_DEBUG, "Entered cancelButton.OnClickListener.onClick()");
+                d("Entered cancelButton.OnClickListener.onClick()");
 
                 setResult(RESULT_CANCELED);
                 finish();
@@ -108,10 +99,9 @@ public class AddAnniversary extends Activity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG_DEBUG, "Entered resetButton.OnClickListener.onClick()");
+                d("Entered resetButton.OnClickListener.onClick()");
 
-                contactTextView.setText("N/A");
-
+                setDefaultName();
                 setDefaultImage();
                 setDefaultDate();
             }
@@ -121,32 +111,31 @@ public class AddAnniversary extends Activity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                d("Entered submitButton.OnClickListener.onClick()");
 
-                Log.d(TAG_DEBUG, "Entered submitButton.OnClickListener.onClick()");
-
-                String name = getName();
-
+                String name = contactTextView.getText().toString();
                 if(name.compareToIgnoreCase("N/A") == 0 || dateString.compareTo("N/A") == 0){
                     Toast.makeText(getBaseContext(), "Select an contact and CHANGE / ADD his Anniversary!!", Toast.LENGTH_LONG).show();
                     return;
                 }
+                if(! changeContactAnniversary()){
+                    Toast.makeText(getBaseContext(), "Couldn't Change Your Contact Anniversary!!", Toast.LENGTH_LONG).show();
+                }else
+                    setResult(Activity.RESULT_OK, null);
 
-                changeContactAnniversary();
-
-                Intent data = new Intent();
-                AnniversaryItem.packageIntent(data, name, photo, dateString);
-
-                setResult(Activity.RESULT_OK, data);
                 finish();
             }
 
         });
     }
 
-    private void setDefaultImage(){
+    private void setDefaultName() {
+        contactTextView.setText("N/A");
+    }
 
+    private void setDefaultImage(){
         Drawable myPhoto = getResources().getDrawable( R.drawable.ic_user_default);
-        addContactImageView.setImageDrawable(myPhoto);
+        contactImageView.setImageDrawable(myPhoto);
     }
 
     private void setDefaultDate() {
@@ -155,16 +144,10 @@ public class AddAnniversary extends Activity {
     }
 
     private static void setDateString(Date date) {
-
-        dateString = AnniversaryItem.FORMAT.format(
+        dateString = SHOW_DATE_FORMATTER.format(
                 (date == null) ? mCalendar.getTime() : date
         );
         dateView.setText(dateString);
-
-    }
-
-    private String getName() {
-        return contactTextView.getText().toString();
     }
 
     public static class DatePickerFragment extends DialogFragment implements
@@ -194,98 +177,72 @@ public class AddAnniversary extends Activity {
         newFragment.show(getFragmentManager(), "datePicker");
     }
 
-    private void changeContactAnniversary(){
-
-        dateString = ANNIVERSARY_FORMATTER.format(mCalendar.getTime());
+    private void setValues() {
+        dateString = SAVE_DATE_FORMATTER.format(mCalendar.getTime());
         String[] anniversaryInfo = dateString.split(":");
 
-        int year = Integer.valueOf(anniversaryInfo[0]);
-        int month = Integer.valueOf(anniversaryInfo[1]);
-        month--;
-        int day = Integer.parseInt(anniversaryInfo[2],10);
-
-        retrieveAnniversaryDetails();
-
-        if(dateString == null){
-            Log.d("", "changeContactAnniversary() >> Anniversary_Uri: INSERT");
-            saveAnniversaryDetails(year, month, day);
-        }
-        else {
-            Log.d("", "changeContactAnniversary() >> Anniversary_Uri: UPDATE");
-            updateAnniversaryDetails(year, month, day);
-        }
-
-        dateString = year+":" + (++month) + ":" + day;
-    }
-
-    private void saveAnniversaryDetails(int year,int month,int date)
-    {
         Calendar cc= Calendar.getInstance();
-        cc.set(year, month, date);
-        Date dt = cc.getTime();
+        cc.set(Integer.valueOf(anniversaryInfo[0]),
+                Integer.valueOf(anniversaryInfo[1])-1,
+                Integer.parseInt(anniversaryInfo[2],10));
+
         DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
-        String annidate = df.format(dt);
+        String anniversaryDate = df.format(cc.getTime());
+
+        Cursor c= getContentResolver().query(_contactUri, null, null, null, null);
+        int rawIx = c.getColumnIndex(Data.RAW_CONTACT_ID);
+        if(c.moveToFirst())
+            rawContactID = c.getInt(rawIx);
 
         mValues.clear();
-        mValues.put(Data.RAW_CONTACT_ID, contactID);
-        mValues.put(Data.MIMETYPE,Event.CONTENT_ITEM_TYPE);
-        mValues.put(Event.START_DATE,annidate);
-        mValues.put(Event.TYPE,Event.TYPE_ANNIVERSARY);
+        mValues.put(Data.MIMETYPE, Event.CONTENT_ITEM_TYPE);
+        mValues.put(Data.RAW_CONTACT_ID, rawContactID);
 
-        getContentResolver().insert(ContactsContract.Data.CONTENT_URI, mValues);
+        mValues.put(Event.TYPE, Event.TYPE_ANNIVERSARY);
+        mValues.put(Event.RAW_CONTACT_ID, rawContactID);
 
+        mValues.put(Event.START_DATE, anniversaryDate);
     }
 
-    private void updateAnniversaryDetails(int year,int month,int date)
-    {
+
+    private boolean changeContactAnniversary(){
+
+        setValues();
+
+        String anniQueryWhere = ContactsContract.Data.MIMETYPE + " = ? AND "+ Event.RAW_CONTACT_ID + " = ? AND "+ Event.TYPE  + " = ?";
+        String[] anniQueryWhereParams = new String[]{Event.CONTENT_ITEM_TYPE, String.valueOf(rawContactID), String.valueOf(Event.TYPE_ANNIVERSARY)};
+
         ContentResolver cr = getContentResolver();
-        String where = ContactsContract.Data.MIMETYPE + " = ? ";
-        String[] whereParams = new String[]{Event.CONTENT_ITEM_TYPE};
         Cursor anniversaryCur = getContentResolver().query(
                 ContactsContract.Data.CONTENT_URI,
-                new String[] { Event.DATA },
-                ContactsContract.Data.CONTACT_ID + "=" + String.valueOf(contactID) +
-                        " AND " + Data.MIMETYPE + "= '" + Event.CONTENT_ITEM_TYPE +
-                        "' AND " + Event.TYPE + "=" + Event.TYPE_ANNIVERSARY,
-                null,
-                ContactsContract.Data.DISPLAY_NAME
+                new String[] { Event.START_DATE },
+                anniQueryWhere,
+                anniQueryWhereParams,
+                null
         );
-        if(anniversaryCur.moveToFirst())
-        {
-            cr.delete(ContactsContract.Data.CONTENT_URI,where,whereParams);
+
+        try{
+            if(anniversaryCur.moveToFirst())
+            {
+                d("changeContactAnniversary() >> Anniversary_Uri: UPDATE");
+                return (cr.update(ContactsContract.Data.CONTENT_URI, mValues, anniQueryWhere, anniQueryWhereParams) !=-1);
+            }
+            else{
+                d("changeContactAnniversary() >> Anniversary_Uri: INSERT");
+                return (getContentResolver().insert(ContactsContract.Data.CONTENT_URI, mValues) != null);
+            }
         }
-        anniversaryCur.close();
-        saveAnniversaryDetails(year, month, date);
-    }
-
-    private void retrieveContactData(){
-        retrieveContactNameAndId();
-        retrieveContactPhoto();
-        retrieveAnniversaryDetails();
-
-        if(dateString == null)
-            setDefaultDate();
-        else{
-            String[] anniversaryInfo = dateString.split(":");
-
-            int year = Integer.valueOf(anniversaryInfo[0]);
-            int month = Integer.valueOf(anniversaryInfo[1]);
-            --month;
-            int day = Integer.parseInt(anniversaryInfo[2],10);
-
-            Date date = new Date(year, month, day);
-            setDateString(date);
+        finally {
+            anniversaryCur.close();
         }
     }
-
 
     //Get the contact Name and Id of the selected contact.
-    private void retrieveContactNameAndId() {
+    private void retrieveContactData() {
 
-        // getting contacts ID
         Cursor cursorID = getContentResolver().query(
             _contactUri,
-            new String[] { _ID, DISPLAY_NAME  },
+            new String[] { _ID, DISPLAY_NAME, PHOTO_THUMBNAIL_URI  },
             null,
             null,
             null
@@ -294,65 +251,12 @@ public class AddAnniversary extends Activity {
         if (cursorID.moveToFirst()) {
             contactID = cursorID.getLong(cursorID.getColumnIndexOrThrow(_ID));
             contactName = cursorID.getString(cursorID.getColumnIndex(DISPLAY_NAME));
+            contactPhotoUri = Uri.parse(cursorID.getString(cursorID.getColumnIndex(PHOTO_THUMBNAIL_URI)));
         }
 
         cursorID.close();
 
-        Log.d(TAG_DEBUG, "Contact ID: " + contactID);
-
-    }
-
-    //Retrieve the Contact photo based on the contactId
-    private void retrieveContactPhoto() {
-
-        try {
-            InputStream inputStream = openContactPhotoInputStream(
-                    getContentResolver(),
-                    ContentUris.withAppendedId(CONTENT_URI, Long.valueOf(contactID))
-            );
-
-            if (inputStream != null) {
-                photo = BitmapFactory.decodeStream(inputStream);
-                ImageView imageView = (ImageView) findViewById(R.id.contactImageView);
-                imageView.setImageBitmap(photo);
-            }
-            else
-                return;
-
-            assert inputStream != null;
-            inputStream.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-    //Retrieve the anniversary based on the contactId
-    private void retrieveAnniversaryDetails()
-    {
-        dateString = null;
-        Cursor anniversaryCur = getContentResolver().query(
-                ContactsContract.Data.CONTENT_URI,
-                new String[] { Event.DATA },
-                ContactsContract.Data.CONTACT_ID + "=" + contactID +
-                        " AND " + Data.MIMETYPE + "= '" + Event.CONTENT_ITEM_TYPE +
-                        "' AND " + Event.TYPE + "=" + Event.TYPE_ANNIVERSARY,
-                null,
-                ContactsContract.Data.DISPLAY_NAME
-        );
-
-        if(anniversaryCur.moveToFirst())
-        {
-            DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
-
-            try {
-                Date mydate = df.parse( anniversaryCur.getString(0));
-                dateString = ANNIVERSARY_FORMATTER.format(mydate);
-
-            } catch (ParseException e) { e.printStackTrace(); }
-
-            anniversaryCur.close();
-        }
+        d("Contact ID: " + contactID);
     }
 
     /** result from >> selectContactButton.setOnClickListener(new View.OnClickListener(){...onClick(){...) **/
@@ -372,6 +276,7 @@ public class AddAnniversary extends Activity {
                     retrieveContactData();
 
                     contactTextView.setText(contactName);
+                    contactImageView.setImageURI(contactPhotoUri);
 
                     showDatePickerDialog();
 
