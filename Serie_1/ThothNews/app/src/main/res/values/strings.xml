@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- AndroidManifest - Activity Name -->
+    <string name="label_app_name">Thoth News</string>
+    <string name="label_activity_new_view">New View Activity</string>
+    <string name="label_activity_preferences">Settings</string>
+
+    <!-- layout: layout_classes_list -->
+    <string name="title_classes_view">Your Classes</string>
+
+    <!-- layout: layout_news_list -->
+    <string name="title_news_view">Your_Classes_News</string>
+
+    <!-- layout: layout_new_view -->
+    <string name="label_news_view">Your Classes News</string>
+
+    <!-- layout: layout_class_item -->
+    <string name="class_item_id">class_item_id</string>
+    <string name="class_item_full_name">class_item_full_name</string>
+    <string name="class_item_teacher">class_item_teacher</string>
+
+    <!-- layout: layout_new_item -->
+    <string name="new_item_when">new_item_when</string>
+    <string name="new_item_title">new_item_title</string>
+    <string name="new_item_class_name">new_item_class_name</string>
+
+    <!-- layout: layout_new_view -->
+    <string name="new_view_when">new_view_when</string>
+    <string name="new_view_title">new_view_title</string>
+    <string name="new_view_content">new_view_content</string>
+
+    <!-- menu: main & new_view -->
+    <string name="title_action_settings">Settings</string>
+    <string name="title_action_delete">Delete All</string>
+
+    <!-- xml: preferences -->
+    <string name="category_title">Multi Select Classes</string>
+    <string name="thoth_classes_title">Thoth Classes</string>
+    <string name="thoth_classes_summary">Select the classes to filter the news</string>
+    <string name="title_activity_classes">Thoth News</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_action_refresh_all">Refresh All</string>
+    <string name="default_prefs_txt">Default Values</string>
+
+</resources>
