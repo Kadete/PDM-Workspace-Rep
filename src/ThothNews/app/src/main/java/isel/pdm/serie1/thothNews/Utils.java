@@ -1,18 +1,10 @@
 package isel.pdm.serie1.thothNews;
 
+import android.text.format.DateFormat;
 import android.util.Log;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -23,7 +15,7 @@ public class Utils {
 
     private static final String TAG_DEBUG = "DEBUG";
 
-    public static final SimpleDateFormat SHOW_DATE_FORMAT = new SimpleDateFormat("EEE dd-MM-yyyy' 'HH:mm");
+    public static final SimpleDateFormat SHOW_DATE_FORMAT = new SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEE dd-MM-yyyy' 'HH:mm"));
     public static final SimpleDateFormat SAVE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
     protected static String readAllFrom(InputStream is){
