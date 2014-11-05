@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="preference_key">
+
+    <intent android:action=".PreferencesActivity"/>
+    <PreferenceCategory
+        android:title="@string/category_title"
+        android:key="first_category">
+
+        <MultiSelectListPreference
+        android:key="multi_select_list_key"
+        android:title="@string/thoth_classes_title"
+        android:summary="@string/thoth_classes_summary"
+        android:defaultValue="@array/empty_array"
+        android:entryValues="@array/empty_array"
+        android:entries="@array/empty_array"
+        />
+
+    </PreferenceCategory>
+</PreferenceScreen>
