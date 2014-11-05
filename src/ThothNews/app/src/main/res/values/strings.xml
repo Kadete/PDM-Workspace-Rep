@@ -43,8 +43,8 @@
     <string name="title_action_refresh_all">Refresh All</string>
     <string name="clean_classes_title">Clear enrollments</string>
     <string name="clean_classes_warning">Carefull!! You will lose all the previous preferences stored!</string>
-    <string name="clean_clasess_ok">Ok</string>
-    <string name="clean_classes_cancel">Not Now</string>
+    <string name="clean_clasess_ok" translatable="false">OK</string>
+    <string name="clean_classes_cancel">Cancel</string>
     <string name="clean_classes_toast">Preferences set to default!</string>
 
 </resources>
