@@ -211,7 +211,7 @@ public class AddAnniversary extends Activity {
         String anniQueryWhere = ContactsContract.Data.MIMETYPE + " = ? AND "+ Event.RAW_CONTACT_ID + " = ? AND "+ Event.TYPE  + " = ?";
         String[] anniQueryWhereParams = new String[]{Event.CONTENT_ITEM_TYPE, String.valueOf(rawContactID), String.valueOf(Event.TYPE_ANNIVERSARY)};
 
-        ContentResolver cr = getContentResolver();
+
         Cursor anniversaryCur = getContentResolver().query(
                 ContactsContract.Data.CONTENT_URI,
                 new String[] { Event.START_DATE },
@@ -220,6 +220,7 @@ public class AddAnniversary extends Activity {
                 null
         );
 
+        ContentResolver cr = getContentResolver();
         try{
             if(anniversaryCur.moveToFirst())
             {
@@ -228,7 +229,7 @@ public class AddAnniversary extends Activity {
             }
             else{
                 d("changeContactAnniversary() >> Anniversary_Uri: INSERT");
-                return (getContentResolver().insert(ContactsContract.Data.CONTENT_URI, mValues) != null);
+                return (cr.insert(ContactsContract.Data.CONTENT_URI, mValues) != null);
             }
         }
         finally {
