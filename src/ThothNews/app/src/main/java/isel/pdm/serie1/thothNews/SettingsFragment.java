@@ -2,6 +2,7 @@ package isel.pdm.serie1.thothNews;
 
 import android.os.Bundle;
 import android.preference.MultiSelectListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 
@@ -42,6 +43,16 @@ public class SettingsFragment extends PreferenceFragment {
 
         };
         c.execute();
+        Preference p = findPreference("reset_classes");
+        p.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AlertDialogFragment dFragment = new AlertDialogFragment();
+                dFragment.show(getFragmentManager(), "Dialog Fragment");
+                return true;
+            }
+        });
     }
 
 

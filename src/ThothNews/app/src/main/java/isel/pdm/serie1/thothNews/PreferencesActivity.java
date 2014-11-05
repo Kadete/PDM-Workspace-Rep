@@ -28,11 +28,6 @@ public class PreferencesActivity extends PreferenceActivity {
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_prefs, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -41,10 +36,6 @@ public class PreferencesActivity extends PreferenceActivity {
 
             case android.R.id.home:
                 onBackPressed();
-                return true;
-            case R.id.default_prefs:
-                AlertDialogFragment dFragment = new AlertDialogFragment();
-                dFragment.show(getFragmentManager(), "Dialog Fragment");
                 return true;
         }
 

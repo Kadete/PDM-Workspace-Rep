@@ -16,6 +16,7 @@
         android:entryValues="@array/empty_array"
         android:entries="@array/empty_array"
         />
-
+        <Preference android:title="@string/clean_classes_title"
+            android:key="reset_classes"/>
     </PreferenceCategory>
 </PreferenceScreen>

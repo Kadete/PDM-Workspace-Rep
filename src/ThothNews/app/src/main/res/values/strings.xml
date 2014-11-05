@@ -43,5 +43,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_action_refresh_all">Refresh All</string>
     <string name="default_prefs_txt">Default Values</string>
+    <string name="clean_classes_title">Clear enrollments</string>
 
 </resources>
