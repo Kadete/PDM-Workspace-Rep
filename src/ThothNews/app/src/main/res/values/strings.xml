@@ -10,20 +10,20 @@
     <string name="title_classes_view">Your Classes</string>
 
     <!-- layout: layout_news_list -->
-    <string name="title_news_view">Your_Classes_News</string>
+    <string name="title_news_view" translatable="false">Your_Classes_News</string>
 
     <!-- layout: layout_new_view -->
     <string name="label_news_view">Your Classes News</string>
 
     <!-- layout: layout_class_item -->
-    <string name="class_item_id">class_item_id</string>
-    <string name="class_item_full_name">class_item_full_name</string>
-    <string name="class_item_teacher">class_item_teacher</string>
+    <string name="class_item_id" translatable="false">class_item_id</string>
+    <string name="class_item_full_name" translatable="false">class_item_full_name</string>
+    <string name="class_item_teacher" translatable="false">class_item_teacher</string>
 
     <!-- layout: layout_new_item -->
-    <string name="new_item_when">new_item_when</string>
-    <string name="new_item_title">new_item_title</string>
-    <string name="new_item_class_name">new_item_class_name</string>
+    <string name="new_item_when" translatable="false">new_item_when</string>
+    <string name="new_item_title" translatable="false">new_item_title</string>
+    <string name="new_item_class_name" translatable="false">new_item_class_name</string>
 
     <!-- layout: layout_new_view -->
     <string name="new_view_when"></string>
@@ -32,17 +32,15 @@
 
     <!-- menu: main & new_view -->
     <string name="title_action_settings">Settings</string>
-    <string name="title_action_delete">Delete All</string>
 
     <!-- xml: preferences -->
-    <string name="category_title">Multi Select Classes</string>
-    <string name="thoth_classes_title">Thoth Classes</string>
+    <string name="category_title">Classes</string>
+    <string name="thoth_classes_title">Classes List</string>
     <string name="thoth_classes_summary">Select the classes to filter the news</string>
-    <string name="title_activity_classes">Thoth News</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_classes" translatable="false">Thoth News</string>
+    <string name="hello_world" translatable="false">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_action_refresh_all">Refresh All</string>
-    <string name="default_prefs_txt">Default Values</string>
     <string name="clean_classes_title">Clear enrollments</string>
     <string name="clean_classes_warning">Carefull!! You will lose all the previous preferences stored!</string>
     <string name="clean_clasess_ok">Ok</string>
