@@ -19,7 +19,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 
-import isel.pdm.serie1.thothNews.ExtractorSingleNew;
 import isel.pdm.serie1.thothNews.R;
 import isel.pdm.serie1.thothNews.model.LinksClass;
 import isel.pdm.serie1.thothNews.model.ThothClassNew;

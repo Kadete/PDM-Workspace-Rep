@@ -22,7 +22,7 @@ import static isel.pdm.serie1.thothNews.model.ThothClassNewListItem.Status;
 
 public class NewsListAdapter extends ArrayAdapter<ThothClassNewListItem> {
 
-    static protected final String TAG_SELECT_NEW_ID = "New-Selected-ID";
+    public static final String TAG_SELECT_NEW_ID = "New-Selected-ID";
 
     Context context;
 

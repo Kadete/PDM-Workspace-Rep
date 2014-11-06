@@ -32,9 +32,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 
-import isel.pdm.serie1.thothNews.ExtractorMultipleNews;
-import isel.pdm.serie1.thothNews.adapters.NewsListAdapter;
 import isel.pdm.serie1.thothNews.R;
+import isel.pdm.serie1.thothNews.adapters.NewsListAdapter;
 import isel.pdm.serie1.thothNews.model.ThothClassNewListItem;
 import isel.pdm.serie1.thothNews.utils.Utils;
 

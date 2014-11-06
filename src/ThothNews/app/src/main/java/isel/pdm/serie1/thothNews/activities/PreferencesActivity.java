@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import java.util.Set;
 
+import isel.pdm.serie1.thothNews.fragments.SettingsFragment;
+
 public class PreferencesActivity extends PreferenceActivity {
 
     @Override

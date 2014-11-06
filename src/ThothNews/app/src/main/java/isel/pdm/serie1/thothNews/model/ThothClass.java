@@ -32,7 +32,7 @@ public class ThothClass {
         this._teacher = _teacher;
     }
 
-    ThothClass(int id, String name, String teacher){
+    public ThothClass(int id, String name, String teacher){
         _id = id;
         _fullname = name;
         _teacher = teacher;

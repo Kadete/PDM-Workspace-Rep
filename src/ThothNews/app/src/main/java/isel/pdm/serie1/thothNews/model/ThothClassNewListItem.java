@@ -28,7 +28,7 @@ public class ThothClassNewListItem {
         _status = status;
     }
 
-    ThothClassNewListItem(int id, String title, Date when, String self){
+    public ThothClassNewListItem(int id, String title, Date when, String self){
         _id = id;
         _title = title;
         _when = when;

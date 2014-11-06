@@ -18,8 +18,8 @@ import isel.pdm.serie1.thothNews.model.ThothClass;
 public class ClassesListAdapter extends ArrayAdapter<ThothClass> {
 
 
-    static protected final String TAG_SELECT_CLASS_ID = "Class-Selected-ID";
-    static protected final String TAG_SELECT_CLASS_NAME = "Class-Selected-Name";
+    public static final String TAG_SELECT_CLASS_ID = "Class-Selected-ID";
+    public static final String TAG_SELECT_CLASS_NAME = "Class-Selected-Name";
     Context context;
 
     public ClassesListAdapter(Context context, int layout, List<ThothClass> listData) {
