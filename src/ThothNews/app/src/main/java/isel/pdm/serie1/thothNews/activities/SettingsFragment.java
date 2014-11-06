@@ -21,9 +21,7 @@ import isel.pdm.serie1.thothNews.model.ThothClass;
 
 import static isel.pdm.serie1.thothNews.utils.Utils.readAllFrom;
 
-/**
- * Created by Kadete on 14/10/2014.
- */
+
 public class SettingsFragment extends PreferenceFragment {
 
 

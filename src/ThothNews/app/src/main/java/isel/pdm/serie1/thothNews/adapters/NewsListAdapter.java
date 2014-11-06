@@ -19,9 +19,6 @@ import isel.pdm.serie1.thothNews.model.ThothClassNewListItem;
 
 import static isel.pdm.serie1.thothNews.model.ThothClassNewListItem.Status;
 
-/**
- * Created by Kadete on 15/10/2014.
- */
 
 public class NewsListAdapter extends ArrayAdapter<ThothClassNewListItem> {
 

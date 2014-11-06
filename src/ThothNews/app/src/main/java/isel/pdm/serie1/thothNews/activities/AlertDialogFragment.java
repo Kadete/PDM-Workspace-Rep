@@ -11,9 +11,6 @@ import android.widget.Toast;
 
 import isel.pdm.serie1.thothNews.R;
 
-/**
- * Created by Kadete on 02/11/2014.
- */
 public class AlertDialogFragment extends DialogFragment {
 
     @Override

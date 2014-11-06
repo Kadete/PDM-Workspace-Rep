@@ -1,7 +1,5 @@
 package isel.pdm.serie1.thothNews.activities;
-/**
- * Created by Kadete on 08/10/2014.
- */
+
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;

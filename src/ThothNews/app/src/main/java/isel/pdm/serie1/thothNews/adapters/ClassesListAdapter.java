@@ -15,9 +15,6 @@ import isel.pdm.serie1.thothNews.R;
 import isel.pdm.serie1.thothNews.activities.NewsActivity;
 import isel.pdm.serie1.thothNews.model.ThothClass;
 
-/**
- * Created by Kadete on 28/10/2014.
- */
 public class ClassesListAdapter extends ArrayAdapter<ThothClass> {
 
 

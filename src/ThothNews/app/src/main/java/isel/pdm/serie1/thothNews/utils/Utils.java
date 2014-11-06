@@ -8,9 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Scanner;
 
-/**
- * Created by Kadete on 15/10/2014.
- */
 public class Utils {
 
     public static final String TAG_DEBUG = "DEBUG";
