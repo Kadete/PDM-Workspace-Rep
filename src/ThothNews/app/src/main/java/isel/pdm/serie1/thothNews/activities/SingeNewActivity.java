@@ -1,15 +1,31 @@
-package isel.pdm.serie1.thothNews;
+package isel.pdm.serie1.thothNews.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import static isel.pdm.serie1.thothNews.NewsListAdapter.*;
-import static isel.pdm.serie1.thothNews.Utils.*;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.ParseException;
+
+import isel.pdm.serie1.thothNews.ExtractorSingleNew;
+import isel.pdm.serie1.thothNews.R;
+import isel.pdm.serie1.thothNews.model.LinksClass;
+import isel.pdm.serie1.thothNews.model.ThothClassNew;
+
+import static isel.pdm.serie1.thothNews.adapters.NewsListAdapter.*;
+import static isel.pdm.serie1.thothNews.utils.Utils.*;
 
 
 public class SingeNewActivity extends Activity {
@@ -106,6 +122,58 @@ public class SingeNewActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+}
+
+class ExtractorSingleNew extends AsyncTask<String,Void,ThothClassNew> {
+
+    String urlString = "http://thoth.cc.e.ipl.pt/api/v1/newsitems/";
+
+    @Override
+    protected ThothClassNew doInBackground(String... arg0) {
+        try{
+
+            URL url = new URL(urlString + arg0[0]);
+            HttpURLConnection c = (HttpURLConnection)url.openConnection();
+
+            try{
+                InputStream is = c.getInputStream();
+                String data = readAllFrom(is);
+                return parseFrom(data);
+
+            } finally{
+                c.disconnect();
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private ThothClassNew parseFrom(String s) throws ParseException {
+
+        JSONObject root;
+        ThothClassNew _new = new ThothClassNew();
+        try {
+            root = new JSONObject(s);
+            _new.id = root.getInt("id");
+            _new.title = root.getString("title");
+            _new.when = SAVE_DATE_FORMAT.parse(root.getString("when"));
+            _new.content = String.valueOf(Html.fromHtml(root.getString("content")));
+            _new._links = new LinksClass();
+
+            JSONObject links = root.getJSONObject("_links");
+            _new._links.self = links.getString("self");
+            _new._links.classNewsItems = links.getString("classNewsItems");
+            _new._links.clazz = links.getString("class");
+            _new._links.root = links.getString("root");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return _new;
     }
 
 }

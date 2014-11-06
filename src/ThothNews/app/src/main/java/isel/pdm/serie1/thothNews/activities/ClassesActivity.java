@@ -1,8 +1,9 @@
-package isel.pdm.serie1.thothNews;
+package isel.pdm.serie1.thothNews.activities;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -10,11 +11,25 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import static isel.pdm.serie1.thothNews.Utils.d;
+import isel.pdm.serie1.thothNews.adapters.ClassesListAdapter;
+import isel.pdm.serie1.thothNews.R;
+import isel.pdm.serie1.thothNews.model.ThothClass;
+
+import static isel.pdm.serie1.thothNews.utils.Utils.d;
+import static isel.pdm.serie1.thothNews.utils.Utils.readAllFrom;
 
 public class ClassesActivity extends Activity {
 
@@ -105,4 +120,51 @@ public class ClassesActivity extends Activity {
         }.execute(classesIDSelected);
     }
 
+}
+
+class ExtractorClasses extends AsyncTask<Set<String>, Void, List<ThothClass>> {
+
+    @Override
+    protected List<ThothClass> doInBackground(Set<String>... sets) {
+
+        try {
+            List<ThothClass> newItems = new LinkedList<ThothClass>();
+            URL url;
+
+            if(sets[0] == null){
+                return null;
+            }
+
+
+            Iterator it = sets[0].iterator();
+            while(it.hasNext()){
+
+                url = new URL("http://thoth.cc.e.ipl.pt/api/v1/classes/" + it.next());
+                HttpURLConnection c = (HttpURLConnection) url.openConnection();
+                try {
+                    InputStream is = c.getInputStream();
+                    String data = readAllFrom(is);
+                    newItems.add(parseFrom(data));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return null;
+                } finally {
+                    c.disconnect();
+                }
+            }
+            return newItems;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+    private ThothClass parseFrom(String s) throws JSONException {
+        JSONObject root = new JSONObject(s);
+
+        return new ThothClass(
+                root.getInt("id"),
+                root.getString("fullName"),
+                root.getString("mainTeacherShortName")
+        );
+    }
 }

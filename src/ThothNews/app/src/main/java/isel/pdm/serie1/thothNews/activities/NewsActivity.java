@@ -1,8 +1,9 @@
-package isel.pdm.serie1.thothNews;
+package isel.pdm.serie1.thothNews.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,24 +11,39 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 
-import static isel.pdm.serie1.thothNews.ClassesListAdapter.TAG_SELECT_CLASS_ID;
-import static isel.pdm.serie1.thothNews.ClassesListAdapter.TAG_SELECT_CLASS_NAME;
-import static isel.pdm.serie1.thothNews.ThothClassNewListItem.Status;
-import static isel.pdm.serie1.thothNews.Utils.d;
+import isel.pdm.serie1.thothNews.ExtractorMultipleNews;
+import isel.pdm.serie1.thothNews.adapters.NewsListAdapter;
+import isel.pdm.serie1.thothNews.R;
+import isel.pdm.serie1.thothNews.model.ThothClassNewListItem;
+import isel.pdm.serie1.thothNews.utils.Utils;
+
+import static isel.pdm.serie1.thothNews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_ID;
+import static isel.pdm.serie1.thothNews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_NAME;
+import static isel.pdm.serie1.thothNews.model.ThothClassNewListItem.Status;
+import static isel.pdm.serie1.thothNews.utils.Utils.SAVE_DATE_FORMAT;
+import static isel.pdm.serie1.thothNews.utils.Utils.d;
+import static isel.pdm.serie1.thothNews.utils.Utils.readAllFrom;
 
 public class NewsActivity extends Activity {
 
@@ -271,4 +287,63 @@ public class NewsActivity extends Activity {
         }
     }
 
+}
+
+class ExtractorMultipleNews extends AsyncTask<String, Void, ArrayList<ThothClassNewListItem>> {
+
+    final static String urlString = "http://thoth.cc.e.ipl.pt/api/v1/classes/";
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+    }
+
+    @Override
+    protected ArrayList<ThothClassNewListItem> doInBackground(String ... classId) {
+        try {
+
+            ArrayList<ThothClassNewListItem> newItems = new ArrayList<ThothClassNewListItem>();
+
+            URL url = new URL(urlString + classId[0] + "/newsitems");
+            HttpURLConnection c = (HttpURLConnection) url.openConnection();
+            try {
+                InputStream is = c.getInputStream();
+                String data = readAllFrom(is);
+
+                for(ThothClassNewListItem newItem : parseFrom(data))
+                    newItems.add(newItem);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return null;
+            } finally {
+                c.disconnect();
+            }
+
+            return newItems;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private ArrayList<ThothClassNewListItem> parseFrom(String s) throws JSONException, ParseException {
+        JSONObject root = new JSONObject(s);
+        JSONArray jnews = root.getJSONArray("newsItems");
+        ArrayList<ThothClassNewListItem> news = new ArrayList<ThothClassNewListItem>(jnews.length());
+        for (int i = 0; i < jnews.length(); ++i) {
+
+            JSONObject jnew = jnews.getJSONObject(i);
+
+            int id = jnew.getInt("id");
+            String title = jnew.getString("title");
+            Date when = SAVE_DATE_FORMAT.parse(jnew.getString("when"));
+            String self = jnew.getJSONObject("_links").getString("self");
+
+            news.add(new ThothClassNewListItem(id, title, when, self));
+        }
+        return news;
+    }
 }

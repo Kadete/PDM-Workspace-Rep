@@ -1,4 +1,4 @@
-package isel.pdm.serie1.thothNews;
+package isel.pdm.serie1.thothNews.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,13 +13,17 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import static isel.pdm.serie1.thothNews.ThothClassNewListItem.Status;
+import isel.pdm.serie1.thothNews.R;
+import isel.pdm.serie1.thothNews.activities.SingeNewActivity;
+import isel.pdm.serie1.thothNews.model.ThothClassNewListItem;
+
+import static isel.pdm.serie1.thothNews.model.ThothClassNewListItem.Status;
 
 /**
  * Created by Kadete on 15/10/2014.
  */
 
-class NewsListAdapter extends ArrayAdapter<ThothClassNewListItem> {
+public class NewsListAdapter extends ArrayAdapter<ThothClassNewListItem> {
 
     static protected final String TAG_SELECT_NEW_ID = "New-Selected-ID";
 

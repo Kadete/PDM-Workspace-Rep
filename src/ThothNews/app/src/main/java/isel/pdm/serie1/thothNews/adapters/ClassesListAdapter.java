@@ -1,4 +1,4 @@
-package isel.pdm.serie1.thothNews;
+package isel.pdm.serie1.thothNews.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.List;
+
+import isel.pdm.serie1.thothNews.R;
+import isel.pdm.serie1.thothNews.activities.NewsActivity;
+import isel.pdm.serie1.thothNews.model.ThothClass;
 
 /**
  * Created by Kadete on 28/10/2014.

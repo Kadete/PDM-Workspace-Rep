@@ -17,7 +17,7 @@
         android:label="@string/label_app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ClassesActivity"
+            android:name=".activities.ClassesActivity"
             android:label="@string/title_activity_classes" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,9 +27,9 @@
         </activity>
 
         <activity
-            android:name=".NewsActivity"
+            android:name=".activities.NewsActivity"
             android:label="@string/label_app_name"
-            android:parentActivityName=".ClassesActivity" >
+            android:parentActivityName=".activities.ClassesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ClassesActivity" />
@@ -42,9 +42,9 @@
 
         </activity>
         <activity
-            android:name=".PreferencesActivity"
+            android:name=".activities.PreferencesActivity"
             android:label="@string/label_activity_preferences"
-            android:parentActivityName=".ClassesActivity" >
+            android:parentActivityName=".activities.ClassesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -56,9 +56,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SingeNewActivity"
+            android:name=".activities.SingeNewActivity"
             android:label="@string/label_activity_new_view"
-            android:parentActivityName=".ClassesActivity" >
+            android:parentActivityName=".activities.ClassesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

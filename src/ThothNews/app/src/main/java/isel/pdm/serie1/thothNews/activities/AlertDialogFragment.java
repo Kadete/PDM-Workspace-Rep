@@ -1,4 +1,4 @@
-package isel.pdm.serie1.thothNews;
+package isel.pdm.serie1.thothNews.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
+
+import isel.pdm.serie1.thothNews.R;
 
 /**
  * Created by Kadete on 02/11/2014.

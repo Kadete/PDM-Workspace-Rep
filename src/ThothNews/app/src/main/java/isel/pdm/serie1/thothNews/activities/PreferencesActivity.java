@@ -1,16 +1,14 @@
-package isel.pdm.serie1.thothNews;
+package isel.pdm.serie1.thothNews.activities;
 /**
  * Created by Kadete on 08/10/2014.
  */
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
