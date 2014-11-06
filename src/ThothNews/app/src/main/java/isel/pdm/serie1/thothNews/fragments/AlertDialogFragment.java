@@ -1,4 +1,4 @@
-package isel.pdm.serie1.thothNews.activities;
+package isel.pdm.serie1.thothNews.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
