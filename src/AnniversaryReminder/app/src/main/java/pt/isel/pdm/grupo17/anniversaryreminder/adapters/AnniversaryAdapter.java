@@ -17,6 +17,7 @@ import java.util.List;
 
 import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
 import pt.isel.pdm.grupo17.anniversaryreminder.R;
+import pt.isel.pdm.grupo17.anniversaryreminder.utils.DateUtils;
 
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
 
@@ -93,7 +94,7 @@ public class AnniversaryAdapter extends BaseAdapter {
         nameView.setText(anniversaryItem.getName());
 
         final TextView dateView = (TextView) itemLayout.findViewById(R.id.dateView);
-        dateView.setText(SHOW_DATE_FORMATTER.format(anniversaryItem.getDate()));
+        dateView.setText(DateUtils.SHOW_DATE_FORMATTER.format(anniversaryItem.getDate()));
 
         final ImageView imageView = (ImageView) itemLayout.findViewById(R.id.photoImageView);
         if(anniversaryItem.getThumbnailUri() != null)

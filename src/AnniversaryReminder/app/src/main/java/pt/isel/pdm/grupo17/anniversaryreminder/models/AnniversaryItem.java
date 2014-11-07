@@ -5,6 +5,8 @@ import android.net.Uri;
 import java.util.Calendar;
 import java.util.Date;
 
+import pt.isel.pdm.grupo17.anniversaryreminder.utils.DateUtils;
+
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
 
 
@@ -41,10 +43,10 @@ public class AnniversaryItem {
     }
 
     public String toString() {
-        return mName + ITEM_SEP + SHOW_DATE_FORMATTER.format(mDate);
+        return mName + ITEM_SEP + DateUtils.SHOW_DATE_FORMATTER.format(mDate);
     }
     public String toLog() {
-        return "Title: " + mName + ITEM_SEP + "Date: " + SHOW_DATE_FORMATTER.format(mDate) + ITEM_SEP + thumbnailUri;
+        return "Title: " + mName + ITEM_SEP + "Date: " + DateUtils.SHOW_DATE_FORMATTER.format(mDate) + ITEM_SEP + thumbnailUri;
     }
 
 

@@ -27,6 +27,7 @@ import java.util.Date;
 import android.provider.ContactsContract.Contacts.Data;
 
 import pt.isel.pdm.grupo17.anniversaryreminder.R;
+import pt.isel.pdm.grupo17.anniversaryreminder.utils.DateUtils;
 
 import static android.provider.ContactsContract.Contacts.*;
 import static android.provider.ContactsContract.CommonDataKinds.*;
@@ -36,6 +37,9 @@ import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
 public class AddAnniversaryActivity extends Activity {
 
     private static final int REQUEST_CODE_PICK_CONTACT = 0;
+    private static final int YEAR_POS = 0;
+    private static final int MONTH_POS = 1;
+    private static final int DAY_POS = 2;
 
     private static ImageView contactImageView;
     private static TextView dateView, contactTextView;
@@ -145,7 +149,7 @@ public class AddAnniversaryActivity extends Activity {
     }
 
     private static void setDateString(Date date) {
-        dateString = SHOW_DATE_FORMATTER.format(
+        dateString = DateUtils.SHOW_DATE_FORMATTER.format(
                 (date == null) ? mCalendar.getTime() : date
         );
         dateView.setText(dateString);
@@ -179,13 +183,13 @@ public class AddAnniversaryActivity extends Activity {
     }
 
     private void setValues() {
-        dateString = SAVE_DATE_FORMATTER.format(mCalendar.getTime());
-        String[] anniversaryInfo = dateString.split(":");
+        dateString = DateUtils.SAVE_DATE_FORMATTER.format(mCalendar.getTime());
+        int[] anniversaryInfo = DateUtils.parseDateFromString(dateString,":");
 
         Calendar cc= Calendar.getInstance();
-        cc.set(Integer.valueOf(anniversaryInfo[0]),
-                Integer.valueOf(anniversaryInfo[1])-1,
-                Integer.parseInt(anniversaryInfo[2],10));
+        cc.set(anniversaryInfo[YEAR_POS],
+                DateUtils.getCalendarMonth(anniversaryInfo[MONTH_POS]),
+                anniversaryInfo[DAY_POS]);
 
         DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
         String anniversaryDate = df.format(cc.getTime());
