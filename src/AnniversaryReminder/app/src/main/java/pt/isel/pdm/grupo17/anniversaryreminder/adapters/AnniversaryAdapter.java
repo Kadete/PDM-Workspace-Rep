@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import pt.isel.pdm.grupo17.anniversaryreminder.model.AnniversaryItem;
+import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
 import pt.isel.pdm.grupo17.anniversaryreminder.R;
 
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;

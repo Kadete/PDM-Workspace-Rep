@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.TimeZone;
 
 import pt.isel.pdm.grupo17.anniversaryreminder.adapters.AnniversaryAdapter;
-import pt.isel.pdm.grupo17.anniversaryreminder.model.AnniversaryItem;
+import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
 import pt.isel.pdm.grupo17.anniversaryreminder.R;
 
 import static android.provider.ContactsContract.CommonDataKinds.Event;
 import static android.provider.ContactsContract.Contacts;
-import static pt.isel.pdm.grupo17.anniversaryreminder.model.AnniversaryItem.ITEM_SEP;
+import static pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem.ITEM_SEP;
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
 
 

@@ -1,4 +1,4 @@
-package pt.isel.pdm.grupo17.anniversaryreminder.model;
+package pt.isel.pdm.grupo17.anniversaryreminder.models;
 
 import android.net.Uri;
 
