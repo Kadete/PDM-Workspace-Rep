@@ -1,16 +1,13 @@
-package isel.pdm.serie1.anniversaryreminder;
+package pt.isel.pdm.grupo17.anniversaryreminder;
 
 import android.net.Uri;
-import android.text.format.DateUtils;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import static isel.pdm.serie1.anniversaryreminder.Utils.*;
+import static pt.isel.pdm.grupo17.anniversaryreminder.Utils.*;
 
-/**
- * Created by Kadete on 21/10/2014.
- */
+
 public class AnniversaryItem {
 
     public static final String ITEM_SEP = System.getProperty("line.separator");

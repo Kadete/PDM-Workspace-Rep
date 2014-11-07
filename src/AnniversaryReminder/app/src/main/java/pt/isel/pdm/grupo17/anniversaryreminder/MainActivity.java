@@ -1,10 +1,9 @@
-package isel.pdm.serie1.anniversaryreminder;
+package pt.isel.pdm.grupo17.anniversaryreminder;
 
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,8 +25,8 @@ import java.util.TimeZone;
 
 import static android.provider.ContactsContract.CommonDataKinds.Event;
 import static android.provider.ContactsContract.Contacts;
-import static isel.pdm.serie1.anniversaryreminder.AnniversaryItem.ITEM_SEP;
-import static isel.pdm.serie1.anniversaryreminder.Utils.d;
+import static pt.isel.pdm.grupo17.anniversaryreminder.AnniversaryItem.ITEM_SEP;
+import static pt.isel.pdm.grupo17.anniversaryreminder.Utils.d;
 
 
 public class MainActivity extends ListActivity {

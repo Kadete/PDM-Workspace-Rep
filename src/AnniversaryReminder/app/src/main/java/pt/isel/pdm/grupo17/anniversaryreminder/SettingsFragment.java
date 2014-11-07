@@ -1,12 +1,10 @@
-package isel.pdm.serie1.anniversaryreminder;
+package pt.isel.pdm.grupo17.anniversaryreminder;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
 
-/**
-* Created by Kadete on 14/10/2014.
-*/
+
 public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -1,4 +1,4 @@
-package isel.pdm.serie1.birthdayreminder;
+package pt.isel.pdm.grupo17.anniversaryreminder;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

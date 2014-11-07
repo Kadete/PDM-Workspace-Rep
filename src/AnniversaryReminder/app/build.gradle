@@ -4,7 +4,7 @@ android {
     compileSdkVersion 20
     buildToolsVersion '21.1.0'
     defaultConfig {
-        applicationId "isel.pdm.serie1.birthdayreminder"
+        applicationId "pt.isel.pdm.grupo17.anniversaryreminder"
         minSdkVersion 18
         targetSdkVersion 20
         versionCode 1

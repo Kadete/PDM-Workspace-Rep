@@ -1,16 +1,13 @@
-package isel.pdm.serie1.anniversaryreminder;
-/**
-* Created by Kadete on 08/10/2014.
-*/
+package pt.isel.pdm.grupo17.anniversaryreminder;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.util.Log;
 import android.view.MenuItem;
 
-import static isel.pdm.serie1.anniversaryreminder.Utils.*;
+import static pt.isel.pdm.grupo17.anniversaryreminder.Utils.*;
 
 public class PreferencesActivity extends PreferenceActivity {
 
