@@ -1,11 +1,11 @@
-package pt.isel.pdm.grupo17.anniversaryreminder;
+package pt.isel.pdm.grupo17.anniversaryreminder.model;
 
 import android.net.Uri;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import static pt.isel.pdm.grupo17.anniversaryreminder.Utils.*;
+import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
 
 
 public class AnniversaryItem {

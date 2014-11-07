@@ -1,4 +1,4 @@
-package pt.isel.pdm.grupo17.anniversaryreminder;
+package pt.isel.pdm.grupo17.anniversaryreminder.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 
-import static pt.isel.pdm.grupo17.anniversaryreminder.Utils.*;
+import pt.isel.pdm.grupo17.anniversaryreminder.fragments.SettingsFragment;
+
+import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
 
 public class PreferencesActivity extends PreferenceActivity {
 

@@ -1,4 +1,4 @@
-package pt.isel.pdm.grupo17.anniversaryreminder;
+package pt.isel.pdm.grupo17.anniversaryreminder.activities;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -26,12 +26,14 @@ import java.util.Date;
 
 import android.provider.ContactsContract.Contacts.Data;
 
+import pt.isel.pdm.grupo17.anniversaryreminder.R;
+
 import static android.provider.ContactsContract.Contacts.*;
 import static android.provider.ContactsContract.CommonDataKinds.*;
-import static pt.isel.pdm.grupo17.anniversaryreminder.Utils.*;
+import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
 
 
-public class AddAnniversary extends Activity {
+public class AddAnniversaryActivity extends Activity {
 
     private static final int REQUEST_CODE_PICK_CONTACT = 0;
 

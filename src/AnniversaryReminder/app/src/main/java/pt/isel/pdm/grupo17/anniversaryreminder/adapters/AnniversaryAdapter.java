@@ -1,4 +1,4 @@
-package pt.isel.pdm.grupo17.anniversaryreminder;
+package pt.isel.pdm.grupo17.anniversaryreminder.adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -15,7 +15,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static pt.isel.pdm.grupo17.anniversaryreminder.Utils.*;
+import pt.isel.pdm.grupo17.anniversaryreminder.model.AnniversaryItem;
+import pt.isel.pdm.grupo17.anniversaryreminder.R;
+
+import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
 
 public class AnniversaryAdapter extends BaseAdapter {
 

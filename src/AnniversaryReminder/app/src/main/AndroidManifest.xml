@@ -16,7 +16,7 @@
         android:icon="@drawable/ic_birthday_hat"
         android:label="@string/app_name" >
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,13 +25,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddAnniversary"
+            android:name=".activities.AddAnniversaryActivity"
             android:label="@string/title_activity_add_anniversary" >
         </activity>
         <activity
-            android:name=".PreferencesActivity"
+            android:name=".activities.PreferencesActivity"
             android:label="@string/label_activity_preferences"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>

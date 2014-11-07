@@ -1,4 +1,4 @@
-package pt.isel.pdm.grupo17.anniversaryreminder;
+package pt.isel.pdm.grupo17.anniversaryreminder.activities;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -23,10 +23,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 
+import pt.isel.pdm.grupo17.anniversaryreminder.adapters.AnniversaryAdapter;
+import pt.isel.pdm.grupo17.anniversaryreminder.model.AnniversaryItem;
+import pt.isel.pdm.grupo17.anniversaryreminder.R;
+
 import static android.provider.ContactsContract.CommonDataKinds.Event;
 import static android.provider.ContactsContract.Contacts;
-import static pt.isel.pdm.grupo17.anniversaryreminder.AnniversaryItem.ITEM_SEP;
-import static pt.isel.pdm.grupo17.anniversaryreminder.Utils.d;
+import static pt.isel.pdm.grupo17.anniversaryreminder.model.AnniversaryItem.ITEM_SEP;
+import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
 
 
 public class MainActivity extends ListActivity {
@@ -71,7 +75,7 @@ public class MainActivity extends ListActivity {
 
                 d("Entered footerView.OnClickListener.onClick()");
 
-                Intent i = new Intent(MainActivity.this, AddAnniversary.class);
+                Intent i = new Intent(MainActivity.this, AddAnniversaryActivity.class);
                 startActivityForResult(i, ADD_ANNIVERSARY_ITEM_REQUEST);
             }
         });
