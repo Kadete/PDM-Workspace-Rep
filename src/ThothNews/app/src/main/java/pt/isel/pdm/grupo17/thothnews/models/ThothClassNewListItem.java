@@ -2,7 +2,7 @@ package pt.isel.pdm.grupo17.thothnews.models;
 
 import java.util.Date;
 
-import pt.isel.pdm.grupo17.thothnews.utils.Utils;
+import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.models.ThothClassNewListItem.Status.NOTREAD;
 
@@ -51,7 +51,7 @@ public class ThothClassNewListItem {
         return _when;
     }
     public String getFormattedWhen() {
-        return Utils.SHOW_DATE_FORMAT.format(_when);
+        return DateUtils.SHOW_DATE_FORMAT.format(_when);
     }
 
     public Status getStatus() {
@@ -69,7 +69,7 @@ public class ThothClassNewListItem {
     }
 
     public String toString() {
-        return _id + ITEM_SEP + _title + ITEM_SEP + Utils.SAVE_DATE_FORMAT.format(_when) + ITEM_SEP + _status;
+        return _id + ITEM_SEP + _title + ITEM_SEP + DateUtils.SAVE_DATE_FORMAT.format(_when) + ITEM_SEP + _status;
     }
 
     public String toLog() {

@@ -22,10 +22,11 @@ import java.text.ParseException;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.models.LinksClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClassNew;
+import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.adapters.NewsListAdapter.*;
-import static pt.isel.pdm.grupo17.thothnews.utils.Utils.*;
-
+import static pt.isel.pdm.grupo17.thothnews.utils.Utils.d;
+import static pt.isel.pdm.grupo17.thothnews.utils.Utils.readAllFrom;
 
 public class SingeNewActivity extends Activity {
 
@@ -160,7 +161,7 @@ class ExtractorSingleNew extends AsyncTask<String,Void,ThothClassNew> {
             root = new JSONObject(s);
             _new.id = root.getInt("id");
             _new.title = root.getString("title");
-            _new.when = SAVE_DATE_FORMAT.parse(root.getString("when"));
+            _new.when = DateUtils.SAVE_DATE_FORMAT.parse(root.getString("when"));
             _new.content = String.valueOf(Html.fromHtml(root.getString("content")));
             _new._links = new LinksClass();
 

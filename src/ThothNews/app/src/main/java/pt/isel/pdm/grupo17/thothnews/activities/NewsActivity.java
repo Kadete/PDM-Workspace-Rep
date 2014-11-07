@@ -35,12 +35,11 @@ import java.util.Date;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.adapters.NewsListAdapter;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClassNewListItem;
-import pt.isel.pdm.grupo17.thothnews.utils.Utils;
+import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_ID;
 import static pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_NAME;
 import static pt.isel.pdm.grupo17.thothnews.models.ThothClassNewListItem.Status;
-import static pt.isel.pdm.grupo17.thothnews.utils.Utils.SAVE_DATE_FORMAT;
 import static pt.isel.pdm.grupo17.thothnews.utils.Utils.d;
 import static pt.isel.pdm.grupo17.thothnews.utils.Utils.readAllFrom;
 
@@ -213,7 +212,7 @@ public class NewsActivity extends Activity {
                 title = reader.readLine();
 
                 /*TODO Fix Exception */
-                when = Utils.SAVE_DATE_FORMAT.parse(reader.readLine());
+                when = DateUtils.SAVE_DATE_FORMAT.parse(reader.readLine());
 
                 status = (reader.readLine().compareToIgnoreCase(String.valueOf(Status.READ)) == 0)
                         ? Status.READ
@@ -338,7 +337,7 @@ class ExtractorMultipleNews extends AsyncTask<String, Void, ArrayList<ThothClass
 
             int id = jnew.getInt("id");
             String title = jnew.getString("title");
-            Date when = SAVE_DATE_FORMAT.parse(jnew.getString("when"));
+            Date when = DateUtils.SAVE_DATE_FORMAT.parse(jnew.getString("when"));
             String self = jnew.getJSONObject("_links").getString("self");
 
             news.add(new ThothClassNewListItem(id, title, when, self));
