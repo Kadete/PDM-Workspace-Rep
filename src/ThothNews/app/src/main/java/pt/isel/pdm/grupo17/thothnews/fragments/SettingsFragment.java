@@ -1,4 +1,4 @@
-package isel.pdm.serie1.thothNews.fragments;
+package pt.isel.pdm.grupo17.thothnews.fragments;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,10 +16,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import isel.pdm.serie1.thothNews.R;
-import isel.pdm.serie1.thothNews.model.ThothClass;
+import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 
-import static isel.pdm.serie1.thothNews.utils.Utils.readAllFrom;
+import static pt.isel.pdm.grupo17.thothnews.utils.Utils.readAllFrom;
 
 
 public class SettingsFragment extends PreferenceFragment {

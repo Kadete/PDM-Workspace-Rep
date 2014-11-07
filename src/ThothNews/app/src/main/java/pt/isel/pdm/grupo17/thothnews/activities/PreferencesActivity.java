@@ -1,4 +1,4 @@
-package isel.pdm.serie1.thothNews.activities;
+package pt.isel.pdm.grupo17.thothnews.activities;
 
 import android.app.ActionBar;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import java.util.Set;
 
-import isel.pdm.serie1.thothNews.fragments.SettingsFragment;
+import pt.isel.pdm.grupo17.thothnews.fragments.SettingsFragment;
 
 public class PreferencesActivity extends PreferenceActivity {
 

@@ -1,4 +1,4 @@
-package isel.pdm.serie1.thothNews.fragments;
+package pt.isel.pdm.grupo17.thothnews.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
-import isel.pdm.serie1.thothNews.R;
+import pt.isel.pdm.grupo17.thothnews.R;
 
 public class AlertDialogFragment extends DialogFragment {
 

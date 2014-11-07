@@ -1,8 +1,8 @@
-package isel.pdm.serie1.thothNews.model;
+package pt.isel.pdm.grupo17.thothnews.models;
 
 import java.util.Date;
 
-import isel.pdm.serie1.thothNews.utils.Utils;
+import pt.isel.pdm.grupo17.thothnews.utils.Utils;
 
 public class ThothClassNew{
     public int id;

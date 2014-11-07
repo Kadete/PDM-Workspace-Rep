@@ -1,4 +1,4 @@
-package isel.pdm.serie1.thothNews.model;
+package pt.isel.pdm.grupo17.thothnews.models;
 
 public class LinksClassNewListItem {
     public String self;

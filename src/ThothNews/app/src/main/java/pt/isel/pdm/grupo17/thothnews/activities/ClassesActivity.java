@@ -1,4 +1,4 @@
-package isel.pdm.serie1.thothNews.activities;
+package pt.isel.pdm.grupo17.thothnews.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -24,12 +24,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import isel.pdm.serie1.thothNews.adapters.ClassesListAdapter;
-import isel.pdm.serie1.thothNews.R;
-import isel.pdm.serie1.thothNews.model.ThothClass;
+import pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter;
+import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 
-import static isel.pdm.serie1.thothNews.utils.Utils.d;
-import static isel.pdm.serie1.thothNews.utils.Utils.readAllFrom;
+import static pt.isel.pdm.grupo17.thothnews.utils.Utils.d;
+import static pt.isel.pdm.grupo17.thothnews.utils.Utils.readAllFrom;
 
 public class ClassesActivity extends Activity {
 

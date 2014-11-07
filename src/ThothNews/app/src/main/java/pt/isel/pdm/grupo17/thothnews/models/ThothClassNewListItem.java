@@ -1,10 +1,10 @@
-package isel.pdm.serie1.thothNews.model;
+package pt.isel.pdm.grupo17.thothnews.models;
 
 import java.util.Date;
 
-import isel.pdm.serie1.thothNews.utils.Utils;
+import pt.isel.pdm.grupo17.thothnews.utils.Utils;
 
-import static isel.pdm.serie1.thothNews.model.ThothClassNewListItem.Status.NOTREAD;
+import static pt.isel.pdm.grupo17.thothnews.models.ThothClassNewListItem.Status.NOTREAD;
 
 public class ThothClassNewListItem {
 

@@ -1,4 +1,4 @@
-package isel.pdm.serie1.thothNews.activities;
+package pt.isel.pdm.grupo17.thothnews.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -19,12 +19,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 
-import isel.pdm.serie1.thothNews.R;
-import isel.pdm.serie1.thothNews.model.LinksClass;
-import isel.pdm.serie1.thothNews.model.ThothClassNew;
+import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.models.LinksClass;
+import pt.isel.pdm.grupo17.thothnews.models.ThothClassNew;
 
-import static isel.pdm.serie1.thothNews.adapters.NewsListAdapter.*;
-import static isel.pdm.serie1.thothNews.utils.Utils.*;
+import static pt.isel.pdm.grupo17.thothnews.adapters.NewsListAdapter.*;
+import static pt.isel.pdm.grupo17.thothnews.utils.Utils.*;
 
 
 public class SingeNewActivity extends Activity {

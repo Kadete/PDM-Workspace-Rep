@@ -1,4 +1,4 @@
-package isel.pdm.serie1.thothNews.activities;
+package pt.isel.pdm.grupo17.thothnews.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -32,17 +32,17 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 
-import isel.pdm.serie1.thothNews.R;
-import isel.pdm.serie1.thothNews.adapters.NewsListAdapter;
-import isel.pdm.serie1.thothNews.model.ThothClassNewListItem;
-import isel.pdm.serie1.thothNews.utils.Utils;
+import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.adapters.NewsListAdapter;
+import pt.isel.pdm.grupo17.thothnews.models.ThothClassNewListItem;
+import pt.isel.pdm.grupo17.thothnews.utils.Utils;
 
-import static isel.pdm.serie1.thothNews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_ID;
-import static isel.pdm.serie1.thothNews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_NAME;
-import static isel.pdm.serie1.thothNews.model.ThothClassNewListItem.Status;
-import static isel.pdm.serie1.thothNews.utils.Utils.SAVE_DATE_FORMAT;
-import static isel.pdm.serie1.thothNews.utils.Utils.d;
-import static isel.pdm.serie1.thothNews.utils.Utils.readAllFrom;
+import static pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_ID;
+import static pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_NAME;
+import static pt.isel.pdm.grupo17.thothnews.models.ThothClassNewListItem.Status;
+import static pt.isel.pdm.grupo17.thothnews.utils.Utils.SAVE_DATE_FORMAT;
+import static pt.isel.pdm.grupo17.thothnews.utils.Utils.d;
+import static pt.isel.pdm.grupo17.thothnews.utils.Utils.readAllFrom;
 
 public class NewsActivity extends Activity {
 

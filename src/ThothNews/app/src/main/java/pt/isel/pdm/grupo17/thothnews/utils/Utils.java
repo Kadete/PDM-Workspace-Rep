@@ -1,4 +1,4 @@
-package isel.pdm.serie1.thothNews.utils;
+package pt.isel.pdm.grupo17.thothnews.utils;
 
 import android.text.format.DateFormat;
 import android.util.Log;

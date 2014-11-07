@@ -1,4 +1,4 @@
-package isel.pdm.serie1.thothNews.adapters;
+package pt.isel.pdm.grupo17.thothnews.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,11 +13,11 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import isel.pdm.serie1.thothNews.R;
-import isel.pdm.serie1.thothNews.activities.SingeNewActivity;
-import isel.pdm.serie1.thothNews.model.ThothClassNewListItem;
+import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.activities.SingeNewActivity;
+import pt.isel.pdm.grupo17.thothnews.models.ThothClassNewListItem;
 
-import static isel.pdm.serie1.thothNews.model.ThothClassNewListItem.Status;
+import static pt.isel.pdm.grupo17.thothnews.models.ThothClassNewListItem.Status;
 
 
 public class NewsListAdapter extends ArrayAdapter<ThothClassNewListItem> {
