@@ -28,8 +28,8 @@ import pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.Utils.d;
-import static pt.isel.pdm.grupo17.thothnews.utils.Utils.readAllFrom;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
 
 public class ClassesActivity extends Activity {
 

@@ -25,8 +25,8 @@ import pt.isel.pdm.grupo17.thothnews.models.ThothClassNew;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.adapters.NewsListAdapter.*;
-import static pt.isel.pdm.grupo17.thothnews.utils.Utils.d;
-import static pt.isel.pdm.grupo17.thothnews.utils.Utils.readAllFrom;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
 
 public class SingeNewActivity extends Activity {
 

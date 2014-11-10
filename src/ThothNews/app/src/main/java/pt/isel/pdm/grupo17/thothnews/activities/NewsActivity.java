@@ -40,8 +40,8 @@ import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 import static pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_ID;
 import static pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_NAME;
 import static pt.isel.pdm.grupo17.thothnews.models.ThothClassNewListItem.Status;
-import static pt.isel.pdm.grupo17.thothnews.utils.Utils.d;
-import static pt.isel.pdm.grupo17.thothnews.utils.Utils.readAllFrom;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
 
 public class NewsActivity extends Activity {
 

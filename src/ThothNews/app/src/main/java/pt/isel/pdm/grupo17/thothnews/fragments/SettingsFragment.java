@@ -7,9 +7,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,8 +16,9 @@ import java.net.URL;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
+import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.Utils.readAllFrom;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
 
 
 public class SettingsFragment extends PreferenceFragment {
@@ -80,7 +79,7 @@ class ExtractorClassesSettings extends AsyncTask<Void ,Void,ThothClass[]> {
             try {
                 InputStream is = c.getInputStream();
                 String data = readAllFrom(is);
-                return parseFrom(data);
+                return ParseUtils.parseThothClasses(data);
             } catch (JSONException e) {
                 return null;
             } finally {
@@ -89,20 +88,6 @@ class ExtractorClassesSettings extends AsyncTask<Void ,Void,ThothClass[]> {
         } catch (IOException e) {
             return null;
         }
-    }
-
-    private ThothClass[] parseFrom(String s) throws JSONException {
-        JSONObject root = new JSONObject(s);
-        JSONArray jclasses = root.getJSONArray("classes");
-        ThothClass[] classes = new ThothClass[jclasses.length()];
-        for (int i = 0; i < jclasses.length(); ++i) {
-            JSONObject jclass = jclasses.getJSONObject(i);
-            ThothClass clazz = new ThothClass();
-            clazz._id = jclass.getInt("id");
-            clazz._fullname = jclass.getString("fullName");
-            classes[i] = clazz;
-        }
-        return classes;
     }
 }
 
