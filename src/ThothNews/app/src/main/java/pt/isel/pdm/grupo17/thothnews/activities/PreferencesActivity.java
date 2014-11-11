@@ -23,7 +23,7 @@ public class PreferencesActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d("DEBUG", "PreferencesActivity, onCreate Called");
+        d(TAG_ACTIVITY, "PreferencesActivity, onCreate Called");
 
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
@@ -60,7 +60,7 @@ public class PreferencesActivity extends PreferenceActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        d("PreferencesActivity, onStart Called");
+        d(TAG_ACTIVITY, "PreferencesActivity, onStart Called");
         ActionBar actionbar = this.getActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
     }
@@ -68,31 +68,31 @@ public class PreferencesActivity extends PreferenceActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        d("PreferencesActivity, onResume Called");
+        d(TAG_ACTIVITY, "PreferencesActivity, onResume Called");
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        d("PreferencesActivity, onPause Called");
+        d(TAG_ACTIVITY, "PreferencesActivity, onPause Called");
     }
 
     @Override
     protected void onStop(){
         super.onStop();
-        d("PreferencesActivity, onStop Called");
+        d(TAG_ACTIVITY, "PreferencesActivity, onStop Called");
     }
 
     @Override
     protected void onRestart(){
         super.onRestart();
-       d("PreferencesActivity, onRestart Called");
+       d(TAG_ACTIVITY, "PreferencesActivity, onRestart Called");
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        d("PreferencesActivity, onDestroy Called");
+        d(TAG_ACTIVITY, "PreferencesActivity, onDestroy Called");
     }
 
 }

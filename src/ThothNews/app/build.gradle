@@ -4,7 +4,7 @@ android {
     buildToolsVersion '21.1.0'
 
     defaultConfig {
-        applicationId "pt.isel.pdm.serie1.thotnews"
+        applicationId "pt.isel.pdm.grupo17.thothnews"
         minSdkVersion 18
         targetSdkVersion 20
     }

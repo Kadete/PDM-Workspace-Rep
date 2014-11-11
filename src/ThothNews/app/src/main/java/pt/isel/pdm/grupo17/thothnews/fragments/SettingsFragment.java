@@ -82,7 +82,7 @@ class ExtractorClassesSettings extends AsyncTask<Void ,Void,ThothClass[]> {
                 String data = readAllFrom(is);
                 return parseThothClasses(data);
             } catch (JSONException e) {
-                d(e.getMessage());
+                e(TAG_ASYNC_TASK,e.getMessage());
                 return null;
             } finally {
                 c.disconnect();

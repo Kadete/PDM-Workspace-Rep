@@ -13,8 +13,13 @@ import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 
 public class ParseUtils {
 
-    public static final String TAG_DEBUG = "DEBUG";
-
+    public static final String TAG_ACTIVITY = "TAG_ACTIVITY";
+    public static final String TAG_ADAPTER = "TAG_ADAPTER";
+    public static final String TAG_ASYNC_TASK = "TAG_ASYNC_TASK";
+    public static final String TAG_BROADCAST = "TAG_BROADCAST";
+    public static final String TAG_FRAGMENT = "TAG_FRAGMENT";
+    public static final String TAG_MODEL = "TAG_MODEL";
+    public static final String TAG_UTILS = "TAG_UTILS";
 
     public static String readAllFrom(InputStream is){
         Scanner s = new Scanner(is);
@@ -39,12 +44,12 @@ public class ParseUtils {
         return classes;
     }
 
-    public static void d(String strInfo){
-        Log.d(TAG_DEBUG, strInfo);
+    public static void d(String tagActivity, String message){
+        Log.d(tagActivity, message);
     }
 
-
-
-
+    public static void e(String tagActivity, String message) {
+        Log.e(tagActivity, message);
+    }
 }
 

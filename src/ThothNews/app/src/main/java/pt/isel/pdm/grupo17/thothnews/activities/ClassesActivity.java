@@ -28,7 +28,10 @@ import java.util.Set;
 import pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
+import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.*;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.TAG_ACTIVITY;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
 
@@ -64,7 +67,7 @@ public class ClassesActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        d("ClassesActivity: onResume()");
+        d(TAG_ACTIVITY, "ClassesActivity: onResume()");
 
         if(cAdapter.getCount() == 0)
             executeExtractor();
@@ -73,7 +76,7 @@ public class ClassesActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        d("ClassesActivity: onPause()");
+        d(TAG_ACTIVITY, "ClassesActivity: onPause()");
     }
 
     @Override
@@ -146,7 +149,7 @@ class ExtractorClasses extends AsyncTask< Object[], Void, List<ThothClass>> {
                     newItems.add(parseFrom(data));
 
                 } catch (JSONException e) {
-                    d(e.getMessage());
+                    d(TAG_ASYNC_TASK, e.getMessage());
                     return null;
                 } finally {
                     c.disconnect();
@@ -154,7 +157,7 @@ class ExtractorClasses extends AsyncTask< Object[], Void, List<ThothClass>> {
             }
             return newItems;
         } catch (IOException e) {
-            d(e.getMessage());
+            e(TAG_ASYNC_TASK, e.getMessage());
             return null;
         }
     }

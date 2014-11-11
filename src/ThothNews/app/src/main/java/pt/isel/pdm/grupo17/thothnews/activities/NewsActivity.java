@@ -36,10 +36,13 @@ import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.adapters.NewsListAdapter;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClassNewListItem;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_ID;
 import static pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_NAME;
 import static pt.isel.pdm.grupo17.thothnews.models.ThothClassNewListItem.Status;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.*;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.TAG_ACTIVITY;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
 
@@ -57,7 +60,7 @@ public class NewsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_news_list);
 
-        d("MainActivity, onCreate Called");
+        d(TAG_ACTIVITY, "MainActivity, onCreate Called");
 
         settingListAdapter();
         loadItems();
@@ -114,16 +117,16 @@ public class NewsActivity extends Activity {
         super.onStart();
         ActionBar actionbar = this.getActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
-        d("MainActivity, onStart Called");
+        d(TAG_ACTIVITY, "MainActivity, onStart Called");
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        d("MainActivity, onResume Called");
+        d(TAG_ACTIVITY, "MainActivity, onResume Called");
 
         if(_listView == null || _listView.getAdapter() == null){
-            d("_listView.getAdapter() == null");
+            d(TAG_ACTIVITY, "_listView.getAdapter() == null");
             settingListAdapter();
         }
 
@@ -136,7 +139,7 @@ public class NewsActivity extends Activity {
     @Override
     protected void onPause(){
         super.onPause();
-        d("MainActivity, onPause Called");
+        d(TAG_ACTIVITY, "MainActivity, onPause Called");
         if(nAdapter.getCount() != 0)
             saveItems();
     }
@@ -144,19 +147,19 @@ public class NewsActivity extends Activity {
     @Override
     protected void onStop(){
         super.onStop();
-        d("MainActivity, onStop Called");
+        d(TAG_ACTIVITY, "MainActivity, onStop Called");
     }
 
     @Override
     protected void onRestart(){
         super.onRestart();
-        d("MainActivity, onRestart Called");
+        d(TAG_ACTIVITY, "MainActivity, onRestart Called");
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        d("MainActivity, onDestroy Called");
+        d(TAG_ACTIVITY, "MainActivity, onDestroy Called");
     }
 
     @Override
@@ -179,7 +182,7 @@ public class NewsActivity extends Activity {
                     writer.print("");
                     writer.close();
                 } catch (FileNotFoundException e) {
-                    d(e.getMessage());
+                    e(TAG_ACTIVITY, e.getMessage());
                     return false;
                 }
 
@@ -235,17 +238,17 @@ public class NewsActivity extends Activity {
 
 
         } catch (FileNotFoundException e) {
-            d(e.getMessage());
+            e(TAG_ACTIVITY, e.getMessage());
         } catch (IOException e) {
-            d(e.getMessage());
+            e(TAG_ACTIVITY, e.getMessage());
         } catch (ParseException e) {
-            d(e.getMessage());
+            e(TAG_ACTIVITY, e.getMessage());
         } finally {
             if (null != reader) {
                 try {
                     reader.close();
                 } catch (IOException e) {
-                    d(e.getMessage());
+                    e(TAG_ACTIVITY, e.getMessage());
                 }
             }
         }
@@ -278,7 +281,7 @@ public class NewsActivity extends Activity {
             }
 
         } catch (IOException e) {
-            d(e.getMessage());
+            e(TAG_ACTIVITY, e.getMessage());
         } finally {
             if (null != writer) {
                 writer.close();
@@ -313,17 +316,17 @@ class ExtractorMultipleNews extends AsyncTask<String, Void, ArrayList<ThothClass
                     newItems.add(newItem);
 
             } catch (JSONException e) {
-                d(e.getMessage());
+                e(TAG_ASYNC_TASK, e.getMessage());
                 return null;
             } catch (ParseException e) {
-                d(e.getMessage());
+                e(TAG_ASYNC_TASK, e.getMessage());
                 return null;
             } finally {
                 c.disconnect();
             }
             return newItems;
         } catch (IOException e) {
-            d(e.getMessage());
+            e(TAG_ASYNC_TASK, e.getMessage());
             return null;
         }
     }

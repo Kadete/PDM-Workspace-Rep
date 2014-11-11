@@ -53,4 +53,6 @@
     <string name="get_news_fail_toast">Last news update failed!</string>
     <string name="request_select_class_toast">Please select one class at least!</string>
 
+    <string name="notification_txt">Notification text</string>
+
 </resources>
