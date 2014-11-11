@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -95,7 +96,7 @@ public class ClassesActivity extends Activity {
     private void executeExtractor() {
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Set<String> classesIDSelected = sharedPrefs.getStringSet("multi_select_list_key", null);
+        Object arrayList[] = sharedPrefs.getStringSet("multi_select_list_key", null).toArray();
 
         new ExtractorClasses() {
 
@@ -117,29 +118,27 @@ public class ClassesActivity extends Activity {
                 _listView.refreshDrawableState();
             }
 
-        }.execute(classesIDSelected);
+        }.execute(arrayList);
     }
 
 }
 
-class ExtractorClasses extends AsyncTask<Set<String>, Void, List<ThothClass>> {
+class ExtractorClasses extends AsyncTask< Object[], Void, List<ThothClass>> {
 
     @Override
-    protected List<ThothClass> doInBackground(Set<String>... sets) {
+    protected List<ThothClass> doInBackground(Object[]... sets) {
 
         try {
+            Object[] aux = sets[0];
             List<ThothClass> newItems = new LinkedList<ThothClass>();
             URL url;
 
-            if(sets[0] == null){
+            if(aux == null){
                 return null;
             }
 
-
-            Iterator it = sets[0].iterator();
-            while(it.hasNext()){
-
-                url = new URL("http://thoth.cc.e.ipl.pt/api/v1/classes/" + it.next());
+            for(int i=0; i < aux.length; i++){
+                url = new URL("http://thoth.cc.e.ipl.pt/api/v1/classes/" + aux[i]);
                 HttpURLConnection c = (HttpURLConnection) url.openConnection();
                 try {
                     InputStream is = c.getInputStream();
