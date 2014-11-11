@@ -10,20 +10,14 @@
     <string name="title_classes_view">As tuas turmas</string>
 
     <!-- layout: layout_news_list -->
-    <string name="title_news_view">Your_Classes_News</string>
+
 
     <!-- layout: layout_new_view -->
     <string name="label_news_view">Your Classes News</string>
 
     <!-- layout: layout_class_item -->
-    <string name="class_item_id">class_item_id</string>
-    <string name="class_item_full_name">class_item_full_name</string>
-    <string name="class_item_teacher">class_item_teacher</string>
 
     <!-- layout: layout_new_item -->
-    <string name="new_item_when">new_item_when</string>
-    <string name="new_item_title">new_item_title</string>
-    <string name="new_item_class_name">new_item_class_name</string>
 
     <!-- layout: layout_new_view -->
     <string name="new_view_when"></string>
@@ -37,13 +31,10 @@
     <string name="category_title">Turmas</string>
     <string name="thoth_classes_title">Lista de Turmas</string>
     <string name="thoth_classes_summary">Seleccione as turmas a receber noticias</string>
-    <string name="title_activity_classes">Thoth News</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Definições</string>
     <string name="title_action_refresh_all">Actualizar notícias</string>
     <string name="clean_classes_title">Limpar inscrições</string>
     <string name="clean_classes_warning">Cuidado! As preferências de turmas serão eliminadas!</string>
-    <string name="clean_clasess_ok">OK</string>
     <string name="clean_classes_cancel">Cancelar</string>
     <string name="clean_classes_toast">Preferências limpas!</string>
 
