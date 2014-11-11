@@ -146,9 +146,9 @@ class ExtractorSingleNew extends AsyncTask<String,Void,ThothClassNew> {
                 c.disconnect();
             }
         }catch(IOException e){
-            e.printStackTrace();
+            d(e.getMessage());
         } catch (ParseException e) {
-            e.printStackTrace();
+            d(e.getMessage());
         }
         return null;
     }
@@ -171,7 +171,8 @@ class ExtractorSingleNew extends AsyncTask<String,Void,ThothClassNew> {
             _new._links.clazz = links.getString("class");
             _new._links.root = links.getString("root");
         } catch (JSONException e) {
-            e.printStackTrace();
+            d(e.getMessage());
+            return null;
         }
         return _new;
     }

@@ -42,10 +42,6 @@ public class ThothClass {
         return _id + ITEM_SEP + _fullname + ITEM_SEP + _teacher;
     }
 
-    public String toLog() {
-        return "Id: " + _id + ITEM_SEP + "FullName: " + _fullname + ITEM_SEP + "Teacher: " + _teacher;
-    }
-
     public ThothClass(){
 
     }

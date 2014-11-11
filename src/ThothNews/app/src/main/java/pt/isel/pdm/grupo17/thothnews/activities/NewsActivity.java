@@ -90,7 +90,7 @@ public class NewsActivity extends Activity {
             protected void onPostExecute(ArrayList<ThothClassNewListItem> result){
                 if (result == null || result.size() < 1) {
                     Toast.makeText(getApplicationContext(),
-                            "Last News Update Failed", Toast.LENGTH_SHORT).show();
+                            getString(R.string.get_news_fail_toast), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -104,7 +104,7 @@ public class NewsActivity extends Activity {
                 _listView.setAdapter(nAdapter);
                 _listView.refreshDrawableState();
 
-                Toast.makeText(getApplicationContext(), "Last News Updated", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.get_news_success_toast), Toast.LENGTH_SHORT).show();
             }
         }.execute(classId);
     }
@@ -179,7 +179,8 @@ public class NewsActivity extends Activity {
                     writer.print("");
                     writer.close();
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    d(e.getMessage());
+                    return false;
                 }
 
                 extractThothNews();
@@ -234,17 +235,17 @@ public class NewsActivity extends Activity {
 
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            d(e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            d(e.getMessage());
         } catch (ParseException e) {
-            e.printStackTrace();
+            d(e.getMessage());
         } finally {
             if (null != reader) {
                 try {
                     reader.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    d(e.getMessage());
                 }
             }
         }
@@ -277,7 +278,7 @@ public class NewsActivity extends Activity {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            d(e.getMessage());
         } finally {
             if (null != writer) {
                 writer.close();
@@ -312,17 +313,17 @@ class ExtractorMultipleNews extends AsyncTask<String, Void, ArrayList<ThothClass
                     newItems.add(newItem);
 
             } catch (JSONException e) {
-                e.printStackTrace();
+                d(e.getMessage());
                 return null;
             } catch (ParseException e) {
-                e.printStackTrace();
+                d(e.getMessage());
                 return null;
             } finally {
                 c.disconnect();
             }
-
             return newItems;
         } catch (IOException e) {
+            d(e.getMessage());
             return null;
         }
     }

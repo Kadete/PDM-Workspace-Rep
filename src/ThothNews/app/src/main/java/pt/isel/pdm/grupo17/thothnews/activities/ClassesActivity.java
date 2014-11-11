@@ -103,7 +103,7 @@ public class ClassesActivity extends Activity {
             protected void onPostExecute (List < ThothClass > result) {
                 if (result == null || result.size() < 1) {
                     Toast.makeText(
-                        getApplicationContext(), "Thoth Connection Failed", Toast.LENGTH_SHORT).show();
+                        getApplicationContext(), getString(R.string.thoth_connection_failed_toast), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 rowItems.clear();
@@ -147,7 +147,7 @@ class ExtractorClasses extends AsyncTask<Set<String>, Void, List<ThothClass>> {
                     newItems.add(parseFrom(data));
 
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    d(e.getMessage());
                     return null;
                 } finally {
                     c.disconnect();
@@ -155,6 +155,7 @@ class ExtractorClasses extends AsyncTask<Set<String>, Void, List<ThothClass>> {
             }
             return newItems;
         } catch (IOException e) {
+            d(e.getMessage());
             return null;
         }
     }

@@ -72,7 +72,4 @@ public class ThothClassNewListItem {
         return _id + ITEM_SEP + _title + ITEM_SEP + DateUtils.SAVE_DATE_FORMAT.format(_when) + ITEM_SEP + _status;
     }
 
-    public String toLog() {
-        return "Id: " + _id + ITEM_SEP + "FullName: " + _title + ITEM_SEP + "Teacher: " + _when;
-    }
 }

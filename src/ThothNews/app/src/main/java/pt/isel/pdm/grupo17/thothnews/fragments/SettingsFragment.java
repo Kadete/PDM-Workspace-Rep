@@ -18,6 +18,7 @@ import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.*;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
 
 
@@ -79,8 +80,9 @@ class ExtractorClassesSettings extends AsyncTask<Void ,Void,ThothClass[]> {
             try {
                 InputStream is = c.getInputStream();
                 String data = readAllFrom(is);
-                return ParseUtils.parseThothClasses(data);
+                return parseThothClasses(data);
             } catch (JSONException e) {
+                d(e.getMessage());
                 return null;
             } finally {
                 c.disconnect();
