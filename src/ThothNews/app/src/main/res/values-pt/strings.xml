@@ -38,4 +38,11 @@
     <string name="clean_classes_cancel">Cancelar</string>
     <string name="clean_classes_toast">Preferências limpas!</string>
 
+    <string name="thoth_connection_failed_toast">A conexão falhou!</string>
+    <string name="get_news_success_toast">Recebeu as últimas notícias com sucesso!</string>
+    <string name="get_news_fail_toast">Ocorreu um erro ao receber as últimas notícias!</string>
+    <string name="request_select_class_toast">Seleccione pelo menos uma turma!</string>
+
+    <string name="notification_txt">Texto de notificação</string>
+
 </resources>

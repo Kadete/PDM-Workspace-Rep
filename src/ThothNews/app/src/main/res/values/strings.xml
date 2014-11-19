@@ -47,4 +47,12 @@
     <string name="clean_classes_cancel">Cancel</string>
     <string name="clean_classes_toast">Preferences set to default!</string>
 
+
+    <string name="thoth_connection_failed_toast">Thoth connection failed!</string>
+    <string name="get_news_success_toast">Last news updated with success!</string>
+    <string name="get_news_fail_toast">Last news update failed!</string>
+    <string name="request_select_class_toast">Please select one class at least!</string>
+
+    <string name="notification_txt">Notification text</string>
+
 </resources>

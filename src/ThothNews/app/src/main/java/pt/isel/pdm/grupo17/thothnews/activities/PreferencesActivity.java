@@ -12,7 +12,10 @@ import android.widget.Toast;
 
 import java.util.Set;
 
+import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.fragments.SettingsFragment;
+
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.*;
 
 public class PreferencesActivity extends PreferenceActivity {
 
@@ -20,7 +23,7 @@ public class PreferencesActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d("DEBUG", "PreferencesActivity, onCreate Called");
+        d(TAG_ACTIVITY, "PreferencesActivity, onCreate Called");
 
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
@@ -51,13 +54,13 @@ public class PreferencesActivity extends PreferenceActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }else
-            Toast.makeText(getApplication(), "Please Select one Classe at least!" , Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplication(), getString(R.string.request_select_class_toast) , Toast.LENGTH_LONG).show();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("DEBUG", "PreferencesActivity, onStart Called");
+        d(TAG_ACTIVITY, "PreferencesActivity, onStart Called");
         ActionBar actionbar = this.getActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
     }
@@ -65,31 +68,31 @@ public class PreferencesActivity extends PreferenceActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        Log.d("DEBUG", "PreferencesActivity, onResume Called");
+        d(TAG_ACTIVITY, "PreferencesActivity, onResume Called");
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        Log.d("DEBUG","PreferencesActivity, onPause Called");
+        d(TAG_ACTIVITY, "PreferencesActivity, onPause Called");
     }
 
     @Override
     protected void onStop(){
         super.onStop();
-        Log.d("DEBUG","PreferencesActivity, onStop Called");
+        d(TAG_ACTIVITY, "PreferencesActivity, onStop Called");
     }
 
     @Override
     protected void onRestart(){
         super.onRestart();
-        Log.d("DEBUG", "PreferencesActivity, onRestart Called");
+       d(TAG_ACTIVITY, "PreferencesActivity, onRestart Called");
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        Log.d("DEBUG", "PreferencesActivity, onDestroy Called");
+        d(TAG_ACTIVITY, "PreferencesActivity, onDestroy Called");
     }
 
 }

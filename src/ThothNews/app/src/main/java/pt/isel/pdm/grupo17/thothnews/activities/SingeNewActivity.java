@@ -24,8 +24,11 @@ import pt.isel.pdm.grupo17.thothnews.models.LinksClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClassNew;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.adapters.NewsListAdapter.*;
+import static pt.isel.pdm.grupo17.thothnews.adapters.NewsListAdapter.TAG_SELECT_NEW_ID;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.TAG_ACTIVITY;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.TAG_ASYNC_TASK;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.e;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
 
 public class SingeNewActivity extends Activity {
@@ -35,7 +38,7 @@ public class SingeNewActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_new_view);
 
-        d("NewViewActivity, onCreate Called");
+        d(TAG_ACTIVITY, "NewViewActivity, onCreate Called");
 
         Intent intent = getIntent();
         String newId = intent.getStringExtra(TAG_SELECT_NEW_ID);
@@ -67,7 +70,7 @@ public class SingeNewActivity extends Activity {
     @Override
     protected void onStart(){
         super.onStart();
-        d("NewViewActivity, onStart Called");
+        d(TAG_ACTIVITY, "NewViewActivity, onStart Called");
         ActionBar actionbar = this.getActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
     }
@@ -75,31 +78,31 @@ public class SingeNewActivity extends Activity {
     @Override
     protected void onResume(){
         super.onResume();
-        d("NewViewActivity, onResume Called");
+        d(TAG_ACTIVITY, "NewViewActivity, onResume Called");
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        d("NewViewActivity, onPause Called");
+        d(TAG_ACTIVITY, "NewViewActivity, onPause Called");
     }
 
     @Override
     protected void onStop(){
         super.onStop();
-        d("NewViewActivity, onStop Called");
+        d(TAG_ACTIVITY, "NewViewActivity, onStop Called");
     }
 
     @Override
     protected void onRestart(){
         super.onRestart();
-        d( "NewViewActivity, onRestart Called");
+        d(TAG_ACTIVITY, "NewViewActivity, onRestart Called");
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        d("NewViewActivity, onDestroy Called");
+        d(TAG_ACTIVITY, "NewViewActivity, onDestroy Called");
     }
 
     @Override
@@ -146,9 +149,9 @@ class ExtractorSingleNew extends AsyncTask<String,Void,ThothClassNew> {
                 c.disconnect();
             }
         }catch(IOException e){
-            e.printStackTrace();
+            e(TAG_ASYNC_TASK, e.getMessage());
         } catch (ParseException e) {
-            e.printStackTrace();
+            e(TAG_ASYNC_TASK, e.getMessage());
         }
         return null;
     }
@@ -171,7 +174,8 @@ class ExtractorSingleNew extends AsyncTask<String,Void,ThothClassNew> {
             _new._links.clazz = links.getString("class");
             _new._links.root = links.getString("root");
         } catch (JSONException e) {
-            e.printStackTrace();
+            e(TAG_ASYNC_TASK, e.getMessage());
+            return null;
         }
         return _new;
     }
