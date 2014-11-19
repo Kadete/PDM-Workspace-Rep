@@ -204,8 +204,6 @@ public class AddAnniversaryActivity extends Activity {
         mValues.put(Data.RAW_CONTACT_ID, rawContactID);
 
         mValues.put(Event.TYPE, Event.TYPE_ANNIVERSARY);
-        mValues.put(Event.RAW_CONTACT_ID, rawContactID);
-
         mValues.put(Event.START_DATE, anniversaryDate);
     }
 
