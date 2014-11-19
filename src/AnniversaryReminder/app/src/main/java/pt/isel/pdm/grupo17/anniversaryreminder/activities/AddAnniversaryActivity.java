@@ -196,8 +196,9 @@ public class AddAnniversaryActivity extends Activity {
 
         Cursor c= getContentResolver().query(_contactUri, null, null, null, null);
         int rawIx = c.getColumnIndex(Data.RAW_CONTACT_ID);
-        if(c.moveToFirst())
+        if(c.moveToFirst()) {
             rawContactID = c.getInt(rawIx);
+        }
 
         mValues.clear();
         mValues.put(Data.MIMETYPE, Event.CONTENT_ITEM_TYPE);
@@ -215,8 +216,9 @@ public class AddAnniversaryActivity extends Activity {
         String anniQueryWhere = ContactsContract.Data.MIMETYPE + " = ? AND "+ Event.RAW_CONTACT_ID + " = ? AND "+ Event.TYPE  + " = ?";
         String[] anniQueryWhereParams = new String[]{Event.CONTENT_ITEM_TYPE, String.valueOf(rawContactID), String.valueOf(Event.TYPE_ANNIVERSARY)};
 
+        ContentResolver cr = getContentResolver();
 
-        Cursor anniversaryCur = getContentResolver().query(
+        Cursor anniversaryCur = cr.query(
                 ContactsContract.Data.CONTENT_URI,
                 new String[] { Event.START_DATE },
                 anniQueryWhere,
@@ -224,7 +226,6 @@ public class AddAnniversaryActivity extends Activity {
                 null
         );
 
-        ContentResolver cr = getContentResolver();
         try{
             if(anniversaryCur.moveToFirst())
             {
@@ -258,8 +259,9 @@ public class AddAnniversaryActivity extends Activity {
 
 
             String photoStr = cursorID.getString(cursorID.getColumnIndex(PHOTO_THUMBNAIL_URI));
-            if(photoStr != null)
+            if(photoStr != null) {
                 contactPhotoUri = Uri.parse(photoStr);
+            }
         }
 
         cursorID.close();

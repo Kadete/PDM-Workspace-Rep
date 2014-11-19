@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +23,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TimeZone;
 
+import pt.isel.pdm.grupo17.anniversaryreminder.R;
 import pt.isel.pdm.grupo17.anniversaryreminder.adapters.AnniversaryAdapter;
 import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
-import pt.isel.pdm.grupo17.anniversaryreminder.R;
 
 import static android.provider.ContactsContract.CommonDataKinds.Event;
 import static android.provider.ContactsContract.Contacts;
@@ -53,7 +54,7 @@ public class MainActivity extends ListActivity {
         String aux = sharedPreferences.getString("PREF_LIST", "14");
         daysToFilter = Integer.valueOf(aux);
 
-        Calendar localCalendar = Calendar.getInstance(TimeZone.getDefault());
+        Calendar localCalendar = Calendar.getInstance();
         currentDayOfYear = localCalendar.get(Calendar.DAY_OF_YEAR);
 
         bAdapter = new AnniversaryAdapter(getApplicationContext());
@@ -65,7 +66,7 @@ public class MainActivity extends ListActivity {
             return;
         }
 
-        getListView().setHeaderDividersEnabled(true);
+//        getListView().setHeaderDividersEnabled(true);
 
         getListView().addHeaderView(headerView);
 
@@ -80,12 +81,12 @@ public class MainActivity extends ListActivity {
             }
         });
 
-        getListView().setBackgroundResource(R.drawable.orange_background_grad);
+        getListView().setBackgroundResource(R.drawable.background_grad);
 
         setListAdapter(bAdapter);
-//        ListView lv = getListView();
-//        lv.setDivider(new PaintDrawable(R.color.sage));
-//        lv.setDividerHeight(1);
+        ListView lv = getListView();
+        lv.setDivider(new PaintDrawable(R.color.sage));
+        lv.setDividerHeight(1);
     }
 
     @Override
@@ -121,7 +122,7 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onPause(){
         super.onPause();
-        Log.d("DEBUG","MainActivity, onPause Called");
+        Log.d("DEBUG", "MainActivity, onPause Called");
     }
 
     @Override
@@ -176,11 +177,11 @@ public class MainActivity extends ListActivity {
     }
 
     private boolean isToFilter(Date anniversaryDate){
-        Calendar calendarAnnDate = Calendar.getInstance();
-        calendarAnnDate.setTime(anniversaryDate);
-        int annDayOfYear = calendarAnnDate.get(Calendar.DAY_OF_YEAR);
-
-        return annDayOfYear >= currentDayOfYear && annDayOfYear <= (currentDayOfYear+daysToFilter);
+        Calendar filterDate = Calendar.getInstance(), anvDate = Calendar.getInstance();
+        anvDate.setTime(anniversaryDate);
+        filterDate.add(Calendar.DAY_OF_YEAR, daysToFilter);
+        Calendar today = Calendar.getInstance();
+        return anvDate.get(Calendar.DAY_OF_YEAR)>= today.get(Calendar.DAY_OF_YEAR) && anvDate.before(filterDate);
     }
 
     private List<AnniversaryItem> getAnniversaryList()
@@ -194,8 +195,8 @@ public class MainActivity extends ListActivity {
 
                 ContactsContract.Data.CONTENT_URI,
                 new String[] { Contacts.DISPLAY_NAME, Event.DATA, Contacts.PHOTO_THUMBNAIL_URI},
-                        ContactsContract.Data.MIMETYPE + "= '" + Event.CONTENT_ITEM_TYPE +
-                        "' AND " + Event.TYPE + "=" + Event.TYPE_ANNIVERSARY,
+                ContactsContract.Data.MIMETYPE + "= '" + Event.CONTENT_ITEM_TYPE
+                        +"' AND " + Event.TYPE + "=" + Event.TYPE_ANNIVERSARY,
                 null,
                 ContactsContract.Data.DISPLAY_NAME
         );
@@ -213,12 +214,15 @@ public class MainActivity extends ListActivity {
                 contactAnniDate = df.parse(anniCursor.getString(dateCol));
 
                 String contactThumbStr = anniCursor.getString(photoCol);
-                if(contactThumbStr != null)
+                if(contactThumbStr != null) {
                     contactThumbUri = Uri.parse(contactThumbStr);
-
+                }
                 AnniversaryItem ann = new AnniversaryItem(contactName, contactAnniDate, contactThumbUri);
                 anniversaryItems.add(ann);
-            } catch (ParseException e) { e.printStackTrace(); }
+            } catch (ParseException e) {
+                d(e.getMessage());
+                e.printStackTrace();
+            }
 
 
         }
@@ -230,8 +234,9 @@ public class MainActivity extends ListActivity {
 
         bAdapter.clear();
         for (AnniversaryItem item : getAnniversaryList()) {
-            if (isToFilter(item.getDate()))
+            if (isToFilter(item.getDate())){
                 bAdapter.add(item);
+            }
         }
 
         bAdapter.orderList();

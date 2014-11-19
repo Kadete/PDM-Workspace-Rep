@@ -28,7 +28,7 @@ public class AnniversaryItem {
         calNext.setTime(mDate);
 
         if(calNext.after(calCurr)){
-            daysLeft = (calNext.get(Calendar.DAY_OF_MONTH) -(calCurr.get(Calendar.DAY_OF_MONTH)));
+            daysLeft = (calNext.get(Calendar.DAY_OF_YEAR) -(calCurr.get(Calendar.DAY_OF_YEAR)));
         }
 
     }

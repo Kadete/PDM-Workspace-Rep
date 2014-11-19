@@ -95,8 +95,10 @@ public class ClassesActivity extends Activity {
     private void executeExtractor() {
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Set<String> classesIDSelected = sharedPrefs.getStringSet("multi_select_list_key", null);
+//        Set<String> classesIDSelected = sharedPrefs.getStringSet("multi_select_list_key", null);
+        String[] classesIDSelected = (String[]) sharedPrefs.getStringSet("multi_select_list_key", null).toArray();
 
+//classesIDSelected.toArray()
         new ExtractorClasses() {
 
             @Override
@@ -122,10 +124,10 @@ public class ClassesActivity extends Activity {
 
 }
 
-class ExtractorClasses extends AsyncTask<Set<String>, Void, List<ThothClass>> {
+class ExtractorClasses extends AsyncTask<String[], Void, List<ThothClass>> {
 
     @Override
-    protected List<ThothClass> doInBackground(Set<String>... sets) {
+    protected List<ThothClass> doInBackground(String[]... sets) {
 
         try {
             List<ThothClass> newItems = new LinkedList<ThothClass>();
@@ -134,12 +136,13 @@ class ExtractorClasses extends AsyncTask<Set<String>, Void, List<ThothClass>> {
             if(sets[0] == null){
                 return null;
             }
+            String[] aux = sets[0];
+            for(int i = 0;i<aux.length;++i){
+//            Iterator it = sets[0].iterator();
+//            while(it.hasNext()){
 
-
-            Iterator it = sets[0].iterator();
-            while(it.hasNext()){
-
-                url = new URL("http://thoth.cc.e.ipl.pt/api/v1/classes/" + it.next());
+//                url = new URL("http://thoth.cc.e.ipl.pt/api/v1/classes/" + it.next());
+                url = new URL("http://thoth.cc.e.ipl.pt/api/v1/classes/" + aux[i]);
                 HttpURLConnection c = (HttpURLConnection) url.openConnection();
                 try {
                     InputStream is = c.getInputStream();

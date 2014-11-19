@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:height="40dp"
-    android:background="@drawable/red_grad"
+    android:background="@drawable/blue_add_btn_grad"
     android:textColor="#FFFFFF"
 >
 

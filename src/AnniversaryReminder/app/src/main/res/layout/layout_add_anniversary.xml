@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="pt.isel.grupo17.anniversaryreminder.AddAnniversary"
-    android:background="@drawable/orange_background_grad"
+    android:background="@drawable/background_grad"
     android:paddingBottom="30dp"
     android:paddingRight="30dp"
     android:paddingLeft="30dp"
@@ -42,7 +42,7 @@
         android:gravity="center"
         android:layout_below="@+id/contactImageView"
         android:layout_marginTop="10dp"
-        android:background="@drawable/blue_grad"
+        android:background="@drawable/blue_btn_grad"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         />
@@ -72,7 +72,7 @@
         android:text="@string/choose_date_string"
         android:layout_below="@+id/name"
         android:layout_marginTop="15dp"
-        android:background="@drawable/blue_grad"
+        android:background="@drawable/blue_btn_grad"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         />

@@ -19,8 +19,6 @@ import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
 import pt.isel.pdm.grupo17.anniversaryreminder.R;
 import pt.isel.pdm.grupo17.anniversaryreminder.utils.DateUtils;
 
-import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
-
 public class AnniversaryAdapter extends BaseAdapter {
 
     private final List<AnniversaryItem> mItems = new ArrayList<AnniversaryItem>();
@@ -75,7 +73,7 @@ public class AnniversaryAdapter extends BaseAdapter {
         final TextView daysView = (TextView) itemLayout.findViewById(R.id.daysView);
         int daysLeft = anniversaryItem.getDaysLeft();
         if (daysLeft >= 2){
-            itemLayout.setBackgroundResource(R.drawable.darkred_grad);
+            itemLayout.setBackgroundResource(R.drawable.darkblue_grad);
             daysView.setText("("+ String.valueOf(daysLeft) + " days left)");
         }
         else if(daysLeft == 1) {
