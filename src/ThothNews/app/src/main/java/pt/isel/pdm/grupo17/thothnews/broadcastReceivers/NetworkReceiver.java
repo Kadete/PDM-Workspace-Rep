@@ -22,10 +22,8 @@ import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
 
 public class NetworkReceiver extends BroadcastReceiver {
 
-
-    static NetworkInfo.State previoustState;
+    static NetworkInfo.State previousState;
     static boolean firstTime = true;
-
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -45,11 +43,11 @@ public class NetworkReceiver extends BroadcastReceiver {
             d(TAG_BROADCAST, "Wifi state  = " + ni_wifi.getDetailedState());
 
             if(firstTime) {
-                previoustState = (ni_wifi.getState() == NetworkInfo.State.CONNECTING) ? NetworkInfo.State.DISCONNECTED : NetworkInfo.State.CONNECTED ;
+                previousState = (ni_wifi.getState() == NetworkInfo.State.CONNECTING) ? NetworkInfo.State.DISCONNECTED : NetworkInfo.State.CONNECTED ;
                 firstTime = false;
             }
 
-            if(ni_wifi.isConnected() && previoustState == NetworkInfo.State.DISCONNECTED){
+                if(ni_wifi.isConnected() && previousState == NetworkInfo.State.DISCONNECTED){
 
                 d(TAG_BROADCAST, "--- register notification " + ni_wifi.getDetailedState().name());
 
@@ -68,13 +66,13 @@ public class NetworkReceiver extends BroadcastReceiver {
 
                 NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(0, builder.build());
-                previoustState = NetworkInfo.State.CONNECTED;
+                previousState = NetworkInfo.State.CONNECTED;
 
             }
-            else if(previoustState == NetworkInfo.State.CONNECTED){
+            else if(previousState == NetworkInfo.State.CONNECTED){
 
                 d(TAG_BROADCAST, "--- unregister notification " + ni_wifi.getDetailedState().name());
-                previoustState = NetworkInfo.State.DISCONNECTED;
+                previousState = NetworkInfo.State.DISCONNECTED;
 
             }
             else
