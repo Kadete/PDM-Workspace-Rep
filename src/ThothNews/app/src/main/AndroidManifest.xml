@@ -71,7 +71,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name = ".broadcastReceivers.NetworkReceiver">
+        <receiver android:name = ".broadcastreceivers.NetworkReceiver">
             <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />

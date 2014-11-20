@@ -1,4 +1,4 @@
-package pt.isel.pdm.grupo17.thothnews.broadcastReceivers;
+package pt.isel.pdm.grupo17.thothnews.broadcastreceivers;
 
 /**
  * Created by Kadete on 11/11/2014.
