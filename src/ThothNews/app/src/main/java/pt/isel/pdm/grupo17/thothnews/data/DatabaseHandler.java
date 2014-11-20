@@ -20,7 +20,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
-        throw new UnsupportedOperationException("Method not implemented");
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
 //    void deleteDatabase() {
