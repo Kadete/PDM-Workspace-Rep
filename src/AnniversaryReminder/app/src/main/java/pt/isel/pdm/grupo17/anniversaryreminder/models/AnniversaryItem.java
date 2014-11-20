@@ -14,12 +14,14 @@ public class AnniversaryItem {
 
     public static final String ITEM_SEP = System.getProperty("line.separator");
 
+    private long id;
     private String mName = new String();
     private Date mDate = new Date();
     private Uri thumbnailUri;
     private int daysLeft;
 
-    public AnniversaryItem(String name, Date date, Uri thumbnailUri) {
+    public AnniversaryItem(long id,String name, Date date, Uri thumbnailUri) {
+        this.id = id;
         this.mName = name;
         this.mDate = date;
         this.thumbnailUri = thumbnailUri;
@@ -30,7 +32,6 @@ public class AnniversaryItem {
         if(calNext.after(calCurr)){
             daysLeft = (calNext.get(Calendar.DAY_OF_YEAR) -(calCurr.get(Calendar.DAY_OF_YEAR)));
         }
-
     }
 
     public String getName() {
@@ -41,14 +42,12 @@ public class AnniversaryItem {
     public int getDaysLeft() {
         return daysLeft;
     }
-
+    public long getId() { return id; }
     public String toString() {
         return mName + ITEM_SEP + DateUtils.SHOW_DATE_FORMATTER.format(mDate);
     }
-    public String toLog() {
-        return "Title: " + mName + ITEM_SEP + "Date: " + DateUtils.SHOW_DATE_FORMATTER.format(mDate) + ITEM_SEP + thumbnailUri;
-    }
-
-
+//    public String toLog() {
+//        return "Title: " + mName + ITEM_SEP + "Date: " + DateUtils.SHOW_DATE_FORMATTER.format(mDate) + ITEM_SEP + thumbnailUri;
+//    }
 
 }

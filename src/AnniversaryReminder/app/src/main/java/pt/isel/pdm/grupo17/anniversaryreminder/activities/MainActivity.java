@@ -27,10 +27,13 @@ import java.util.List;
 import pt.isel.pdm.grupo17.anniversaryreminder.R;
 import pt.isel.pdm.grupo17.anniversaryreminder.adapters.AnniversaryAdapter;
 import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
+import pt.isel.pdm.grupo17.anniversaryreminder.utils.CursorUtils;
+import pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils;
 
 import static android.provider.ContactsContract.CommonDataKinds.Event;
 import static android.provider.ContactsContract.Contacts;
 import static pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem.ITEM_SEP;
+import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
 
 
@@ -147,7 +150,6 @@ public class MainActivity extends ListActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, "Settings");
-        menu.add(Menu.NONE, MENU_DUMP, Menu.NONE, "Dump to log");
 
         return true;
     }
@@ -161,18 +163,8 @@ public class MainActivity extends ListActivity {
                         FILTER_ANNIVERSARY_SETTING_REQUEST
                 );
                 return true;
-            case MENU_DUMP:
-                dump();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void dump() {
-        for (int i = 0; i < bAdapter.getCount(); i++) {
-            String data = ((AnniversaryItem) bAdapter.getItem(i)).toLog();
-            d("Item " + i + ": " + data.replace(ITEM_SEP, ","));
         }
     }
 
@@ -184,62 +176,13 @@ public class MainActivity extends ListActivity {
         return anvDate.get(Calendar.DAY_OF_YEAR)>= today.get(Calendar.DAY_OF_YEAR) && anvDate.before(filterDate);
     }
 
-    private List<AnniversaryItem> getAnniversaryList()
-    {
-        List<AnniversaryItem>  anniversaryItems = new LinkedList<AnniversaryItem>();
-        String contactName;
-        Date contactAnniDate;
-        Uri contactThumbUri;
-
-        Cursor anniCursor = getContentResolver().query(
-
-                ContactsContract.Data.CONTENT_URI,
-                new String[] { Contacts.DISPLAY_NAME, Event.DATA, Contacts.PHOTO_THUMBNAIL_URI},
-                ContactsContract.Data.MIMETYPE + "= '" + Event.CONTENT_ITEM_TYPE
-                        +"' AND " + Event.TYPE + "=" + Event.TYPE_ANNIVERSARY,
-                null,
-                ContactsContract.Data.DISPLAY_NAME
-        );
-
-        int nameCol = anniCursor.getColumnIndex(Contacts.DISPLAY_NAME);
-        int dateCol = anniCursor.getColumnIndex(Event.START_DATE);
-        int photoCol = anniCursor.getColumnIndex(Contacts.PHOTO_THUMBNAIL_URI);
-
-        while(anniCursor.moveToNext())
-        {
-            contactThumbUri = null;
-            DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
-            try {
-                contactName = anniCursor.getString(nameCol);
-                contactAnniDate = df.parse(anniCursor.getString(dateCol));
-
-                String contactThumbStr = anniCursor.getString(photoCol);
-                if(contactThumbStr != null) {
-                    contactThumbUri = Uri.parse(contactThumbStr);
-                }
-                AnniversaryItem ann = new AnniversaryItem(contactName, contactAnniDate, contactThumbUri);
-                anniversaryItems.add(ann);
-            } catch (ParseException e) {
-                d(e.getMessage());
-                e.printStackTrace();
-            }
-
-
-        }
-        anniCursor.close();
-        return anniversaryItems;
-    }
-
     private void loadItems() {
-
         bAdapter.clear();
-        for (AnniversaryItem item : getAnniversaryList()) {
+        for (AnniversaryItem item : CursorUtils.getAnniversaryList(getApplicationContext())) {
             if (isToFilter(item.getDate())){
                 bAdapter.add(item);
             }
         }
-
         bAdapter.orderList();
-
     }
 }
