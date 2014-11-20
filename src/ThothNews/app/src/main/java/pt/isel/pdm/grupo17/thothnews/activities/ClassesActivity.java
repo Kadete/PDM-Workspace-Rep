@@ -28,6 +28,7 @@ import pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.TAG_ACTIVITY;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
 
@@ -63,7 +64,7 @@ public class ClassesActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        d("ClassesActivity: onResume()");
+        d(TAG_ACTIVITY,"ClassesActivity: onResume()");
 
         if(cAdapter.getCount() == 0)
             executeExtractor();
@@ -72,7 +73,7 @@ public class ClassesActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        d("ClassesActivity: onPause()");
+        d(TAG_ACTIVITY,"ClassesActivity: onPause()");
     }
 
     @Override
@@ -95,10 +96,10 @@ public class ClassesActivity extends Activity {
     private void executeExtractor() {
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        Set<String> classesIDSelected = sharedPrefs.getStringSet("multi_select_list_key", null);
-        String[] classesIDSelected = (String[]) sharedPrefs.getStringSet("multi_select_list_key", null).toArray();
+        Set<String> classesSet = sharedPrefs.getStringSet("multi_select_list_key", null);
+        String[] classesIDSelected = new String[classesSet.size()];
+        sharedPrefs.getStringSet("multi_select_list_key", null).toArray(classesIDSelected);
 
-//classesIDSelected.toArray()
         new ExtractorClasses() {
 
             @Override
