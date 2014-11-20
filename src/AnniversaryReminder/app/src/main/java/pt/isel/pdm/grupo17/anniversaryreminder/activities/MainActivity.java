@@ -74,7 +74,7 @@ public class MainActivity extends ListActivity {
             @Override
             public void onClick(View v) {
 
-                d("Entered footerView.OnClickListener.onClick()");
+                d(TAG_ACTIVITY,"Entered footerView.OnClickListener.onClick()");
 
                 Intent i = new Intent(MainActivity.this, AddAnniversaryActivity.class);
                 startActivityForResult(i, ADD_ANNIVERSARY_ITEM_REQUEST);
@@ -92,7 +92,7 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        d("Entered onActivityResult()");
+        d(TAG_ACTIVITY,"Entered onActivityResult()");
 
         if(resultCode == RESULT_OK){
             switch (requestCode) {
@@ -115,7 +115,7 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        d("MainActivity, onResume Called");
+        d(TAG_ACTIVITY,"MainActivity, onResume Called");
         loadItems();
     }
 
