@@ -79,18 +79,17 @@
 
         <receiver android:name="pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver" >
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
         </receiver>
 
-        <provider
-            android:name="pt.isel.pdm.grupo17.thothnews.data.ThothProvider"
-            android:authorities="pt.isel.pdm.grupo17.thothnews"
-            android:enabled="true"
-            android:exported="true" >
-        </provider>
+        <!--<provider-->
+            <!--android:name="pt.isel.pdm.grupo17.thothnews.data.ThothProvider"-->
+            <!--android:authorities="pt.isel.pdm.grupo17.thothnews"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="true" >-->
+        <!--</provider>-->
     </application>
 
 </manifest>
