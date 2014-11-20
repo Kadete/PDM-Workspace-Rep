@@ -49,14 +49,13 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
 
         if(list.size() > 0){
             // Setup Intent
-            mNotificationIntent = new Intent(Intent.ACTION_VIEW, Contacts.CONTENT_URI);
-            mNotificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            mNotificationIntent = new Intent(Intent.ACTION_VIEW);
+            mNotificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             // Get the NotificationManager
             mNotificationManager= (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             // Build the Notification
-            notificationBuilder = new Notification.Builder(
-                    context).setTicker(tickerText)
+            notificationBuilder = new Notification.Builder(context)
+                    .setTicker(tickerText)
                     .setSmallIcon(R.drawable.ic_birthday_hat)
                     .setAutoCancel(true)
                     .setSound(soundURI).setVibrate(mVibratePattern);
@@ -74,9 +73,9 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
     }
 
     // The Intent to be used when the user clicks on the Notification Area Bar
-    private void displayNotification(Context context, String contentTitle, long contactID) {
+    private void displayNotification(Context context, String contentTitle, String contactID) {
         // Set ContactID on Uri for Intent Data Notification
-        Uri uri = Uri.withAppendedPath(Contacts.CONTENT_URI, String.valueOf(contactID));
+        Uri uri = Uri.withAppendedPath(Contacts.CONTENT_URI, contactID);
         mNotificationIntent.setData(uri);
 
         // The PendingIntent that wraps the underlying Intent

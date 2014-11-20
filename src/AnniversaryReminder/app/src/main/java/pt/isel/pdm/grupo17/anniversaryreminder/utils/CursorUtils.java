@@ -15,6 +15,8 @@ import java.util.List;
 import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
 
 import static android.provider.BaseColumns.*;
+import static android.provider.ContactsContract.*;
+import static android.provider.ContactsContract.CommonDataKinds.*;
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.TAG_ACTIVITY;
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
 
@@ -29,28 +31,28 @@ public class CursorUtils {
         String contactName;
         Date contactAnniDate;
         Uri contactThumbUri;
-        long contactID;
+        String contactID;
 
         Cursor anniCursor = context.getContentResolver().query(
 
-                ContactsContract.Data.CONTENT_URI,
-                new String[] {_ID, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.CommonDataKinds.Event.DATA, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI},
-                ContactsContract.Data.MIMETYPE + "= '" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE
-                        +"' AND " + ContactsContract.CommonDataKinds.Event.TYPE + "=" + ContactsContract.CommonDataKinds.Event.TYPE_ANNIVERSARY,
+                Data.CONTENT_URI,
+                new String[] {Event.RAW_CONTACT_ID, Contacts.DISPLAY_NAME, Event.DATA, Contacts.PHOTO_THUMBNAIL_URI},
+                Data.MIMETYPE + "= '" + Event.CONTENT_ITEM_TYPE
+                        +"' AND " + Event.TYPE + "=" + Event.TYPE_ANNIVERSARY,
                 null,
-                ContactsContract.Data.DISPLAY_NAME
+                Data.DISPLAY_NAME
         );
-
-        int nameCol = anniCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
-        int dateCol = anniCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE);
-        int photoCol = anniCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
+        int idCol = anniCursor.getColumnIndexOrThrow(Event.RAW_CONTACT_ID);
+        int nameCol = anniCursor.getColumnIndex(Contacts.DISPLAY_NAME);
+        int dateCol = anniCursor.getColumnIndex(Event.START_DATE);
+        int photoCol = anniCursor.getColumnIndex(Contacts.PHOTO_THUMBNAIL_URI);
 
         while(anniCursor.moveToNext())
         {
             contactThumbUri = null;
             DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
             try {
-                contactID = anniCursor.getLong(anniCursor.getColumnIndexOrThrow(_ID));
+                contactID = anniCursor.getString(idCol);
 
                 contactName = anniCursor.getString(nameCol);
                 contactAnniDate = df.parse(anniCursor.getString(dateCol));

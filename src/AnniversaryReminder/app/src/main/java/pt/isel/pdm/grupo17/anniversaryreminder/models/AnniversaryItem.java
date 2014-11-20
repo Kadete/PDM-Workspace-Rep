@@ -14,13 +14,13 @@ public class AnniversaryItem {
 
     public static final String ITEM_SEP = System.getProperty("line.separator");
 
-    private long id;
+    private String id;
     private String mName = new String();
     private Date mDate = new Date();
     private Uri thumbnailUri;
     private int daysLeft;
 
-    public AnniversaryItem(long id,String name, Date date, Uri thumbnailUri) {
+    public AnniversaryItem(String id,String name, Date date, Uri thumbnailUri) {
         this.id = id;
         this.mName = name;
         this.mDate = date;
@@ -42,7 +42,7 @@ public class AnniversaryItem {
     public int getDaysLeft() {
         return daysLeft;
     }
-    public long getId() { return id; }
+    public String getId() { return id; }
     public String toString() {
         return mName + ITEM_SEP + DateUtils.SHOW_DATE_FORMATTER.format(mDate);
     }
