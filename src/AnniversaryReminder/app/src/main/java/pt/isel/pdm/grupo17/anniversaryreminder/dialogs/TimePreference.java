@@ -16,10 +16,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import pt.isel.pdm.grupo17.anniversaryreminder.broadcastreceivers.StartupBootReceiver;
-
-import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
-
 public class TimePreference extends DialogPreference {
     private Calendar calendar;
     private TimePicker picker = null;
@@ -67,7 +63,7 @@ public class TimePreference extends DialogPreference {
                 persistLong(calendar.getTimeInMillis());
                 notifyChanged();
 
-                getContext().sendStickyBroadcast(new Intent("com.starlon.froyvisuals.PREFS_UPDATE"));
+                getContext().sendBroadcast(new Intent("com.starlon.froyvisuals.PREFS_UPDATE"));
             }
         }
     }
@@ -101,8 +97,6 @@ public class TimePreference extends DialogPreference {
         if (calendar == null) {
             return null;
         }
-        CharSequence seq = DateFormat.getTimeFormat(getContext()).format(new Date(calendar.getTimeInMillis()));
-        d(TAG_DIALOG_TIME_PREFERENCE, "getSummary: " + String.valueOf(seq));
-        return seq;
+        return DateFormat.getTimeFormat(getContext()).format(new Date(calendar.getTimeInMillis()));
     }
 }

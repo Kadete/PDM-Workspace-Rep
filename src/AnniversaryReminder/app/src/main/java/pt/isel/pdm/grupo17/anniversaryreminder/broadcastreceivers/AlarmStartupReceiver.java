@@ -17,7 +17,7 @@ import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
 /**
  * Created by Kadete on 20/11/2014.
  */
-public class StartupBootReceiver extends BroadcastReceiver {
+public class AlarmStartupReceiver extends BroadcastReceiver {
 
     private static final String TAG_RECEIVER_STARTUP_BOOT = "TAG_RECEIVER_STARTUP_BOOT";
 
@@ -40,9 +40,6 @@ public class StartupBootReceiver extends BroadcastReceiver {
         // Set repeating alarm
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         Long notify_time_milis = sharedPreferences.getLong("schedule_notify_time", 0);
-        CharSequence seq = getTimeFormat(context).format(new Date(notify_time_milis));
-
-        d(TAG_RECEIVER_STARTUP_BOOT, "StartupBootReceiver # notify_time: " + seq);
 
         // Create an PendingIntent that holds the NotificationReceiverIntent
         PendingIntent mNotificationReceiverPendingIntent = PendingIntent.getBroadcast(context, 0, mNotificationReceiverIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -51,6 +48,8 @@ public class StartupBootReceiver extends BroadcastReceiver {
                 notify_time_milis, /*TODO : Porque envia logo notificação em vez de esperar por este timer?*/
                 AlarmManager.INTERVAL_DAY,
                 mNotificationReceiverPendingIntent);
+
+        d(TAG_RECEIVER_STARTUP_BOOT, "StartupBootReceiver # notify_time: " + getTimeFormat(context).format(new Date(notify_time_milis)));
     }
 
 }

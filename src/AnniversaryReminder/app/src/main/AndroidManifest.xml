@@ -46,7 +46,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".broadcastreceivers.StartupBootReceiver"
+        <receiver android:name=".broadcastreceivers.AlarmStartupReceiver"
             android:enabled="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
