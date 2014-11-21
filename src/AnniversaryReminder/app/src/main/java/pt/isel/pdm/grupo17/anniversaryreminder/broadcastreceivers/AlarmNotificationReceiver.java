@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 
 import java.text.DateFormat;
@@ -17,11 +18,14 @@ import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
 import pt.isel.pdm.grupo17.anniversaryreminder.utils.CursorUtils;
 
 import static android.provider.ContactsContract.Contacts;
+import static pt.isel.pdm.grupo17.anniversaryreminder.utils.CursorUtils.*;
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
 
 public class AlarmNotificationReceiver extends BroadcastReceiver {
 	// Notification ID to allow for future updates
 	private static int MY_NOTIFICATION_ID = 1;
+    private static final int TODAY = 0;
+    private static final int NEXT_WEEK = 7;
 
 	// Notification Text Elements
 	private final CharSequence tickerText = "Today is someone birthday!!",
@@ -41,10 +45,11 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
     @Override
 	public void onReceive(Context context, Intent intent) {
 
-        List<AnniversaryItem> list = CursorUtils.getTodayAnniversaryList(context);
+
 
         String contentTitle;
-        AnniversaryItem item;
+
+        List<AnniversaryItem> list = getAnniversaryList(context);
 
         if(list.size() > 0){
             // Setup Intent
@@ -57,16 +62,26 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                     .setTicker(tickerText)
                     .setSmallIcon(R.drawable.ic_birthday_hat)
                     .setAutoCancel(true)
-                    .setSound(soundURI).setVibrate(mVibratePattern);
+                    .setVibrate(mVibratePattern);
         }
 
-        for (AnniversaryItem aList : list) {
-            item = aList;
-            contentTitle = "Today it's " + item.getName() + " birthday!";
-            displayNotification(context, contentTitle, item.getId());
+        for (AnniversaryItem item : list) {
+            if(isToFilter(item.getDate(), TODAY)){ /*TODO: filtrar na query */
+                contentTitle = "Today it's " + item.getName() + " birthday!";
+                notificationBuilder.setSound(soundURI).setLights(Color.GREEN, 500, 500);
+                displayNotification(context, contentTitle, item.getId());
 
-            // Log occurence of notify() call
-            d(TAG_RECEIVER_ALARM_NOTIFICATION, "Sending notification at:" + DateFormat.getDateTimeInstance().format(new Date()));
+                // Log occurence of notify() call
+                d(TAG_RECEIVER_ALARM_NOTIFICATION, "Sending notification for TODAY at:" + DateFormat.getDateTimeInstance().format(new Date()));
+            }
+            else if(isToFilter(item.getDate(), NEXT_WEEK)){ /*TODO: filtrar na query */
+                contentTitle = item.getName() + " birthday it's next week!";
+                notificationBuilder.setSound(null).setLights(Color.BLUE, 500, 500);
+                displayNotification(context, contentTitle, item.getId());
+
+                // Log occurence of notify() call
+                d(TAG_RECEIVER_ALARM_NOTIFICATION, "Sending notification for NEXT WEEK at:" + DateFormat.getDateTimeInstance().format(new Date()));
+            }
         }
         MY_NOTIFICATION_ID = 1; //Reset ID of Notifications
     }
