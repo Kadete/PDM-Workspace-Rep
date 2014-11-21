@@ -5,43 +5,52 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
-import android.widget.Toast;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.preference.PreferenceManager;
+
+import java.util.Date;
+
+import static android.text.format.DateFormat.getTimeFormat;
+import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
 
 /**
  * Created by Kadete on 20/11/2014.
  */
 public class StartupBootReceiver extends BroadcastReceiver {
 
-    private AlarmManager mAlarmManager;
-    private Intent mNotificationReceiverIntent;
-    private PendingIntent mNotificationReceiverPendingIntent;
-    private static final long INITIAL_ALARM_DELAY = 3 * 1000L; //3seg
+    private static final String TAG_RECEIVER_STARTUP_BOOT = "TAG_RECEIVER_STARTUP_BOOT";
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
+        Boolean prefsChanged = intent.getAction().equals("com.starlon.froyvisuals.PREFS_UPDATE"),
+                booted = intent.ACTION_BOOT_COMPLETED.equals(intent.getAction());
 
-            // Get the AlarmManager Service
-            mAlarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
+        if(! prefsChanged  && !booted)
+                return;
 
-            // Create an Intent to broadcast to the AlarmNotificationReceiver
-            mNotificationReceiverIntent = new Intent(context, AlarmNotificationReceiver.class);
-            mNotificationReceiverIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        // Get the AlarmManager Service
+        AlarmManager mAlarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
 
-            // Create an PendingIntent that holds the NotificationReceiverIntent
-            mNotificationReceiverPendingIntent = PendingIntent.getBroadcast(context, 0, mNotificationReceiverIntent, 0);
+        // Create an Intent to broadcast to the AlarmNotificationReceiver
+        Intent mNotificationReceiverIntent = new Intent(context, AlarmNotificationReceiver.class);
+        mNotificationReceiverIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            // Set repeating alarm
-            mAlarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
-                    SystemClock.elapsedRealtime() + INITIAL_ALARM_DELAY,
-                    20000L, /* TODO: alterar para AlarmManager.INTERVAL_DAY */
-                    mNotificationReceiverPendingIntent);
+        // Set repeating alarm
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Long notify_time_milis = sharedPreferences.getLong("schedule_notify_time", 0);
+        CharSequence seq = getTimeFormat(context).format(new Date(notify_time_milis));
 
-            // Show Toast message
-//            Toast.makeText(context, "Repeating Alarm Set", Toast.LENGTH_LONG).show();
+        d(TAG_RECEIVER_STARTUP_BOOT, "StartupBootReceiver # notify_time: " + seq);
 
-        }
+        // Create an PendingIntent that holds the NotificationReceiverIntent
+        PendingIntent mNotificationReceiverPendingIntent = PendingIntent.getBroadcast(context, 0, mNotificationReceiverIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                notify_time_milis, /*TODO : Porque envia logo notificação em vez de esperar por este timer?*/
+                AlarmManager.INTERVAL_DAY,
+                mNotificationReceiverPendingIntent);
     }
+
 }

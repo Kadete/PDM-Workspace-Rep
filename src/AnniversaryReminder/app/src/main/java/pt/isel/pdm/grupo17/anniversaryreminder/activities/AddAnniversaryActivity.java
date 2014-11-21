@@ -53,6 +53,7 @@ public class AddAnniversaryActivity extends Activity {
 
     static Calendar mCalendar = Calendar.getInstance();
     ContentValues mValues = new ContentValues();
+    private static final String TAG_ACTIVITY_ADD_ANNIVERSARY = "TAG_ACTIVITY_ADD_ANNIVERSARY";
 
 
     @Override
@@ -93,7 +94,7 @@ public class AddAnniversaryActivity extends Activity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                d(TAG_ACTIVITY,"Entered cancelButton.OnClickListener.onClick()");
+                d(TAG_ACTIVITY_ADD_ANNIVERSARY,"Entered cancelButton.OnClickListener.onClick()");
 
                 setResult(RESULT_CANCELED);
                 finish();
@@ -104,7 +105,7 @@ public class AddAnniversaryActivity extends Activity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                d(TAG_ACTIVITY,"Entered resetButton.OnClickListener.onClick()");
+                d(TAG_ACTIVITY_ADD_ANNIVERSARY,"Entered resetButton.OnClickListener.onClick()");
 
                 setDefaultName();
                 setDefaultImage();
@@ -116,7 +117,7 @@ public class AddAnniversaryActivity extends Activity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                d(TAG_ACTIVITY,"Entered submitButton.OnClickListener.onClick()");
+                d(TAG_ACTIVITY_ADD_ANNIVERSARY,"Entered submitButton.OnClickListener.onClick()");
 
                 String name = contactTextView.getText().toString();
                 if(name.compareToIgnoreCase("N/A") == 0 || dateString.compareTo("N/A") == 0){
@@ -228,11 +229,11 @@ public class AddAnniversaryActivity extends Activity {
         try{
             if(anniversaryCur.moveToFirst())
             {
-                d(TAG_ACTIVITY,"changeContactAnniversary() >> Anniversary_Uri: UPDATE");
+                d(TAG_ACTIVITY_ADD_ANNIVERSARY,"changeContactAnniversary() >> Anniversary_Uri: UPDATE");
                 return (cr.update(ContactsContract.Data.CONTENT_URI, mValues, anniQueryWhere, anniQueryWhereParams) !=-1);
             }
             else{
-                d(TAG_ACTIVITY,"changeContactAnniversary() >> Anniversary_Uri: INSERT");
+                d(TAG_ACTIVITY_ADD_ANNIVERSARY,"changeContactAnniversary() >> Anniversary_Uri: INSERT");
                 return (cr.insert(ContactsContract.Data.CONTENT_URI, mValues) != null);
             }
         }
@@ -265,7 +266,7 @@ public class AddAnniversaryActivity extends Activity {
 
         cursorID.close();
 
-        d(TAG_ACTIVITY,"Contact ID: " + contactID);
+        d(TAG_ACTIVITY_ADD_ANNIVERSARY,"Contact ID: " + contactID);
     }
 
     /** result from >> selectContactButton.setOnClickListener(new View.OnClickListener(){...onClick(){...) **/

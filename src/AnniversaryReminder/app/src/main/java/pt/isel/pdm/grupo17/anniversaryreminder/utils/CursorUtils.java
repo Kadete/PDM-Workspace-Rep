@@ -3,27 +3,27 @@ package pt.isel.pdm.grupo17.anniversaryreminder.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.BaseColumns;
-import android.provider.ContactsContract;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
 
-import static android.provider.BaseColumns.*;
-import static android.provider.ContactsContract.*;
-import static android.provider.ContactsContract.CommonDataKinds.*;
-import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.TAG_ACTIVITY;
+import static android.provider.ContactsContract.CommonDataKinds.Event;
+import static android.provider.ContactsContract.Contacts;
+import static android.provider.ContactsContract.Data;
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
 
 /**
  * Created by Kadete And Tiago on 20/11/2014.
  */
 public class CursorUtils {
+
+    private static final String TAG_UTILS_CURSOR = "TAG_UTILS_CURSOR";
 
     public static List<AnniversaryItem> getAnniversaryList(Context context)
     {
@@ -64,7 +64,7 @@ public class CursorUtils {
                 AnniversaryItem ann = new AnniversaryItem(contactID, contactName, contactAnniDate, contactThumbUri);
                 anniversaryItems.add(ann);
             } catch (ParseException e) {
-                d(TAG_ACTIVITY,e.getMessage());
+                d(TAG_UTILS_CURSOR,e.getMessage());
                 e.printStackTrace();
             }
 
@@ -76,9 +76,19 @@ public class CursorUtils {
     public static List<AnniversaryItem> getTodayAnniversaryList(Context context) {
         List<AnniversaryItem> todayAnniversaries = new LinkedList<AnniversaryItem>();
         for (AnniversaryItem item :  getAnniversaryList(context)){
-            if(item.getDaysLeft() == 0)
+            if(isToFilter(item.getDate(), 0))
                 todayAnniversaries.add(item);
         }
         return todayAnniversaries;
     }
+
+    public static boolean isToFilter(Date anniversaryDate, int daysToFilter){
+        Calendar filterDate = Calendar.getInstance(), anvDate = Calendar.getInstance();
+        anvDate.setTime(anniversaryDate);
+
+        filterDate.add(Calendar.DAY_OF_YEAR, daysToFilter);
+        Calendar today = Calendar.getInstance();
+        return anvDate.get(Calendar.DAY_OF_YEAR)>= today.get(Calendar.DAY_OF_YEAR) && anvDate.before(filterDate);
+    }
+
 }

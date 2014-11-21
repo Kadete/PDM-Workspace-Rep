@@ -5,10 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.PaintDrawable;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,23 +16,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 import pt.isel.pdm.grupo17.anniversaryreminder.R;
 import pt.isel.pdm.grupo17.anniversaryreminder.adapters.AnniversaryAdapter;
 import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
 import pt.isel.pdm.grupo17.anniversaryreminder.utils.CursorUtils;
-import pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils;
 
-import static android.provider.ContactsContract.CommonDataKinds.Event;
-import static android.provider.ContactsContract.Contacts;
-import static pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem.ITEM_SEP;
-import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
+import static android.text.format.DateFormat.getTimeFormat;
+import static pt.isel.pdm.grupo17.anniversaryreminder.utils.CursorUtils.*;
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
 
 
@@ -43,11 +35,11 @@ public class MainActivity extends ListActivity {
     private static final int FILTER_ANNIVERSARY_SETTING_REQUEST = 1;
 
     private static final int MENU_SETTINGS = Menu.FIRST;
-    private static final int MENU_DUMP = Menu.FIRST + 1;
 
-    private static int daysToFilter, currentDayOfYear;
+    private static int daysToFilter;
 
     AnniversaryAdapter bAdapter;
+    private static final String TAG_ACTIVITY_MAIN = "TAG_ACTIVITY_MAIN";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,9 +48,6 @@ public class MainActivity extends ListActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String aux = sharedPreferences.getString("PREF_LIST", "14");
         daysToFilter = Integer.valueOf(aux);
-
-        Calendar localCalendar = Calendar.getInstance();
-        currentDayOfYear = localCalendar.get(Calendar.DAY_OF_YEAR);
 
         bAdapter = new AnniversaryAdapter(getApplicationContext());
 
@@ -69,15 +58,13 @@ public class MainActivity extends ListActivity {
             return;
         }
 
-//        getListView().setHeaderDividersEnabled(true);
-
         getListView().addHeaderView(headerView);
 
         headerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                d(TAG_ACTIVITY,"Entered footerView.OnClickListener.onClick()");
+                d(TAG_ACTIVITY_MAIN,"Entered footerView.OnClickListener.onClick()");
 
                 Intent i = new Intent(MainActivity.this, AddAnniversaryActivity.class);
                 startActivityForResult(i, ADD_ANNIVERSARY_ITEM_REQUEST);
@@ -95,7 +82,7 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        d(TAG_ACTIVITY,"Entered onActivityResult()");
+        d(TAG_ACTIVITY_MAIN,"Entered onActivityResult()");
 
         if(resultCode == RESULT_OK){
             switch (requestCode) {
@@ -104,7 +91,7 @@ public class MainActivity extends ListActivity {
                     return;
                 case FILTER_ANNIVERSARY_SETTING_REQUEST:
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-                    daysToFilter = Integer.valueOf(sharedPreferences.getString("PREF_LIST", "no selection"));
+                    daysToFilter = Integer.valueOf(sharedPreferences.getString("FILTER_PREF_LIST", "no selection"));
                     Toast.makeText(getApplicationContext(), "Preferences Saved With Success!", Toast.LENGTH_LONG).show();
                     return;
                 default:
@@ -118,7 +105,17 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        d(TAG_ACTIVITY,"MainActivity, onResume Called");
+
+        CharSequence seq = getTimeFormat(this).format(new Date(SystemClock.elapsedRealtime()));
+        d(TAG_ACTIVITY_MAIN, "$$ SystemClock.elapsedRealtime: " + seq);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Long notify_time_milis = sharedPreferences.getLong("schedule_notify_time", 0);
+        seq = getTimeFormat(this).format(new Date(notify_time_milis));
+        d(TAG_ACTIVITY_MAIN, "$$ StartupBootReceiver # notify_time: " + seq);
+
+
+        d(TAG_ACTIVITY_MAIN,"MainActivity, onResume Called");
         loadItems();
     }
 
@@ -168,18 +165,10 @@ public class MainActivity extends ListActivity {
         }
     }
 
-    private boolean isToFilter(Date anniversaryDate){
-        Calendar filterDate = Calendar.getInstance(), anvDate = Calendar.getInstance();
-        anvDate.setTime(anniversaryDate);
-        filterDate.add(Calendar.DAY_OF_YEAR, daysToFilter);
-        Calendar today = Calendar.getInstance();
-        return anvDate.get(Calendar.DAY_OF_YEAR)>= today.get(Calendar.DAY_OF_YEAR) && anvDate.before(filterDate);
-    }
-
     private void loadItems() {
         bAdapter.clear();
-        for (AnniversaryItem item : CursorUtils.getAnniversaryList(getApplicationContext())) {
-            if (isToFilter(item.getDate())){
+        for (AnniversaryItem item : getAnniversaryList(getApplicationContext())) {
+            if (isToFilter(item.getDate(), daysToFilter)){
                 bAdapter.add(item);
             }
         }

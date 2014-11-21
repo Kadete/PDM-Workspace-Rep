@@ -17,7 +17,6 @@ import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
 import pt.isel.pdm.grupo17.anniversaryreminder.utils.CursorUtils;
 
 import static android.provider.ContactsContract.Contacts;
-import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.TAG_BROADCAST;
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
 
 public class AlarmNotificationReceiver extends BroadcastReceiver {
@@ -30,7 +29,6 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
 
 	// Notification Action Elements
 	private Intent mNotificationIntent;
-	private PendingIntent mContentIntent;
     private NotificationManager mNotificationManager;
     private Notification.Builder notificationBuilder;
 	// Notification Sound and Vibration on Arrival
@@ -38,8 +36,9 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
 			.parse("android.resource://pt.isel.pdm.grupo17.anniversaryreminder/"
                     + R.raw.alarm_rooster);
 	private final long[] mVibratePattern = { 0, 200, 200, 300 };
+    private static final String TAG_RECEIVER_ALARM_NOTIFICATION = "TAG_RECEIVER_ALARM_NOTIFICATION";
 
-	@Override
+    @Override
 	public void onReceive(Context context, Intent intent) {
 
         List<AnniversaryItem> list = CursorUtils.getTodayAnniversaryList(context);
@@ -61,13 +60,13 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                     .setSound(soundURI).setVibrate(mVibratePattern);
         }
 
-        for(int i = 0; i < list.size(); i++){
-            item = list.get(i);
+        for (AnniversaryItem aList : list) {
+            item = aList;
             contentTitle = "Today it's " + item.getName() + " birthday!";
             displayNotification(context, contentTitle, item.getId());
 
             // Log occurence of notify() call
-            d(TAG_BROADCAST, "Sending notification at:" + DateFormat.getDateTimeInstance().format(new Date()));
+            d(TAG_RECEIVER_ALARM_NOTIFICATION, "Sending notification at:" + DateFormat.getDateTimeInstance().format(new Date()));
         }
         MY_NOTIFICATION_ID = 1; //Reset ID of Notifications
     }
@@ -79,7 +78,7 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
         mNotificationIntent.setData(uri);
 
         // The PendingIntent that wraps the underlying Intent
-        mContentIntent = PendingIntent.getActivity(context, 0, mNotificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent mContentIntent = PendingIntent.getActivity(context, 0, mNotificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         // Build the Notification
         notificationBuilder.setContentTitle(contentTitle).setContentText(contentText).setContentIntent(mContentIntent);
