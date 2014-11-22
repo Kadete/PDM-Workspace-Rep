@@ -76,7 +76,7 @@ public class ThothProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown URI: "+uri);
         }
         // Send broadcast to registered ContentObservers, to refresh UI.
-        getContext().getContentResolver().notifyChange(uri, null, false);
+        getContext().getContentResolver().notifyChange(uri, null);
         return Uri.withAppendedPath(uri, String.valueOf(insertResult));
     }
 
@@ -136,27 +136,35 @@ public class ThothProvider extends ContentProvider {
         c.setNotificationUri(getContext().getContentResolver(),uri);
         return c;
     }
-
     @Override
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
         final int match = _matcher.match(uri);
+        SQLiteDatabase db =_helper.getWritableDatabase();
+        int updateResult = 0;
         switch (match){
             case ROUTE_CLASSES:
+                    updateResult = db.update(ThothContract.Clazz.TABLE_NAME,values,selection,selectionArgs);
                 break;
             case ROUTE_CLASSES_ID:
-                break;
-            case ROUTE_CLASSES_ENROLLED:
-                break;
-            case ROUTE_CLASSES_ID_NEWS:
-                break;
-            case ROUTE_NEWS:
+                    long classID = getID(uri,CLASS_ID_POSITION);
+                    selection = SQLiteUtils.appendWhereCondition(selection, ThothContract.Clazz._ID);
+                    selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(classID));
+                    updateResult =  db.update(ThothContract.Clazz.TABLE_NAME,values,selection,selectionArgs);
                 break;
             case ROUTE_NEWS_ID:
+                    long newsID = getID(uri,NEWS_ID_POSITION);
+                    selection = SQLiteUtils.appendWhereCondition(selection, ThothContract.News._ID);
+                    selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(newsID));
+                    updateResult =  db.update(ThothContract.Clazz.TABLE_NAME,values,selection,selectionArgs);
                 break;
+            case ROUTE_CLASSES_ENROLLED:
+            case ROUTE_CLASSES_ID_NEWS:
+            case ROUTE_NEWS:
+                throw new UnsupportedOperationException("Update not supported on URI: "+uri);
         }
-        // TODO: Implement this to handle requests to update one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+        getContext().getContentResolver().notifyChange(uri,null);
+        return updateResult;
     }
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
