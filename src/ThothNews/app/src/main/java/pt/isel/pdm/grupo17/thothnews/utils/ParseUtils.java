@@ -1,5 +1,6 @@
 package pt.isel.pdm.grupo17.thothnews.utils;
 
+import android.net.Uri;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -7,10 +8,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Scanner;
 
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
-
 public class ParseUtils {
 
     public static final String TAG_ACTIVITY = "TAG_ACTIVITY";
@@ -50,6 +51,13 @@ public class ParseUtils {
 
     public static void e(String tagActivity, String message) {
         Log.e(tagActivity, message);
+    }
+
+
+    public static String getUriSegment(Uri uri, int position){
+        List<String> segments = uri.getPathSegments();
+        return segments.get(position);
+
     }
 }
 
