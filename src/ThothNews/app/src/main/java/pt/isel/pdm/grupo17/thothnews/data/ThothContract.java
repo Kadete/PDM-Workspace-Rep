@@ -1,10 +1,22 @@
 package pt.isel.pdm.grupo17.thothnews.data;
 
 import android.content.ContentResolver;
+import android.net.Uri;
 import android.provider.BaseColumns;
 
-public class ThothContract {
-    public static final String AUTHORITY = "pt.isel.pdm.grupo17.thothnews";
+public final class ThothContract {
+    /**
+     * Content provider authority.
+     */
+    public static final String CONTENT_AUTHORITY = "pt.isel.pdm.grupo17.thothnews";
+    /**
+     * Base URI. (content://com.example.android.basicsyncadapter)
+     */
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+
+    public static final String PATH_CLASSES = "classes";
+    public static final String PATH_NEWS = "news";
+
 
     private static final String TYPE_TEXT = " TEXT";
     private static final String TYPE_INTEGER = " INTEGER";
@@ -24,6 +36,11 @@ public class ThothContract {
          */
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.clazz";
+        /**
+         * Fully qualified URI for "classes" resources.
+         */
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLASSES).build();
 
         static final String TABLE_NAME = "classes",
             FULL_NAME = "fullName",
@@ -51,6 +68,11 @@ public class ThothContract {
          */
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.news";
+        /**
+         * Fully qualified URI for "News" resources.
+         */
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_NEWS).build();
         static final String TABLE_NAME = "news",
                 TITLE = "title",
                 WHEN_CREATED = "when",
