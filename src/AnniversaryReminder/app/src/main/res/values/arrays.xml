@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="listentries">
+    <string-array name="filterlistentries">
         <item>1 week</item>
         <item>2 weeks</item>
         <item>3 weeks</item>
         <item>4 weeks</item>
     </string-array>
-    <string-array name="listvalues">
+    <string-array name="filterlistvalues">
         <item>7</item>
         <item>14</item>
         <item>21</item>

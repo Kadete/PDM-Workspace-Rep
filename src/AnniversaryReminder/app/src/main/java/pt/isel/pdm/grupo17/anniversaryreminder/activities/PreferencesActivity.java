@@ -11,12 +11,15 @@ import pt.isel.pdm.grupo17.anniversaryreminder.fragments.SettingsFragment;
 
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
 
-public class PreferencesActivity extends PreferenceActivity {
+public class PreferencesActivity extends PreferenceActivity{
+
+    private static final String TAG_ACTIVITY_PREFERENCES = "TAG_ACTIVITY_MAIN";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        d("PreferencesActivity, onCreate Called");
+        d(TAG_ACTIVITY_PREFERENCES,"PreferencesActivity, onCreate Called");
+
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
@@ -35,7 +38,7 @@ public class PreferencesActivity extends PreferenceActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        d( "PreferencesActivity, onStart Called");
+        d(TAG_ACTIVITY_PREFERENCES,"PreferencesActivity, onStart Called");
         ActionBar actionbar = this.getActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
     }
@@ -51,31 +54,30 @@ public class PreferencesActivity extends PreferenceActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        d("PreferencesActivity, onResume Called");
+        d(TAG_ACTIVITY_PREFERENCES,"PreferencesActivity, onResume Called");
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        d("PreferencesActivity, onPause Called");
+        d(TAG_ACTIVITY_PREFERENCES,"PreferencesActivity, onPause Called");
     }
 
     @Override
     protected void onStop(){
         super.onStop();
-        d("PreferencesActivity, onStop Called");
+        d(TAG_ACTIVITY_PREFERENCES,"PreferencesActivity, onStop Called");
     }
 
     @Override
     protected void onRestart(){
         super.onRestart();
-        d("PreferencesActivity, onRestart Called");
+        d(TAG_ACTIVITY_PREFERENCES,"PreferencesActivity, onRestart Called");
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        d("PreferencesActivity, onDestroy Called");
+        d(TAG_ACTIVITY_PREFERENCES,"PreferencesActivity, onDestroy Called");
     }
-
 }
