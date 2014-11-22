@@ -10,7 +10,7 @@ import android.net.Uri;
 import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.data.ThothContract.AUTHORITY;
+import static pt.isel.pdm.grupo17.thothnews.data.ThothContract.CONTENT_AUTHORITY;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
 
 public class ThothProvider extends ContentProvider {
@@ -32,12 +32,12 @@ public class ThothProvider extends ContentProvider {
     private static final int NEWS_ID_POSITION = 1;
     static {
         _matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        _matcher.addURI(AUTHORITY, "classes", ROUTE_CLASSES);
-        _matcher.addURI(AUTHORITY, "classes/#", ROUTE_CLASSES_ID);
-        _matcher.addURI(AUTHORITY, "classes/enrolled", ROUTE_CLASSES_ENROLLED);
-        _matcher.addURI(AUTHORITY, "classes/#/news", ROUTE_CLASSES_ID_NEWS);
-        _matcher.addURI(AUTHORITY, "news", ROUTE_NEWS);
-        _matcher.addURI(AUTHORITY, "news/#", ROUTE_NEWS_ID);
+        _matcher.addURI(CONTENT_AUTHORITY, "classes", ROUTE_CLASSES);
+        _matcher.addURI(CONTENT_AUTHORITY, "classes/#", ROUTE_CLASSES_ID);
+        _matcher.addURI(CONTENT_AUTHORITY, "classes/enrolled", ROUTE_CLASSES_ENROLLED);
+        _matcher.addURI(CONTENT_AUTHORITY, "classes/#/news", ROUTE_CLASSES_ID_NEWS);
+        _matcher.addURI(CONTENT_AUTHORITY, "news", ROUTE_NEWS);
+        _matcher.addURI(CONTENT_AUTHORITY, "news/#", ROUTE_NEWS_ID);
     }
 
    @Override
@@ -49,21 +49,35 @@ public class ThothProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         final int match = _matcher.match(uri);
+        long insertResult;
+        SQLiteDatabase db =_helper.getWritableDatabase();
         switch (match){
             case ROUTE_CLASSES:
+                d("Uri = %s, ROUTE_CLASSES", uri.toString());
+                    values.put(ThothContract.Clazz.ENROLLED,false);
+                    values.put(ThothContract.Clazz.UNREAD_NEWS,false);
+                    insertResult = db.insert(ThothContract.Clazz.TABLE_NAME, null, values);
                 break;
+            case ROUTE_CLASSES_ID_NEWS:
+                d("Uri = %s, ROUTE_CLASSES_ID_NEWS", uri.toString());
+                    long classID = getID(uri, CLASS_ID_POSITION);
+                    values.put(ThothContract.News.CLASS_ID,classID);
+                return insertNews(db,uri,values);
             case ROUTE_NEWS:
-            break;
+                d("Uri = %s, ROUTE_NEWS", uri.toString());
+                return insertNews(db,uri,values);
             case ROUTE_CLASSES_ID:
             case ROUTE_CLASSES_ENROLLED:
-            case ROUTE_CLASSES_ID_NEWS:
             case ROUTE_NEWS_ID:
                 throw new UnsupportedOperationException("Insert not supported on URI: "+uri);
             default:
+                d("Uri = %s, Unmatched URI", uri.toString());
+                // The URI given doesn't match any table of the database
                 throw new UnsupportedOperationException("Unknown URI: "+uri);
         }
-        // TODO: Implement this to handle requests to insert a new row.
-        throw new UnsupportedOperationException("Not yet implemented");
+        // Send broadcast to registered ContentObservers, to refresh UI.
+        getContext().getContentResolver().notifyChange(uri, null, false);
+        return Uri.withAppendedPath(uri, String.valueOf(insertResult));
     }
 
     @Override
@@ -196,5 +210,19 @@ public class ThothProvider extends ContentProvider {
             throw new IllegalArgumentException("Invalid content URI: "+uri.toString());
         }
         return number;
+    }
+
+    private Uri insertNews(SQLiteDatabase db,Uri uri,ContentValues values){
+        long insertResult;
+        Long classID = values.getAsLong(ThothContract.News.CLASS_ID);
+        if(classID == null){
+            throw new IllegalArgumentException("Missing class ID associated with this news");
+        }
+        values.put(ThothContract.News.READ,false);
+        insertResult = db.insert(ThothContract.News.TABLE_NAME,null,values);
+        ContentValues updateInfo = new ContentValues();
+        updateInfo.put(ThothContract.Clazz.UNREAD_NEWS,true);
+        update(Uri.parse(ThothContract.Clazz.CONTENT_URI+"/"+classID),updateInfo,null,null);
+        return Uri.parse(ThothContract.News.CONTENT_URI + "/"+insertResult);
     }
 }
