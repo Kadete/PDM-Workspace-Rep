@@ -64,8 +64,7 @@ public class ThothClassNewListItem {
 
     public char[] GetInfoToStore(String classId) {
         String info = String.format("%s%s%s", classId, ITEM_SEP, toString());
-        char[] cInfo = info.toCharArray();
-        return cInfo;
+        return info.toCharArray();
     }
 
     public String toString() {
