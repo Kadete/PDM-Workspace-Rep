@@ -209,7 +209,6 @@ public class ThothProvider extends ContentProvider {
                     deleteResult=db.delete(ThothContract.News.TABLE_NAME,selection,selectionArgs);
                     uri = ThothContract.News.CONTENT_URI;
                     break;
-                //impossible
                 case ROUTE_CLASSES_ENROLLED:
                 case ROUTE_CLASSES_ID_NEWS:
                     throw new UnsupportedOperationException("Delete not supported on URI: "+uri);
