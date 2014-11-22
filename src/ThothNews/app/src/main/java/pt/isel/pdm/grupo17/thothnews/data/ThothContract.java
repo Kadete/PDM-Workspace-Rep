@@ -1,5 +1,6 @@
 package pt.isel.pdm.grupo17.thothnews.data;
 
+import android.content.ContentResolver;
 import android.provider.BaseColumns;
 
 public class ThothContract {
@@ -12,6 +13,18 @@ public class ThothContract {
     private static final String COMMA_SEP = ", ";
 
     public static class Clazz implements BaseColumns{
+
+        /**
+         * MIME type for lists of classes.
+         */
+        public static final String CONTENT_DIR_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.thothprovider.clazz";
+        /**
+         * MIME type for individual class.
+         */
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.clazz";
+
         static final String TABLE_NAME = "classes",
             FULL_NAME = "fullName",
             COURSE = "courseShortName",
@@ -28,6 +41,16 @@ public class ThothContract {
     }
 
     public static class News implements BaseColumns {
+        /**
+         * MIME type for lists of news.
+         */
+        public static final String CONTENT_DIR_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.thothprovider.news";
+        /**
+         * MIME type for individual news
+         */
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.news";
         static final String TABLE_NAME = "news",
                 TITLE = "title",
                 WHEN_CREATED = "when",

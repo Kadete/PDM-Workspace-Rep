@@ -169,21 +169,17 @@ public class ThothProvider extends ContentProvider {
         final int match = _matcher.match(uri);
         switch (match){
             case ROUTE_CLASSES:
-                break;
-            case ROUTE_CLASSES_ID:
-                break;
             case ROUTE_CLASSES_ENROLLED:
-                break;
-            case ROUTE_CLASSES_ID_NEWS:
-                break;
+                return ThothContract.Clazz.CONTENT_DIR_TYPE;
+            case ROUTE_CLASSES_ID:
+                return ThothContract.Clazz.CONTENT_ITEM_TYPE;
             case ROUTE_NEWS:
-            break;
+            case ROUTE_CLASSES_ID_NEWS:
+                return ThothContract.News.CONTENT_DIR_TYPE;
             case ROUTE_NEWS_ID:
-                break;
+                return ThothContract.News.CONTENT_ITEM_TYPE;
+            default: return null;
         }
-        // TODO: Implement this to handle requests for the MIME type of the data
-        // at the given URI.
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     /**
