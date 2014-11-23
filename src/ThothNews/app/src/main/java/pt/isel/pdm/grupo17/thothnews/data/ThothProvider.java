@@ -40,7 +40,7 @@ public class ThothProvider extends ContentProvider {
         _matcher.addURI(CONTENT_AUTHORITY, "news/#", ROUTE_NEWS_ID);
     }
 
-   @Override
+    @Override
     public boolean onCreate() {
         _helper = new ThothDBHelper(getContext());
         return true;
