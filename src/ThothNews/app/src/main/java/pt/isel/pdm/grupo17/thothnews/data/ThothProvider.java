@@ -57,7 +57,7 @@ public class ThothProvider extends ContentProvider {
                     d("Uri = %s, ROUTE_CLASSES", uri.toString());
                     values.put(ThothContract.Clazz.ENROLLED,false);
                     values.put(ThothContract.Clazz.UNREAD_NEWS,false);
-                    insertResult = db.insert(ThothContract.Clazz.TABLE_NAME, null, values);
+                    insertResult = db.insertWithOnConflict(ThothContract.Clazz.TABLE_NAME, null, values,SQLiteDatabase.CONFLICT_IGNORE);
                     break;
                 case ROUTE_CLASSES_ID_NEWS:
                     d("Uri = %s, ROUTE_CLASSES_ID_NEWS", uri.toString());
