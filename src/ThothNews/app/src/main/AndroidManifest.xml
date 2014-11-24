@@ -84,12 +84,12 @@
             </intent-filter>
         </receiver>
 
-        <!--<provider-->
-            <!--android:name="pt.isel.pdm.grupo17.thothnews.data.ThothProvider"-->
-            <!--android:authorities="pt.isel.pdm.grupo17.thothnews"-->
-            <!--android:enabled="true"-->
-            <!--android:exported="true" >-->
-        <!--</provider>-->
+        <provider
+            android:name="pt.isel.pdm.grupo17.thothnews.data.ThothProvider"
+            android:authorities="pt.isel.pdm.grupo17.thothnews"
+            android:enabled="true"
+            android:exported="true" >
+        </provider>
     </application>
 
 </manifest>
