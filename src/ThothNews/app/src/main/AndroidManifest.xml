@@ -90,6 +90,11 @@
             android:enabled="true"
             android:exported="true" >
         </provider>
+
+        <service
+            android:name="pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>
