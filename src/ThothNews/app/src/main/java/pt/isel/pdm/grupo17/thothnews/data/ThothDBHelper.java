@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
+
 public class ThothDBHelper extends SQLiteOpenHelper {
 
     /** Filename for SQLite file. */
@@ -20,6 +22,8 @@ public class ThothDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        d("HELPER",ThothContract.Clazz.CREATE_QUERY);
+        d("HELPER",ThothContract.News.CREATE_QUERY);
         db.execSQL(ThothContract.Clazz.CREATE_QUERY);
         db.execSQL(ThothContract.News.CREATE_QUERY);
     }
