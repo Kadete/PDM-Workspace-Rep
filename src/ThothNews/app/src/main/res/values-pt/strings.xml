@@ -44,5 +44,6 @@
     <string name="request_select_class_toast">Seleccione pelo menos uma turma!</string>
 
     <string name="notification_txt">Texto de notificação</string>
+    <string name="classes_loading_error">There was a problem loading the classes list</string>
 
 </resources>
