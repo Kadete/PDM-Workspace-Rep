@@ -16,6 +16,8 @@ public final class ThothContract {
 
     public static final String PATH_CLASSES = "classes";
     public static final String PATH_NEWS = "news";
+    public static final String PATH_CLASSES_ENROLLED = "enrolled";
+
 
 
     private static final String TYPE_TEXT = " TEXT";
@@ -41,8 +43,15 @@ public final class ThothContract {
          */
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLASSES).build();
+/**
+         * Fully qualified URI for enrolled "classes" resources.
+         */
+        public static final Uri ENROLLED_URI =
+            BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLASSES)
+                .appendPath(PATH_CLASSES_ENROLLED).build();
 
-        static final String TABLE_NAME = "classes",
+
+        public static final String TABLE_NAME = "classes",
             FULL_NAME = "fullName",
             COURSE = "courseShortName",
             SEMESTER = "lectiveSemester",
@@ -53,7 +62,7 @@ public final class ThothContract {
         static final String CREATE_QUERY = "CREATE TABLE " + Clazz.TABLE_NAME +
                 " ("+ Clazz._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP + Clazz.FULL_NAME+ TYPE_TEXT +COMMA_SEP
                 + Clazz.COURSE + TYPE_TEXT + COMMA_SEP + Clazz.SEMESTER + TYPE_TEXT + COMMA_SEP
-                + Clazz.SHORT_NAME + TYPE_TEXT + COMMA_SEP + Clazz.TEACHER + TYPE_TEXT
+                + Clazz.SHORT_NAME + TYPE_TEXT + COMMA_SEP + Clazz.TEACHER + TYPE_TEXT + COMMA_SEP
                 + Clazz.ENROLLED + TYPE_BOOLEAN + COMMA_SEP + Clazz.UNREAD_NEWS + TYPE_BOOLEAN + ")";
     }
 
@@ -73,16 +82,16 @@ public final class ThothContract {
          */
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_NEWS).build();
-        static final String TABLE_NAME = "news",
+        public static final String TABLE_NAME = "news",
                 TITLE = "title",
-                WHEN_CREATED = "when",
+                WHEN_CREATED = "when_created",
                 CONTENT = "content",
-                READ = "read",
+                READ = "_read",
                 CLASS_ID = "classID";
 
-        static final String CREATE_QUERY = "CREATE TABLE " + News.TABLE_NAME + "("
+        static final String CREATE_QUERY = "CREATE TABLE " + News.TABLE_NAME + " ("
                 + News._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP + News.TITLE + TYPE_TEXT + COMMA_SEP
-                + News.WHEN_CREATED + TYPE_TEXT + COMMA_SEP + News.CONTENT + COMMA_SEP
-                + News.READ + TYPE_BOOLEAN + News.CLASS_ID + TYPE_INTEGER + ")";
+                + News.WHEN_CREATED + TYPE_TEXT + COMMA_SEP + News.CONTENT + TYPE_TEXT + COMMA_SEP
+                + News.READ + TYPE_BOOLEAN + COMMA_SEP + News.CLASS_ID + TYPE_INTEGER + ")";
     }
 }
