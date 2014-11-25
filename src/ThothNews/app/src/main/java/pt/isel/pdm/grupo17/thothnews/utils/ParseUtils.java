@@ -22,6 +22,13 @@ public class ParseUtils {
     public static final String TAG_MODEL = "TAG_MODEL";
     public static final String TAG_UTILS = "TAG_UTILS";
 
+    public static final String CLASS_ID = "id";
+    public static final String CLASS_FULLNAME = "fullName";
+    public static final String CLASS_COURSE_NAME = "courseUnitShortName";
+    public static final String CLASS_LECTIVE_SEMESTER = "lectiveSemesterShortName";
+    public static final String CLASS_NAME = "className";
+    public static final String CLASS_TEACHER = "mainTeacherShortName";
+
     public static String readAllFrom(InputStream is){
         Scanner s = new Scanner(is);
         try{
@@ -31,6 +38,7 @@ public class ParseUtils {
             s.close();
         }
     }
+
     public static ThothClass[] parseThothClasses(String s) throws JSONException {
         JSONObject root = new JSONObject(s);
         JSONArray jclasses = root.getJSONArray("classes");
@@ -38,11 +46,23 @@ public class ParseUtils {
         for (int i = 0; i < jclasses.length(); ++i) {
             JSONObject jclass = jclasses.getJSONObject(i);
             ThothClass clazz = new ThothClass();
-            clazz._id = jclass.getInt("id");
-            clazz._fullname = jclass.getString("fullName");
+            clazz._id = jclass.getInt(CLASS_ID);
+            clazz._fullname = jclass.getString(CLASS_FULLNAME);
+            clazz._courseName =  jclass.getString(CLASS_COURSE_NAME);
+            clazz._lectiveSemester = jclass.getString(CLASS_LECTIVE_SEMESTER);
+            clazz._className = jclass.getString(CLASS_NAME);
+            clazz._teacher = jclass.getString(CLASS_TEACHER);
             classes[i] = clazz;
         }
         return classes;
+    }
+    public static JSONArray parseClasses(String s) throws JSONException {
+        JSONObject root = new JSONObject(s);
+        return root.getJSONArray("classes");
+    }
+    public static JSONArray parseElement(String s, String elem) throws JSONException {
+        JSONObject root = new JSONObject(s);
+        return root.getJSONArray(elem);
     }
 
     public static void d(String tagActivity, String message){

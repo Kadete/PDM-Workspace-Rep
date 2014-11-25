@@ -6,6 +6,9 @@ public class ThothClass {
 
     public int _id;
     public String _fullname;
+    public String _courseName;
+    public String _lectiveSemester;
+    public String _className;
     public String _teacher;
 
     public int get_id() {
@@ -35,6 +38,15 @@ public class ThothClass {
     public ThothClass(int id, String name, String teacher){
         _id = id;
         _fullname = name;
+        _teacher = teacher;
+    }
+    public ThothClass(int id, String fullName,String courseName,String lectiveSemester
+                ,String className, String teacher){
+        _id = id;
+        _fullname = fullName;
+        _courseName = courseName;
+        _lectiveSemester = lectiveSemester;
+        _className = className;
         _teacher = teacher;
     }
 
