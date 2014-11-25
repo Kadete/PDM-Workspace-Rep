@@ -1,5 +1,6 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.MultiSelectListPreference;
@@ -15,10 +16,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.activities.ClassSelectionActivity;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
-import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.*;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.TAG_ASYNC_TASK;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.e;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.parseThothClasses;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
 
 
@@ -31,6 +34,17 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
+
+        Preference classPreference = findPreference("pick_classes");
+        classPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent i = new Intent(getActivity(), ClassSelectionActivity.class);
+                startActivity(i);
+                return true;
+            }
+        });
 
         ExtractorClassesSettings c = new ExtractorClassesSettings(){
             @Override
