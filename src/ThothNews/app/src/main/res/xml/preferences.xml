@@ -8,6 +8,8 @@
         android:title="@string/category_title"
         android:key="first_category">
 
+        <Preference android:title="Select classes"
+            android:key="pick_classes"/>
         <MultiSelectListPreference
         android:key="multi_select_list_key"
         android:title="@string/thoth_classes_title"
