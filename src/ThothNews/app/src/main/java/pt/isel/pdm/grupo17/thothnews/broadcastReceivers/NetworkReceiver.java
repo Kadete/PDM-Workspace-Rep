@@ -16,6 +16,7 @@ import android.net.wifi.WifiManager;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity;
+import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.TAG_BROADCAST;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
@@ -49,26 +50,11 @@ public class NetworkReceiver extends BroadcastReceiver {
 
                 if(ni_wifi.isConnected() && previousState == NetworkInfo.State.DISCONNECTED){
 
-                d(TAG_BROADCAST, "--- register notification " + ni_wifi.getDetailedState().name());
+                    ThothUpdateService.startActionNewsUpdate(context);
+                    d(TAG_BROADCAST, "--- register notification " + ni_wifi.getDetailedState().name());
+                    previousState = NetworkInfo.State.CONNECTED;
 
-                Notification.Builder builder = new Notification.Builder(context)
-                        .setContentTitle("You have news to read")
-                        .setContentText("Click to open the application")
-                        .setAutoCancel(true)
-                        .setSmallIcon(R.drawable.thoth_icon)
-                        .setOngoing(false); //false => can drop notification on notification area, true => only dissapier if exectuted action for notification
-
-                intent = new Intent(context, ClassesActivity.class);
-                intent.putExtra("msg", "Network is connected");
-
-                PendingIntent pintent = PendingIntent.getActivity(context, 1, intent, 0);
-                builder.setContentIntent(pintent);
-
-                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.notify(0, builder.build());
-                previousState = NetworkInfo.State.CONNECTED;
-
-            }
+                }
             else if(previousState == NetworkInfo.State.CONNECTED){
 
                 d(TAG_BROADCAST, "--- unregister notification " + ni_wifi.getDetailedState().name());
