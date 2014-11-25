@@ -77,7 +77,7 @@ public class ThothProvider extends ContentProvider {
                     throw new UnsupportedOperationException("Unknown URI: "+uri);
             }
         }finally {
-            db.close();
+//            db.close();
         }
         // Send broadcast to registered ContentObservers, to refresh UI.
         getContext().getContentResolver().notifyChange(uri, null);
@@ -139,7 +139,7 @@ public class ThothProvider extends ContentProvider {
                     throw new UnsupportedOperationException("Unknown URI: "+uri);
             }
         }finally {
-            db.close();
+            //db.close();
         }
         c.setNotificationUri(getContext().getContentResolver(),uri);
         return c;
@@ -177,7 +177,7 @@ public class ThothProvider extends ContentProvider {
                     throw new UnsupportedOperationException("Unknown URI: "+uri);
             }
         }finally {
-            db.close();
+//            db.close();
         }
         getContext().getContentResolver().notifyChange(uri,null);
         return updateResult;
@@ -218,7 +218,7 @@ public class ThothProvider extends ContentProvider {
                     throw new UnsupportedOperationException("Unknown URI: "+uri);
             }
         }finally {
-            db.close();
+//            db.close();
         }
         getContext().getContentResolver().notifyChange(uri,null);
         return deleteResult;
