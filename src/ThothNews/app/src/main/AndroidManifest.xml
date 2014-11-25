@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
@@ -95,6 +94,15 @@
             android:name="pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name="pt.isel.pdm.grupo17.thothnews.activities.ClassSelectionActivity"
+            android:label="@string/title_activity_class_selection"
+            android:parentActivityName="pt.isel.pdm.grupo17.thothnews.activities.PreferencesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="pt.isel.pdm.grupo17.thothnews.activities.PreferencesActivity" />
+        </activity>
     </application>
 
 </manifest>
