@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -34,7 +35,7 @@ public class ClassesSelectionActivity extends Activity implements LoaderManager.
 
     ClassesSelectionAdapter mAdapter;
     ListView mListView;
-    static final int CLASSES_CURSOR_LOADER_ID = 1;
+    static final int CLASSES_SELECTION_CURSOR_LOADER_ID = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +47,28 @@ public class ClassesSelectionActivity extends Activity implements LoaderManager.
         mListView = (ListView) findViewById(R.id.classesList);
         mListView.setAdapter(mAdapter);
 
-        getLoaderManager().initLoader(CLASSES_CURSOR_LOADER_ID, null, this);
+        getLoaderManager().initLoader(CLASSES_SELECTION_CURSOR_LOADER_ID, null, this);
         ThothUpdateService.startActionClassesUpdate(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed(){
+        Cursor classCursor = getContentResolver().query(ThothContract.Clazz.ENROLLED_URI, new String[] { ThothContract.Clazz._ID },null, null, null);
+        while (classCursor.moveToNext()){
+            long classID = classCursor.getLong(classCursor.getColumnIndex(ThothContract.Clazz._ID));
+            ThothUpdateService.startActionClassNewsUpdate(this, classID);
+        }
+        finish();
     }
 
     @Override
@@ -75,7 +96,6 @@ public class ClassesSelectionActivity extends Activity implements LoaderManager.
         mAdapter.swapCursor(null);
     }
 }
-
 
 class ClassesSelectionAdapter extends CursorAdapter {
 
@@ -141,28 +161,29 @@ class ClassesSelectionAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         final ClassViewHolder holder = (ClassViewHolder)view.getTag();
 
-        Long classeID = cursor.getLong(cursor.getColumnIndex(ThothContract.Clazz._ID));
-
-        holder.id.setText(String.valueOf(classeID));
+        holder.id.setText(String.valueOf(cursor.getLong(cursor.getColumnIndex(ThothContract.Clazz._ID))));
         holder.full_name.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.FULL_NAME)));
         holder.teacher.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.TEACHER)));
 
         Boolean isEnrolled = cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.ENROLLED)).equals(TRUE);
         holder.checkBox.setChecked(isEnrolled);
 
-        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+        view.setBackground(new ColorDrawable((isEnrolled) ? 0x44440000 : 0x44444444));
+
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Boolean toggleChecked = !holder.checkBox.isChecked();
+                holder.checkBox.setChecked(toggleChecked);
+
                 ContentValues values = new ContentValues();
-                values.put(ThothContract.Clazz.ENROLLED, (holder.checkBox.isChecked()) ? TRUE : FALSE);
+                values.put(ThothContract.Clazz.ENROLLED, (toggleChecked) ? TRUE : FALSE);
 
                 long classID = Long.valueOf(holder.id.getText().toString());
                 mContext.getContentResolver().update(UriUtils.Classes.parseClasseID(classID), values, null, null );
 
-                ThothUpdateService.startActionClassNewsUpdate(mContext, classID);
+                view.setBackground(new ColorDrawable((toggleChecked) ? 0x44440000 : 0x44444444));
             }
         });
-
-        view.setBackground(new ColorDrawable((isEnrolled) ? 0x44440000 : 0x44444444));
     }
 }

@@ -105,7 +105,7 @@ public class ThothProvider extends ContentProvider {
             case ROUTE_CLASSES_ENROLLED:
                 d("Uri = %s, ROUTE_CLASSES_ENROLLED", uri.toString());
                 selection = SQLiteUtils.appendWhereCondition(selection,ThothContract.Clazz.ENROLLED);
-                selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(1));
+                selectionArgs = SQLiteUtils.appendArgs(selectionArgs, SQLiteUtils.TRUE);
                 c = db.query(ThothContract.Clazz.TABLE_NAME,projection,
                         selection, selectionArgs, null, null,sortOrder);
                 break;

@@ -13,7 +13,7 @@
     <!-- layout: layout_news_list -->
     <string name="title_news_view" translatable="false">Your_Classes_News</string>
 
-    <!-- layout: layout_new_view -->
+    <!-- layout: layout_single_new_view -->
     <string name="label_news_view">Your Classes News</string>
 
     <!-- layout: layout_class_item -->
@@ -26,7 +26,7 @@
     <string name="new_item_title" translatable="false">new_item_title</string>
     <string name="new_item_class_name" translatable="false">new_item_class_name</string>
 
-    <!-- layout: layout_new_view -->
+    <!-- layout: layout_single_new_view -->
     <string name="new_view_when"></string>
     <string name="new_view_title"></string>
     <string name="new_view_content"></string>

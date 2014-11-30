@@ -30,13 +30,13 @@ import java.util.List;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
+import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
 import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
-import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ACTIVITY;
 import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ADAPTER;
 
 public class NewsActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -91,38 +91,6 @@ public class NewsActivity extends ListActivity implements LoaderManager.LoaderCa
         ActionBar actionbar = this.getActionBar();
         assert actionbar != null;
         actionbar.setDisplayHomeAsUpEnabled(true);
-        d(TAG_ACTIVITY, "MainActivity, onStart Called");
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        d(TAG_ACTIVITY, "MainActivity, onResume Called");
-        /* TODO sort*/
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        d(TAG_ACTIVITY, "MainActivity, onPause Called");
-    }
-
-    @Override
-    protected void onStop(){
-        super.onStop();
-        d(TAG_ACTIVITY, "MainActivity, onStop Called");
-    }
-
-    @Override
-    protected void onRestart(){
-        super.onRestart();
-        d(TAG_ACTIVITY, "MainActivity, onRestart Called");
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        d(TAG_ACTIVITY, "MainActivity, onDestroy Called");
     }
 
     @Override
@@ -139,6 +107,7 @@ public class NewsActivity extends ListActivity implements LoaderManager.LoaderCa
                 startActivity(new Intent(NewsActivity.this, PreferencesActivity.class));
                 return true;
             case R.id.action_refresh_all:
+                ThothUpdateService.startActionClassNewsUpdate(this, sClassID);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

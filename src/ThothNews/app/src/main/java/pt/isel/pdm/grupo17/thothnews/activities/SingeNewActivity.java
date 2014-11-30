@@ -22,7 +22,7 @@ public class SingeNewActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_new_view);
+        setContentView(R.layout.layout_single_new_view);
         getActionBar().setTitle(getIntent().getStringExtra(TagUtils.TAG_SELECT_CLASS_NAME));
 
         sThothNew = (ThothNew) getIntent().getExtras().getSerializable(TagUtils.TAG_SELECT_NEW);
@@ -43,40 +43,9 @@ public class SingeNewActivity extends Activity {
     @Override
     protected void onStart(){
         super.onStart();
-        d(TAG_ACTIVITY, "NewViewActivity, onStart Called");
         ActionBar actionbar = this.getActionBar();
         assert actionbar != null;
         actionbar.setDisplayHomeAsUpEnabled(true);
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        d(TAG_ACTIVITY, "NewViewActivity, onResume Called");
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        d(TAG_ACTIVITY, "NewViewActivity, onPause Called");
-    }
-
-    @Override
-    protected void onStop(){
-        super.onStop();
-        d(TAG_ACTIVITY, "NewViewActivity, onStop Called");
-    }
-
-    @Override
-    protected void onRestart(){
-        super.onRestart();
-        d(TAG_ACTIVITY, "NewViewActivity, onRestart Called");
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        d(TAG_ACTIVITY, "NewViewActivity, onDestroy Called");
     }
 
     @Override

@@ -8,9 +8,11 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,25 +41,19 @@ import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ACTIVITY;
 public class ClassesActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     ClassesAdapter mAdapter;
-    static final int CLASSES_CURSOR_LOADER_ID = 1;
+    static final int CLASSES_CURSOR_LOADER_ID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setTitle(R.string.label_activity_classes);
 
-        /** código para simular turmas escolhidas nas preferencias **/
-        /** TODO: CLEAN CODE **/
-        ContentValues values = new ContentValues();
-        values.put(ThothContract.Clazz.ENROLLED, 1);
-
-        int[] args = new int[] {339, 340,348,360,361,373};
-        for(int i = 0; i < args.length; i++){
-            String selection = ThothContract.Clazz._ID + " = ? ";
-            String []selectionArgs = new String[]{String.valueOf(args[i])};
-            getContentResolver().update(ThothContract.Clazz.CONTENT_URI, values, selection, selectionArgs );
+        Cursor c = getContentResolver().query(ThothContract.Clazz.ENROLLED_URI, null,null, null, null);
+        if (!c.moveToNext()){
+            c.close();
+            startActivity(new Intent(this, PreferencesActivity.class));
         }
-        /***********************************************************/
+        c.close();
 
         mAdapter =  new ClassesAdapter(this);
         getListView().setAdapter(mAdapter);
@@ -74,18 +70,6 @@ public class ClassesActivity extends ListActivity implements LoaderManager.Loade
         i.putExtra(TagUtils.TAG_SELECT_CLASS_NAME, clazz.getFullName());
         i.putExtra(TagUtils.TAG_SELECT_CLASS_ID, clazz.getID());
         startActivity(i);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        d(TAG_ACTIVITY, "ClassesActivity: onResume()");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        d(TAG_ACTIVITY,"ClassesActivity: onPause()");
     }
 
     @Override
@@ -202,6 +186,8 @@ class ClassesAdapter extends CursorAdapter {
         Boolean newsToRead = cursorNewsRead.moveToNext();
         holder.new_news.setVisibility((newsToRead)? View.VISIBLE : View.GONE);
         cursorNewsRead.close();
+        holder.full_name.setTypeface(null, (newsToRead) ? Typeface.BOLD : Typeface.NORMAL);
+        holder.teacher.setTypeface(null, (newsToRead) ? Typeface.BOLD : Typeface.NORMAL);
         view.setBackground(new ColorDrawable((newsToRead) ? 0x44440000 : 0x44444444));
     }
 }

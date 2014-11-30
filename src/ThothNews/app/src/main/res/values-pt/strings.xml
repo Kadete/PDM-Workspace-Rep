@@ -11,14 +11,14 @@
     <!-- layout: layout_news_list -->
 
 
-    <!-- layout: layout_new_view -->
+    <!-- layout: layout_single_new_view -->
     <string name="label_news_view">Your Classes News</string>
 
     <!-- layout: layout_class_item -->
 
     <!-- layout: layout_new_item -->
 
-    <!-- layout: layout_new_view -->
+    <!-- layout: layout_single_new_view -->
     <string name="new_view_when"></string>
     <string name="new_view_title"></string>
     <string name="new_view_content"></string>

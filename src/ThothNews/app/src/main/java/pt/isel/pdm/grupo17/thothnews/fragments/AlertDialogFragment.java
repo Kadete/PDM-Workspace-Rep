@@ -3,6 +3,7 @@ package pt.isel.pdm.grupo17.thothnews.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +11,11 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
+import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
+
+import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.FALSE;
+import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
 
 public class AlertDialogFragment extends DialogFragment {
 
@@ -33,11 +39,11 @@ public class AlertDialogFragment extends DialogFragment {
                 // Positive button
                 .setPositiveButton(ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-//                        Intent myIntent = menu_new_view Intent(Intent.ACTION_VIEW, Uri.parse(moma_url));
-//                        startActivity(myIntent);
 
-                        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        sharedPrefs.edit().remove("multi_select_list_key").commit();
+                        ContentValues values = new ContentValues();
+                        values.put(ThothContract.Clazz.ENROLLED, FALSE);
+                        getActivity().getContentResolver().update(ThothContract.Clazz.CONTENT_URI, values, null, null );
+
                         Toast.makeText(getActivity(), toastMessage, Toast.LENGTH_LONG).show();
 
                         getFragmentManager().beginTransaction()
