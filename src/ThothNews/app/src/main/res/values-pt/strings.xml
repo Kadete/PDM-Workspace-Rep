@@ -2,7 +2,7 @@
 <resources>
 
     <!-- AndroidManifest - Activity Name -->
-    <string name="label_app_name">Thoth News</string>
+    <string name="label_app_name">As tuas turmas</string>
     <string name="label_activity_new_view">New View Activity</string>
     <string name="label_activity_preferences">Definições</string>
 
@@ -45,5 +45,7 @@
 
     <string name="notification_txt">Texto de notificação</string>
     <string name="classes_loading_error">There was a problem loading the classes list</string>
+    <string name="label_activity_classes">As Tuas Turmas</string>
+    <string name="title_activity_class_selection">Selecciona as tuas turmas</string>
 
 </resources>
