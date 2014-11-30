@@ -26,10 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.activities.NewsActivity;
+import pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
-import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
@@ -177,7 +176,7 @@ public class ThothUpdateService extends IntentService {
     private void handleNewsUpdate() {
         ContentResolver resolver = getContentResolver();
         Cursor c = resolver.query(ThothContract.Clazz.ENROLLED_URI,new String[]{ThothContract.Clazz._ID}
-                ,String.format("%s = true",ThothContract.Clazz.ENROLLED),null,null);
+                ,String.format("%s = 1",ThothContract.Clazz.ENROLLED),null,null);
 
         long classID;
         while(c.moveToNext()){
@@ -233,28 +232,21 @@ public class ThothUpdateService extends IntentService {
                         ++addedNews;
                     }
                 }
-                String classSelection = ThothContract.Clazz._ID + " = "+classID;
-                final Cursor classNameCursor = resolver.query(ThothContract.Clazz.CONTENT_URI, new String[]{ThothContract.Clazz.FULL_NAME}
-                        ,classSelection,null,null);
-                if(classNameCursor.moveToNext()){
-                    String className = classNameCursor.getString(0);
-                    if(addedNews >0){
-                        Notification.Builder builder = new Notification.Builder(getApplicationContext())
-                                .setContentTitle("You have news to read on "+className)
-                                .setContentText("Click to open the application")
-                                .setAutoCancel(true)
-                                .setSmallIcon(R.drawable.ic_thoth)
-                                .setVibrate(mVibratePattern)
-                                .setOngoing(false); //false => can drop notification on notification area, true => only dissapier if exectuted action for notification
+                if(addedNews >0){
+                    Notification.Builder builder = new Notification.Builder(getApplicationContext())
+                            .setContentTitle("You have news to read on!")
+                            .setContentText("Click to open the application.")
+                            .setAutoCancel(true)
+                            .setSmallIcon(R.drawable.ic_thoth)
+                            .setVibrate(mVibratePattern)
+                            .setOngoing(false); //false => can drop notification on notification area, true => only dissapier if exectuted action for notification
 
-                        Intent i = new Intent(getApplicationContext(), NewsActivity.class);
-                        i.putExtra(TagUtils.TAG_SELECT_CLASS_ID, String.valueOf(classID));
-                        PendingIntent pintent = PendingIntent.getActivity(getApplicationContext(), 1, i, 0);
-                        builder.setContentIntent(pintent);
+                    Intent i = new Intent(getApplicationContext(), ClassesActivity.class);
+                    PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 1, i, 0);
+                    builder.setContentIntent(pIntent);
 
-                        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                        notificationManager.notify(0, builder.build());
-                    }
+                    NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.notify(0, builder.build());
                 }
             } catch (JSONException e) {
                 Log.e(SERVICE_TAG, "ERROR: handleClassNewsUpdate(..) while parsing JSON response");

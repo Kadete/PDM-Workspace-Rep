@@ -14,6 +14,10 @@ public class UriUtils {
             return Uri.parse(String.format("%s/%d/news", ThothContract.Clazz.CONTENT_URI, classeID));
         }
 
+        public static Uri parseClasseID(long classeID){
+            return Uri.parse(String.format("%s/%d", ThothContract.Clazz.CONTENT_URI, classeID));
+        }
+
     }
 
     public static class News {

@@ -2,7 +2,6 @@
 <resources>
 
     <!-- AndroidManifest - Activity Name -->
-    <string name="label_app_name">As tuas turmas</string>
     <string name="label_activity_new_view">New View Activity</string>
     <string name="label_activity_preferences">Definições</string>
 

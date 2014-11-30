@@ -2,6 +2,8 @@ package pt.isel.pdm.grupo17.thothnews.utils;
 
 public class SQLiteUtils {
 
+    public static final String TRUE = "1", FALSE = "0";
+
     private static String wherePrefix = " AND (",
             whereInitialPrefix = " (",
             whereSuffix = " = ? )";

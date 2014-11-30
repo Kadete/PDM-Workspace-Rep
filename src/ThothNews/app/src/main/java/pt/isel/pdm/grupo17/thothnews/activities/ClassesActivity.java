@@ -28,10 +28,12 @@ import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
+import pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
+import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.*;
 import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ACTIVITY;
 
 public class ClassesActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -57,11 +59,9 @@ public class ClassesActivity extends ListActivity implements LoaderManager.Loade
         }
         /***********************************************************/
 
-        mAdapter =  new ClassesAdapter(getApplicationContext());
+        mAdapter =  new ClassesAdapter(this);
         getListView().setAdapter(mAdapter);
         getLoaderManager().initLoader(CLASSES_CURSOR_LOADER_ID, null, this);
-
-        ThothUpdateService.startActionClassesUpdate(getApplicationContext());
     }
 
     @Override
@@ -132,7 +132,6 @@ class ClassesAdapter extends CursorAdapter {
         public ImageView new_news;
     }
 
-    static final String FALSE = "0";
     static LayoutInflater sLayoutInflater = null;
     List<ThothClass> mClasses = new ArrayList<ThothClass>();
     Context mContext;

@@ -30,12 +30,12 @@ import java.util.List;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
-import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
+import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
 import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ACTIVITY;
 import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ADAPTER;
 
@@ -65,8 +65,6 @@ public class NewsActivity extends ListActivity implements LoaderManager.LoaderCa
         mAdapter =  new NewsAdapter(getApplicationContext());
         getListView().setAdapter(mAdapter);
         getLoaderManager().initLoader(NEWS_CURSOR_LOADER_ID, null, this);
-
-        ThothUpdateService.startActionClassNewsUpdate(getApplicationContext(), sClassID);
     }
 
     @Override
@@ -174,8 +172,6 @@ class NewsAdapter extends CursorAdapter {
         public CheckBox checkRead;
     }
 
-    static final int READ = 1;
-
     static LayoutInflater sLayoutInflater = null;
     List<ThothNew> mNews = new ArrayList<ThothNew>();
     Context mContext;
@@ -243,8 +239,7 @@ class NewsAdapter extends CursorAdapter {
         String dateStr = DateUtils.SHOW_DATE_FORMAT.format(date);
         holder.when.setText(dateStr);
 
-        int aux = cursor.getInt(cursor.getColumnIndex(ThothContract.News.READ));
-        Boolean read = aux == READ;
+        Boolean read = cursor.getString(cursor.getColumnIndex(ThothContract.News.READ)).equals(TRUE);
         holder.checkRead.setChecked(read);
         holder.title.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
         holder.when.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
