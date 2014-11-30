@@ -1,73 +1,85 @@
 package pt.isel.pdm.grupo17.thothnews.activities;
 
-import android.app.Activity;
+import android.app.ListActivity;
+import android.app.LoaderManager;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.content.Loader;
+import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
-import pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter;
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
+import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
+import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.TAG_ACTIVITY;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
+import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ACTIVITY;
 
-public class ClassesActivity extends Activity {
+public class ClassesActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    private ListView _listView;
-    ArrayList<ThothClass> rowItems;
-    ClassesListAdapter cAdapter;
+    ClassesAdapter mAdapter;
+    static final int CLASSES_CURSOR_LOADER_ID = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_classes_list);
-        settingListAdapter();
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        final Set<String> classesIDSelected = sharedPrefs.getStringSet("multi_select_list_key", null);
+        getActionBar().setTitle(R.string.label_activity_classes);
 
-        if (classesIDSelected == null || classesIDSelected.isEmpty()) {
-            startActivity(new Intent(ClassesActivity.this, PreferencesActivity.class));
-            finish();
+        /** código para simular turmas escolhidas nas preferencias **/
+        /** TODO: CLEAN CODE **/
+        ContentValues values = new ContentValues();
+        values.put(ThothContract.Clazz.ENROLLED, 1);
+
+        int[] args = new int[] {339, 340,348,360,361,373};
+        for(int i = 0; i < args.length; i++){
+            String selection = ThothContract.Clazz._ID + " = ? ";
+            String []selectionArgs = new String[]{String.valueOf(args[i])};
+            getContentResolver().update(ThothContract.Clazz.CONTENT_URI, values, selection, selectionArgs );
         }
+        /***********************************************************/
+
+        mAdapter =  new ClassesAdapter(getApplicationContext());
+        getListView().setAdapter(mAdapter);
+        getLoaderManager().initLoader(CLASSES_CURSOR_LOADER_ID, null, this);
+
+        ThothUpdateService.startActionClassesUpdate(getApplicationContext());
     }
 
-    protected void settingListAdapter() {
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
 
-        _listView = (ListView) findViewById(R.id.listView1);
-        rowItems = new ArrayList<ThothClass>();
-
-        cAdapter = new ClassesListAdapter(ClassesActivity.this, R.layout.layout_class_item, rowItems);
-        _listView.setAdapter(cAdapter);
+        ThothClass clazz = (ThothClass) mAdapter.getItem(position);
+        Intent i = new Intent(this, NewsActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.putExtra(TagUtils.TAG_SELECT_CLASS_NAME, clazz.getFullName());
+        i.putExtra(TagUtils.TAG_SELECT_CLASS_ID, clazz.getID());
+        startActivity(i);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        d(TAG_ACTIVITY,"ClassesActivity: onResume()");
-
-        if(cAdapter.getCount() == 0)
-            executeExtractor();
+        d(TAG_ACTIVITY, "ClassesActivity: onResume()");
     }
 
     @Override
@@ -93,82 +105,104 @@ public class ClassesActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void executeExtractor() {
-
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Set<String> classesSet = sharedPrefs.getStringSet("multi_select_list_key", null);
-        String[] classesIDSelected = new String[classesSet.size()];
-        sharedPrefs.getStringSet("multi_select_list_key", null).toArray(classesIDSelected);
-
-        new ExtractorClasses() {
-
-            @Override
-            protected void onPostExecute (List < ThothClass > result) {
-                if (result == null || result.size() < 1) {
-                    Toast.makeText(
-                        getApplicationContext(), "Thoth Connection Failed", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                rowItems.clear();
-
-                for (ThothClass thothClass : result)
-                    rowItems.add(thothClass);
-
-                cAdapter = new ClassesListAdapter(getApplicationContext(), R.layout.layout_class_item, rowItems);
-                _listView.setAdapter(cAdapter);
-                cAdapter.notifyDataSetChanged();
-                _listView.refreshDrawableState();
-            }
-
-        }.execute(classesIDSelected);
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String OrderBy = ThothContract.Clazz.SEMESTER+ ", "+ ThothContract.Clazz.FULL_NAME + " ASC";
+        String[] columns_to_return = {ThothContract.Clazz._ID,ThothContract.Clazz.FULL_NAME,ThothContract.Clazz.TEACHER, ThothContract.Clazz.UNREAD_NEWS};
+        return new CursorLoader(this, ThothContract.Clazz.ENROLLED_URI, columns_to_return , null, null, OrderBy);
     }
-
-}
-
-class ExtractorClasses extends AsyncTask<String[], Void, List<ThothClass>> {
 
     @Override
-    protected List<ThothClass> doInBackground(String[]... sets) {
-
-        try {
-            List<ThothClass> newItems = new LinkedList<ThothClass>();
-            URL url;
-
-            if(sets[0] == null){
-                return null;
-            }
-            String[] aux = sets[0];
-            for(int i = 0;i<aux.length;++i){
-//            Iterator it = sets[0].iterator();
-//            while(it.hasNext()){
-
-//                url = new URL("http://thoth.cc.e.ipl.pt/api/v1/classes/" + it.next());
-                url = new URL("http://thoth.cc.e.ipl.pt/api/v1/classes/" + aux[i]);
-                HttpURLConnection c = (HttpURLConnection) url.openConnection();
-                try {
-                    InputStream is = c.getInputStream();
-                    String data = readAllFrom(is);
-                    newItems.add(parseFrom(data));
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return null;
-                } finally {
-                    c.disconnect();
-                }
-            }
-            return newItems;
-        } catch (IOException e) {
-            return null;
-        }
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
     }
-    private ThothClass parseFrom(String s) throws JSONException {
-        JSONObject root = new JSONObject(s);
 
-        return new ThothClass(
-                root.getInt("id"),
-                root.getString("fullName"),
-                root.getString("mainTeacherShortName")
-        );
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
+    }
+}
+
+class ClassesAdapter extends CursorAdapter {
+
+    static class ClassViewHolder{
+        public TextView id;
+        public TextView full_name;
+        public TextView teacher;
+        public ImageView new_news;
+    }
+
+    static final String FALSE = "0";
+    static LayoutInflater sLayoutInflater = null;
+    List<ThothClass> mClasses = new ArrayList<ThothClass>();
+    Context mContext;
+
+    public ClassesAdapter(Context context) {
+        super(context, null, 0);
+        mContext = context;
+        sLayoutInflater = LayoutInflater.from(context);
+    }
+
+//    public void clearList() {
+//        mClasses.clear();
+//        mContext.getContentResolver().delete(ThothContract.Clazz.CONTENT_URI, null, null);
+//        notifyDataSetChanged();
+//    }
+
+    @Override
+    public Object getItem(int position) {
+        return mClasses.get(position);
+    }
+
+    @Override
+    public Cursor swapCursor(Cursor newCursor) {
+        Cursor oldCursor = super.swapCursor(newCursor);
+        mClasses.clear();
+        if (newCursor !=null) {
+            newCursor.moveToFirst();
+            while(!newCursor.isAfterLast()) {
+                ThothClass clazz = ThothClass.fromCursor(newCursor);
+                mClasses.add(clazz);
+                newCursor.moveToNext();
+            }
+        }
+        notifyDataSetChanged();
+        return oldCursor;
+    }
+
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
+        ClassViewHolder holder = new ClassViewHolder();
+        View newView = sLayoutInflater.inflate(R.layout.layout_class_item, null);
+
+        holder.id = (TextView)newView.findViewById(R.id.class_item_id);
+        holder.full_name = (TextView)newView.findViewById(R.id.class_item_full_name);
+        holder.teacher = (TextView)newView.findViewById(R.id.class_item_teacher);
+        holder.new_news = (ImageView)newView.findViewById(R.id.class_item_new_news_ic);
+
+        newView.setTag(holder);
+        return newView;
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        ClassViewHolder holder = (ClassViewHolder)view.getTag();
+
+        Long classeID = cursor.getLong(cursor.getColumnIndex(ThothContract.Clazz._ID));
+
+        holder.id.setText(String.valueOf(classeID));
+        holder.full_name.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.FULL_NAME)));
+        holder.teacher.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.TEACHER)));
+
+        String selection = ThothContract.News.READ + " =  ? ";
+        String [] selectionArgs =  new String[] { FALSE };
+        String orderBy = ThothContract.News.READ;
+        Uri classNewsUri = UriUtils.Classes.parseNewsFromClasseID(classeID);
+        Cursor cursorNewsRead = mContext.getContentResolver().query(classNewsUri, new String[] {ThothContract.Clazz._ID}, selection, selectionArgs, orderBy);
+
+        Boolean newsToRead = cursorNewsRead.moveToNext();
+        holder.new_news.setVisibility((newsToRead)? View.VISIBLE : View.GONE);
+        cursorNewsRead.close();
+        view.setBackground(new ColorDrawable((newsToRead) ? 0x44440000 : 0x44444444));
     }
 }

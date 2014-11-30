@@ -16,6 +16,7 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:windowBackground">@drawable/bg_gradient</item>
     </style>
 
     <!-- Separator Line for Layout's -->
@@ -24,5 +25,4 @@
         <item name="android:layout_height">2dp</item>
         <item name="android:background">?android:attr/listDivider</item>
     </style>
-
 </resources>

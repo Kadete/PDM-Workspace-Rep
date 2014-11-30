@@ -3,13 +3,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp">
+    android:layout_margin="@dimen/activity_horizontal_margin">
 
     <TextView
         android:id="@+id/new_view_when"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/new_view_when"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
         android:textSize="14sp"
         android:textStyle="italic"/>
 
@@ -20,14 +23,23 @@
         android:text="@string/new_view_title"
         android:layout_below="@id/new_view_when"
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:paddingBottom="@dimen/activity_vertical_margin"/>
+
+    <View
+        android:id="@+id/divisor"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="#000000"
+        android:layout_below="@+id/new_view_title"/>
 
     <TextView
         android:id="@+id/new_view_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/new_view_content"
-        android:layout_below="@id/new_view_title"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:layout_below="@id/divisor"
         android:autoLink="web"
         android:textSize="14sp"/>
 

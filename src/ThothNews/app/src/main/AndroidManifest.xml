@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
@@ -21,15 +23,14 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/thoth_icon"
-        android:label="@string/label_app_name"
-        android:theme="@style/AppTheme" >
+        android:icon="@drawable/ic_thoth"
+        android:theme="@style/AppTheme"
+        >
         <activity
             android:name="pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity"
-            android:label="@string/title_activity_classes" >
+            android:label="@string/label_app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -40,12 +41,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ClassesActivity" />
-
-            <intent-filter>
-                <action android:name=".NewViewActivity" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="pt.isel.pdm.grupo17.thothnews.activities.PreferencesActivity"
@@ -55,11 +50,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
 
-            <intent-filter>
-                <action android:name=".PreferencesActivity" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="pt.isel.pdm.grupo17.thothnews.activities.SingeNewActivity"
@@ -68,12 +58,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
-
-            <intent-filter>
-                <action android:name=".NewViewActivity" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <receiver android:name="pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver" >
@@ -96,7 +80,7 @@
         </service>
 
         <activity
-            android:name="pt.isel.pdm.grupo17.thothnews.activities.ClassSelectionActivity"
+            android:name=".activities.ClassesSelectionActivity"
             android:label="@string/title_activity_class_selection"
             android:parentActivityName="pt.isel.pdm.grupo17.thothnews.activities.PreferencesActivity" >
             <meta-data

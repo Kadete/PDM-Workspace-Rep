@@ -1,28 +1,12 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.util.Log;
-
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.activities.ClassSelectionActivity;
-import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
-
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.TAG_ASYNC_TASK;
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.e;
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.parseThothClasses;
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
+import pt.isel.pdm.grupo17.thothnews.activities.ClassesSelectionActivity;
 
 
 public class SettingsFragment extends PreferenceFragment {
@@ -40,36 +24,12 @@ public class SettingsFragment extends PreferenceFragment {
 
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(getActivity(), ClassSelectionActivity.class);
+                Intent i = new Intent(getActivity(), ClassesSelectionActivity.class);
                 startActivity(i);
                 return true;
             }
         });
 
-        ExtractorClassesSettings c = new ExtractorClassesSettings(){
-            @Override
-            protected void onPostExecute(ThothClass[] result){
-                if(result == null){
-                    Log.e("", "ERROR: onPostExecute(..) -> result == null");
-                }else{
-
-                    CharSequence[] entries = new CharSequence[result.length], entryValues = new CharSequence[result.length];
-
-                    for(int i = 0 ; i < result.length ; ++i){
-                        entries[i] = result[i]._fullname;
-                        entryValues[i] = String.valueOf(result[i]._id);
-                    }
-
-                    MultiSelectListPreference lp = (MultiSelectListPreference)findPreference("multi_select_list_key");
-
-                    lp.setEntries(entries);
-                    lp.setEntryValues(entryValues);
-
-                }
-            }
-
-        };
-        c.execute();
         Preference p = findPreference("reset_classes");
         p.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
@@ -80,30 +40,6 @@ public class SettingsFragment extends PreferenceFragment {
                 return true;
             }
         });
-    }
-}
-
-class ExtractorClassesSettings extends AsyncTask<Void ,Void,ThothClass[]> {
-
-    @Override
-    protected ThothClass[] doInBackground(Void... arg0) {
-        try {
-            URL url = new URL("http://thoth.cc.e.ipl.pt/api/v1/classes/");
-
-            HttpURLConnection c = (HttpURLConnection) url.openConnection();
-            try {
-                InputStream is = c.getInputStream();
-                String data = readAllFrom(is);
-                return parseThothClasses(data);
-            } catch (JSONException e) {
-                e(TAG_ASYNC_TASK,e.getMessage());
-                return null;
-            } finally {
-                c.disconnect();
-            }
-        } catch (IOException e) {
-            return null;
-        }
     }
 }
 

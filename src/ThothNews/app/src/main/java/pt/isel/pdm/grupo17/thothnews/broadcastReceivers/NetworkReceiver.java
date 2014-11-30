@@ -1,12 +1,5 @@
 package pt.isel.pdm.grupo17.thothnews.broadcastreceivers;
 
-/**
- * Created by Kadete on 11/11/2014.
- */
-
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +7,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 
-import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.TAG_BROADCAST;
+import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_BROADCAST;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
 
 public class NetworkReceiver extends BroadcastReceiver {

@@ -3,62 +3,35 @@ package pt.isel.pdm.grupo17.thothnews.activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.ParseException;
-
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.models.LinksClass;
-import pt.isel.pdm.grupo17.thothnews.models.ThothClassNew;
-import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
+import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
+import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.adapters.NewsListAdapter.TAG_SELECT_NEW_ID;
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.TAG_ACTIVITY;
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.TAG_ASYNC_TASK;
+import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ACTIVITY;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.e;
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
 
 public class SingeNewActivity extends Activity {
+
+    static ThothNew sThothNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_new_view);
+        getActionBar().setTitle(getIntent().getStringExtra(TagUtils.TAG_SELECT_CLASS_NAME));
 
-        d(TAG_ACTIVITY, "NewViewActivity, onCreate Called");
-
-        Intent intent = getIntent();
-        String newId = intent.getStringExtra(TAG_SELECT_NEW_ID);
-
-        new ExtractorSingleNew(){
-            @Override
-            protected void onPostExecute(ThothClassNew result){
-
-                TextView _tvTitle = (TextView) findViewById(R.id.new_view_title);
-                if(result == null){
-                    _tvTitle.setText("error");
-                }else{
-                    TextView _tvWhen = (TextView) findViewById(R.id.new_view_when);
-                    TextView _tvContent = (TextView) findViewById(R.id.new_view_content);
-                    _tvWhen.setText(result.getFormattedWhen());
-                    _tvTitle.setText(result.title);
-                    _tvContent.setText(result.content);
-                }
-            }
-        }.execute(newId);
+        sThothNew = (ThothNew) getIntent().getExtras().getSerializable(TagUtils.TAG_SELECT_NEW);
+        final TextView title = (TextView) findViewById(R.id.new_view_title);
+        title.setText(sThothNew.getTitle());
+        final TextView when = (TextView) findViewById(R.id.new_view_when);
+        when.setText(sThothNew.getFormattedWhen());
+        final TextView content = (TextView) findViewById(R.id.new_view_content);
+        content.setText(sThothNew.getContent());
     }
 
     @Override
@@ -72,6 +45,7 @@ public class SingeNewActivity extends Activity {
         super.onStart();
         d(TAG_ACTIVITY, "NewViewActivity, onStart Called");
         ActionBar actionbar = this.getActionBar();
+        assert actionbar != null;
         actionbar.setDisplayHomeAsUpEnabled(true);
     }
 
@@ -126,58 +100,5 @@ public class SingeNewActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
-
 }
 
-class ExtractorSingleNew extends AsyncTask<String,Void,ThothClassNew> {
-
-    String urlString = "http://thoth.cc.e.ipl.pt/api/v1/newsitems/";
-
-    @Override
-    protected ThothClassNew doInBackground(String... arg0) {
-        try{
-
-            URL url = new URL(urlString + arg0[0]);
-            HttpURLConnection c = (HttpURLConnection)url.openConnection();
-
-            try{
-                InputStream is = c.getInputStream();
-                String data = readAllFrom(is);
-                return parseFrom(data);
-
-            } finally{
-                c.disconnect();
-            }
-        }catch(IOException e){
-            e(TAG_ASYNC_TASK, e.getMessage());
-        } catch (ParseException e) {
-            e(TAG_ASYNC_TASK, e.getMessage());
-        }
-        return null;
-    }
-
-    private ThothClassNew parseFrom(String s) throws ParseException {
-
-        JSONObject root;
-        ThothClassNew _new = new ThothClassNew();
-        try {
-            root = new JSONObject(s);
-            _new.id = root.getInt("id");
-            _new.title = root.getString("title");
-            _new.when = DateUtils.SAVE_DATE_FORMAT.parse(root.getString("when"));
-            _new.content = String.valueOf(Html.fromHtml(root.getString("content")));
-            _new._links = new LinksClass();
-
-            JSONObject links = root.getJSONObject("_links");
-            _new._links.self = links.getString("self");
-            _new._links.classNewsItems = links.getString("classNewsItems");
-            _new._links.clazz = links.getString("class");
-            _new._links.root = links.getString("root");
-        } catch (JSONException e) {
-            e(TAG_ASYNC_TASK, e.getMessage());
-            return null;
-        }
-        return _new;
-    }
-
-}

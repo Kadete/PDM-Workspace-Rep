@@ -18,8 +18,6 @@ public final class ThothContract {
     public static final String PATH_NEWS = "news";
     public static final String PATH_CLASSES_ENROLLED = "enrolled";
 
-
-
     private static final String TYPE_TEXT = " TEXT";
     private static final String TYPE_INTEGER = " INTEGER";
     private static final String TYPE_BOOLEAN = " BOOLEAN";
@@ -82,6 +80,7 @@ public final class ThothContract {
          */
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_NEWS).build();
+
         public static final String TABLE_NAME = "news",
                 TITLE = "title",
                 WHEN_CREATED = "when_created",

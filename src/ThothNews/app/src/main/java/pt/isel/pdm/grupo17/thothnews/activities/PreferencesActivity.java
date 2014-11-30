@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -15,15 +14,15 @@ import java.util.Set;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.fragments.SettingsFragment;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.*;
+import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
+import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ACTIVITY;
 
 public class PreferencesActivity extends PreferenceActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        d(TAG_ACTIVITY, "PreferencesActivity, onCreate Called");
+        getActionBar().setTitle(R.string.label_activity_preferences);
 
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
@@ -62,6 +61,7 @@ public class PreferencesActivity extends PreferenceActivity {
         super.onStart();
         d(TAG_ACTIVITY, "PreferencesActivity, onStart Called");
         ActionBar actionbar = this.getActionBar();
+        assert actionbar != null;
         actionbar.setDisplayHomeAsUpEnabled(true);
     }
 

@@ -1,121 +1,97 @@
 package pt.isel.pdm.grupo17.thothnews.activities;
 
 import android.app.ActionBar;
-import android.app.Activity;
+import android.app.ListActivity;
+import android.app.LoaderManager;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.Loader;
+import android.database.Cursor;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.adapters.NewsListAdapter;
-import pt.isel.pdm.grupo17.thothnews.models.ThothClassNewListItem;
+import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
+import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
+import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
-import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_ID;
-import static pt.isel.pdm.grupo17.thothnews.adapters.ClassesListAdapter.TAG_SELECT_CLASS_NAME;
-import static pt.isel.pdm.grupo17.thothnews.models.ThothClassNewListItem.Status;
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.*;
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.TAG_ACTIVITY;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
+import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ACTIVITY;
+import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ADAPTER;
 
-public class NewsActivity extends Activity {
+public class NewsActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private ListView _listView;
-    ArrayList<ThothClassNewListItem> rowItems;
-    NewsListAdapter nAdapter;
+    NewsAdapter mAdapter;
+    static long sClassID;
+    static String sClassName;
 
-    static String classId;
-    private static String FILE_NAME;
+    static final int NEWS_CURSOR_LOADER_ID = 2;
+    static final int ARG_CLASS_ID_DEFAULT_VALUE = -1;
+
+
+    static final String[] CURSOR_COLUMNS = {ThothContract.News._ID, ThothContract.News.TITLE,
+            ThothContract.News.WHEN_CREATED, ThothContract.News.READ, ThothContract.News.CONTENT};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_news_list);
-
-        d(TAG_ACTIVITY, "MainActivity, onCreate Called");
-
-        settingListAdapter();
-        loadItems();
-
-        if(nAdapter.getCount()== 0){ // || gotNotificationToUpdate
-            extractThothNews();
-        }
-    }
-
-    protected void settingListAdapter(){
-
-        _listView = (ListView) findViewById(R.id.listView1);
-        rowItems = new ArrayList<ThothClassNewListItem>();
 
         Intent intent = getIntent();
-        classId = intent.getStringExtra(TAG_SELECT_CLASS_ID);
-        String className = intent.getStringExtra(TAG_SELECT_CLASS_NAME);
-        FILE_NAME= "NewsActivityData" + classId + ".txt";
+        sClassID = intent.getLongExtra(TagUtils.TAG_SELECT_CLASS_ID, ARG_CLASS_ID_DEFAULT_VALUE);
 
-        TextView tv_title = (TextView) this.findViewById(R.id.class_news_title);
-        tv_title.setText(className);
+        sClassName = intent.getStringExtra(TagUtils.TAG_SELECT_CLASS_NAME);
+        getActionBar().setTitle(sClassName);
 
-        nAdapter = new NewsListAdapter(NewsActivity.this, R.layout.layout_new_item, rowItems);
-        _listView.setAdapter(nAdapter);
+        mAdapter =  new NewsAdapter(getApplicationContext());
+        getListView().setAdapter(mAdapter);
+        getLoaderManager().initLoader(NEWS_CURSOR_LOADER_ID, null, this);
+
+        ThothUpdateService.startActionClassNewsUpdate(getApplicationContext(), sClassID);
     }
 
-    private void extractThothNews(){
-        new ExtractorMultipleNews(){
-            @Override
-            protected void onPostExecute(ArrayList<ThothClassNewListItem> result){
-                if (result == null || result.size() < 1) {
-                    Toast.makeText(getApplicationContext(),
-                            getString(R.string.get_news_fail_toast), Toast.LENGTH_SHORT).show();
-                    return;
-                }
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
 
-                rowItems.clear();
-                rowItems.addAll(result);
+        ThothNew thothNew = (ThothNew) mAdapter.getItem(position);
+        long newID = thothNew.getID();
 
-                sortAdapter();
+        ContentValues values = new ContentValues();
+        values.put(ThothContract.News.READ, 1);
+        getContentResolver().update(UriUtils.News.parseFromNewID(newID), values, null, null );
 
-                nAdapter.notifyDataSetChanged();
-
-                _listView.setAdapter(nAdapter);
-                _listView.refreshDrawableState();
-
-                Toast.makeText(getApplicationContext(), getString(R.string.get_news_success_toast), Toast.LENGTH_SHORT).show();
-            }
-        }.execute(classId);
+        Intent i = new Intent(this, SingeNewActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.putExtra(TagUtils.TAG_SELECT_CLASS_NAME, sClassName);
+        i.putExtra(TagUtils.TAG_SELECT_NEW, thothNew);
+        startActivity(i);
     }
 
     @Override
     protected void onStart(){
         super.onStart();
         ActionBar actionbar = this.getActionBar();
+        assert actionbar != null;
         actionbar.setDisplayHomeAsUpEnabled(true);
         d(TAG_ACTIVITY, "MainActivity, onStart Called");
     }
@@ -124,24 +100,13 @@ public class NewsActivity extends Activity {
     protected void onResume(){
         super.onResume();
         d(TAG_ACTIVITY, "MainActivity, onResume Called");
-
-        if(_listView == null || _listView.getAdapter() == null){
-            d(TAG_ACTIVITY, "_listView.getAdapter() == null");
-            settingListAdapter();
-        }
-
-        if(nAdapter.getCount() == 0)
-            loadItems();
-        else
-            sortAdapter();
+        /* TODO sort*/
     }
 
     @Override
     protected void onPause(){
         super.onPause();
         d(TAG_ACTIVITY, "MainActivity, onPause Called");
-        if(nAdapter.getCount() != 0)
-            saveItems();
     }
 
     @Override
@@ -176,176 +141,114 @@ public class NewsActivity extends Activity {
                 startActivity(new Intent(NewsActivity.this, PreferencesActivity.class));
                 return true;
             case R.id.action_refresh_all:
-                try {
-                    FileOutputStream fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
-                    PrintWriter writer = new PrintWriter(fos);
-                    writer.print("");
-                    writer.close();
-                } catch (FileNotFoundException e) {
-                    e(TAG_ACTIVITY, e.getMessage());
-                    return false;
-                }
-
-                extractThothNews();
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void loadItems() {
-        BufferedReader reader = null;
-        try {
-            FileInputStream fis = openFileInput(FILE_NAME);
-            reader = new BufferedReader(new InputStreamReader(fis));
-
-            String class_id;
-            String new_id;
-            String title;
-            Date when;
-            Status status;
-
-//            rowItems.clear();
-
-            while (null != (class_id = reader.readLine())) {
-                if(classId.compareToIgnoreCase(class_id) != 0)
-                    continue;
-
-                new_id = reader.readLine();
-                title = reader.readLine();
-
-                /*TODO Fix Exception */
-                when = DateUtils.SAVE_DATE_FORMAT.parse(reader.readLine());
-
-                status = (reader.readLine().compareToIgnoreCase(String.valueOf(Status.READ)) == 0)
-                        ? Status.READ
-                        : Status.NOTREAD;
-
-                rowItems.add(new ThothClassNewListItem(Integer.valueOf(new_id), title, when, status));
-            }
-
-            if(rowItems.isEmpty())
-                return;
-
-            nAdapter = new NewsListAdapter(NewsActivity.this, R.layout.layout_new_item, rowItems);
-            _listView.setAdapter(nAdapter);
-
-            sortAdapter();
-
-            nAdapter.notifyDataSetChanged();
-            _listView.refreshDrawableState();
-
-
-        } catch (FileNotFoundException e) {
-            e(TAG_ACTIVITY, e.getMessage());
-        } catch (IOException e) {
-            e(TAG_ACTIVITY, e.getMessage());
-        } catch (ParseException e) {
-            e(TAG_ACTIVITY, e.getMessage());
-        } finally {
-            if (null != reader) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e(TAG_ACTIVITY, e.getMessage());
-                }
-            }
-        }
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String selection = ThothContract.News.CLASS_ID + " = ? ";
+        String [] selectionArgs = new String[]{ String.valueOf(sClassID) };
+        return new CursorLoader(this, ThothContract.News.CONTENT_URI, CURSOR_COLUMNS , selection, selectionArgs, ThothContract.News.READ +", "+ ThothContract.News.WHEN_CREATED + " DESC");
     }
 
-    private void sortAdapter() {
-
-        nAdapter.sort(new Comparator<ThothClassNewListItem>() {
-            public int compare(ThothClassNewListItem tc1, ThothClassNewListItem tc2) {
-                return tc2.getWhen().compareTo(tc1.getWhen());
-            };
-        });
-
-        nAdapter.sort(new Comparator<ThothClassNewListItem>() {
-            public int compare(ThothClassNewListItem tc1, ThothClassNewListItem tc2) {
-                return tc1.getStatus().compareTo(tc2.getStatus());
-            };
-        });
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
     }
 
-    private void saveItems() {
-        PrintWriter writer = null;
-        try {
-            FileOutputStream fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
-            writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-                    fos)));
-
-            for(ThothClassNewListItem thothClass : rowItems){
-                writer.println(thothClass.GetInfoToStore(classId));
-            }
-
-        } catch (IOException e) {
-            e(TAG_ACTIVITY, e.getMessage());
-        } finally {
-            if (null != writer) {
-                writer.close();
-            }
-        }
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
     }
-
 }
 
-class ExtractorMultipleNews extends AsyncTask<String, Void, ArrayList<ThothClassNewListItem>> {
+class NewsAdapter extends CursorAdapter {
 
-    final static String urlString = "http://thoth.cc.e.ipl.pt/api/v1/classes/";
+    class NewViewHolder {
+        public TextView id;
+        public TextView title;
+        public TextView when;
+        public CheckBox checkRead;
+    }
+
+    static final int READ = 1;
+
+    static LayoutInflater sLayoutInflater = null;
+    List<ThothNew> mNews = new ArrayList<ThothNew>();
+    Context mContext;
+
+    public NewsAdapter(Context context) {
+        super(context, null, 0);
+        mContext = context;
+        sLayoutInflater = LayoutInflater.from(mContext);
+    }
+
+//    public void clearList() {
+//        mNews.clear();
+//        mContext.getContentResolver().delete(ThothContract.News.CONTENT_URI, null, null);
+//        notifyDataSetChanged();
+//    }
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
+    public Object getItem(int position) {
+        return mNews.get(position);
     }
 
     @Override
-    protected ArrayList<ThothClassNewListItem> doInBackground(String ... classId) {
-        try {
-
-            ArrayList<ThothClassNewListItem> newItems = new ArrayList<ThothClassNewListItem>();
-
-            URL url = new URL(urlString + classId[0] + "/newsitems");
-            HttpURLConnection c = (HttpURLConnection) url.openConnection();
-            try {
-                InputStream is = c.getInputStream();
-                String data = readAllFrom(is);
-
-                for(ThothClassNewListItem newItem : parseFrom(data))
-                    newItems.add(newItem);
-
-            } catch (JSONException e) {
-                e(TAG_ASYNC_TASK, e.getMessage());
-                return null;
-            } catch (ParseException e) {
-                e(TAG_ASYNC_TASK, e.getMessage());
-                return null;
-            } finally {
-                c.disconnect();
+    public Cursor swapCursor(Cursor newCursor) {
+        Cursor oldCursor = super.swapCursor(newCursor);
+        mNews.clear();
+        if (newCursor !=null) {
+            newCursor.moveToFirst();
+            while(!newCursor.isAfterLast()) {
+                ThothNew thothNew = ThothNew.fromCursor(newCursor);
+                mNews.add(thothNew);
+                newCursor.moveToNext();
             }
-            return newItems;
-        } catch (IOException e) {
-            e(TAG_ASYNC_TASK, e.getMessage());
-            return null;
         }
+        notifyDataSetChanged();
+        return oldCursor;
     }
 
-    private ArrayList<ThothClassNewListItem> parseFrom(String s) throws JSONException, ParseException {
-        JSONObject root = new JSONObject(s);
-        JSONArray jnews = root.getJSONArray("newsItems");
-        ArrayList<ThothClassNewListItem> news = new ArrayList<ThothClassNewListItem>(jnews.length());
-        for (int i = 0; i < jnews.length(); ++i) {
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
+        NewViewHolder holder = new NewViewHolder();
+        View newView = sLayoutInflater.inflate(R.layout.layout_new_item, null);
 
-            JSONObject jnew = jnews.getJSONObject(i);
+        holder.id = (TextView)newView.findViewById(R.id.new_item_id);
+        holder.title = (TextView)newView.findViewById(R.id.new_item_title);
+        holder.when = (TextView)newView.findViewById(R.id.new_item_when);
+        holder.checkRead = (CheckBox)newView.findViewById(R.id.new_item_checkread);
 
-            int id = jnew.getInt("id");
-            String title = jnew.getString("title");
-            Date when = DateUtils.SAVE_DATE_FORMAT.parse(jnew.getString("when"));
-            String self = jnew.getJSONObject("_links").getString("self");
+        newView.setTag(holder);
+        return newView;
+    }
 
-            news.add(new ThothClassNewListItem(id, title, when, self));
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        NewViewHolder holder = (NewViewHolder)view.getTag();
+
+        holder.id.setText(cursor.getString(cursor.getColumnIndex(ThothContract.News._ID)));
+        holder.title.setText(cursor.getString(cursor.getColumnIndex(ThothContract.News.TITLE)));
+
+        Date date = new Date();
+        try {
+            date = DateUtils.SAVE_DATE_FORMAT.parse(cursor.getString(cursor.getColumnIndex(ThothContract.News.WHEN_CREATED)));
+        } catch (ParseException e) {
+            d(TAG_ADAPTER, "FAIL TO PARSE DATE");
         }
-        return news;
+        String dateStr = DateUtils.SHOW_DATE_FORMAT.format(date);
+        holder.when.setText(dateStr);
+
+        int aux = cursor.getInt(cursor.getColumnIndex(ThothContract.News.READ));
+        Boolean read = aux == READ;
+        holder.checkRead.setChecked(read);
+        holder.title.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
+        holder.when.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
+        view.setBackground(new ColorDrawable((!read) ? 0x44440000 : 0x44444444));
+
     }
 }

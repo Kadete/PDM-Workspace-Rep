@@ -24,7 +24,7 @@ public class AlertDialogFragment extends DialogFragment {
 
         return new AlertDialog.Builder(getActivity())
                 // Set Dialog Icon
-                .setIcon(R.drawable.thoth_icon)
+                .setIcon(R.drawable.ic_thoth)
                 // Set Dialog Title
                 .setTitle(clean)
                 // Set Dialog Message
