@@ -37,6 +37,7 @@ public class PreferencesActivity extends PreferenceActivity {
         if (cursor.moveToNext()) {
             startActivity(new Intent(this, ClassesActivity.class));
             cursor.close();
+            finish();
             return;
         }
         cursor.close();

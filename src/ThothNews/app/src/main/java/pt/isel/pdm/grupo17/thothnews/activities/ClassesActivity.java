@@ -2,7 +2,6 @@ package pt.isel.pdm.grupo17.thothnews.activities;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,14 +27,10 @@ import java.util.List;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
-import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
-import pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
-import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.*;
-import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ACTIVITY;
+import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.FALSE;
 
 public class ClassesActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -84,6 +78,7 @@ public class ClassesActivity extends ListActivity implements LoaderManager.Loade
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             startActivity( new Intent(new Intent(ClassesActivity.this, PreferencesActivity.class)));
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
