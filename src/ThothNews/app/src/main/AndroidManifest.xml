@@ -28,7 +28,8 @@
         >
         <activity
             android:name="pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity"
-            android:label="@string/label_app_name" >
+            android:label="@string/label_app_name"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
