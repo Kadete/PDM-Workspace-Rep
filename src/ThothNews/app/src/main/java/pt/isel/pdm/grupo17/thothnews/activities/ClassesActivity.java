@@ -55,6 +55,12 @@ public class ClassesActivity extends ListActivity implements LoaderManager.Loade
     }
 
     @Override
+    protected void onResume(){
+        super.onResume();
+        getLoaderManager().restartLoader(CLASSES_CURSOR_LOADER_ID, null, this);
+    }
+
+    @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
