@@ -1,16 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="pt.isel.pdm.grupo17.thothnews.activities.ClassesSelectionActivity"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pt.isel.pdm.grupo17.thothnews.activities.ClassesSelectionActivity">
-
-    <ListView
-        android:id="@+id/classesList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+    android:layout_alignParentBottom="true"
     >
-    </ListView>
-
     <ProgressBar
         android:id="@+id/classes_progress"
         style="@android:style/Widget.ProgressBar"
@@ -29,4 +23,37 @@
         android:visibility="gone"
         />
 
+    <ListView
+        android:id="@+id/classesList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttomBtns"
+        />
+
+    <LinearLayout style="?android:buttonBarStyle"
+        android:id="@+id/buttomBtns"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        >
+
+        <Button style="?android:buttonBarButtonStyle"
+            android:id="@+id/BtnDiscard"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/discard"
+        />
+        <Button style="?android:buttonBarButtonStyle"
+            android:id="@+id/BtnSave"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/save"
+        />
+
+    </LinearLayout>
 </RelativeLayout>

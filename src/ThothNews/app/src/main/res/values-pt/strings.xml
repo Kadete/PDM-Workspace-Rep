@@ -46,5 +46,9 @@
     <string name="classes_loading_error">There was a problem loading the classes list</string>
     <string name="label_activity_classes">As Tuas Turmas</string>
     <string name="title_activity_class_selection">Selecciona as tuas turmas</string>
+    <string name="class_selection_cancel">Selecção Descartada!</string>
+    <string name="class_selection_ok">Turmas seleccionadas guardadas com sucesso!</string>
+    <string name="discard">Descartar</string>
+    <string name="save">Gravar</string>
 
 </resources>

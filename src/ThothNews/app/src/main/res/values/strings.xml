@@ -34,6 +34,8 @@
     <!-- layout: layout_class_selection_item -->
     <string name="class_item_when" translatable="false">class_item_when</string>
     <string name="class_item_title" translatable="false">class_item_title</string>
+    <string name="class_selection_cancel">Selection was canceled!</string>
+    <string name="class_selection_ok">Selection saved with success!</string>
 
     <!-- menu: main & new_view -->
     <string name="title_action_settings">Settings</string>
@@ -56,7 +58,9 @@
     <string name="get_news_fail_toast">Last news update failed!</string>
     <string name="request_select_class_toast">Please select one class at least!</string>
     <string name="notification_txt">Notification text</string>
-    <string name="title_activity_class_selection">Select your classses</string>
+    <string name="title_activity_class_selection">Select your classes</string>
     <string name="classes_loading_error">There was a problem loading the classes list</string>
+    <string name="discard">Discard</string>
+    <string name="save">Save</string>
 
 </resources>

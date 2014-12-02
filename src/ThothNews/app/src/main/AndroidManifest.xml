@@ -83,11 +83,7 @@
         <activity
             android:name=".activities.ClassesSelectionActivity"
             android:label="@string/title_activity_class_selection"
-            android:parentActivityName="pt.isel.pdm.grupo17.thothnews.activities.PreferencesActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="pt.isel.pdm.grupo17.thothnews.activities.PreferencesActivity" />
-        </activity>
+        />
     </application>
 
 </manifest>

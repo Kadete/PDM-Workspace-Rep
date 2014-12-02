@@ -10,14 +10,15 @@ import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,29 @@ public class ClassesSelectionActivity extends Activity implements LoaderManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_class_selection_view);
 
+        final Button cancelBtn = (Button) findViewById(R.id.BtnDiscard);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(),getString(R.string.class_selection_cancel), Toast.LENGTH_LONG).show();
+                finish();
+            }
+        });
+
+        final Button okBtn = (Button) findViewById(R.id.BtnSave);
+        okBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Cursor classCursor = getContentResolver().query(ThothContract.Clazz.ENROLLED_URI, new String[] { ThothContract.Clazz._ID },null, null, null);
+                while (classCursor.moveToNext()){
+                    long classID = classCursor.getLong(classCursor.getColumnIndex(ThothContract.Clazz._ID));
+                    ThothUpdateService.startActionClassNewsUpdate(getApplicationContext(), classID);
+                }
+                Toast.makeText(getApplicationContext(),getString(R.string.class_selection_ok), Toast.LENGTH_LONG).show();
+                finish();
+            }
+        });
+
         mAdapter =  new ClassesSelectionAdapter(this);
 
         mListView = (ListView) findViewById(R.id.classesList);
@@ -49,26 +73,6 @@ public class ClassesSelectionActivity extends Activity implements LoaderManager.
 
         getLoaderManager().initLoader(CLASSES_SELECTION_CURSOR_LOADER_ID, null, this);
         ThothUpdateService.startActionClassesUpdate(this);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed(){
-        Cursor classCursor = getContentResolver().query(ThothContract.Clazz.ENROLLED_URI, new String[] { ThothContract.Clazz._ID },null, null, null);
-        while (classCursor.moveToNext()){
-            long classID = classCursor.getLong(classCursor.getColumnIndex(ThothContract.Clazz._ID));
-            ThothUpdateService.startActionClassNewsUpdate(this, classID);
-        }
-        finish();
     }
 
     @Override
