@@ -1,44 +1,48 @@
 package pt.isel.pdm.grupo17.thothnews.activities;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
+import pt.isel.pdm.grupo17.thothnews.fragments.SingleNewFragment;
+import pt.isel.pdm.grupo17.thothnews.models.ThothNewList;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ACTIVITY;
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
-
-public class SingeNewActivity extends Activity {
-
-    static ThothNew sThothNew;
+public class SingeNewActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_single_new_view);
+
         getActionBar().setTitle(getIntent().getStringExtra(TagUtils.TAG_SELECT_CLASS_NAME));
+        ViewPager pager = new ViewPager(this);
+        pager.setId(R.id.viewPager);
+        setContentView(pager);
 
-        sThothNew = (ThothNew) getIntent().getExtras().getSerializable(TagUtils.TAG_SELECT_NEW);
-        final TextView title = (TextView) findViewById(R.id.new_view_title);
-        title.setText(sThothNew.getTitle());
-        final TextView when = (TextView) findViewById(R.id.new_view_when);
-        when.setText(sThothNew.getFormattedWhen());
-        final TextView content = (TextView) findViewById(R.id.new_view_content);
-        content.setText(sThothNew.getContent());
+        Intent i = getIntent();
+        final ThothNewList list = (ThothNewList)i.getExtras().getSerializable(TagUtils.TAG_SERIALIZABLE_LIST);
+        int ix = i.getExtras().getInt("ix",0);
+
+        pager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()){
+            @Override
+            public android.support.v4.app.Fragment getItem(int pos) {
+                SingleNewFragment f = SingleNewFragment.newInstance(list.getItems().get(pos));
+                return f;
+            }
+
+            @Override
+            public int getCount() {
+                return list.getItems().size();
+            }
+        });
+        pager.setCurrentItem(ix);
     }
-
-    @Override
-    public void onBackPressed(){
-        finish();
-    }
-
 
     @Override
     protected void onStart(){
@@ -50,24 +54,23 @@ public class SingeNewActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_new_view, menu);
+        getMenuInflater().inflate(R.menu.menu_single_new, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
-
             case android.R.id.home:
                 onBackPressed();
                 return true;
             case R.id.action_settings:
                 startActivity(new Intent(SingeNewActivity.this, PreferencesActivity.class));
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
+
 }
 

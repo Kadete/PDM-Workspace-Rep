@@ -4,8 +4,9 @@ package pt.isel.pdm.grupo17.thothnews.utils;
  * Created by Kadete on 29/11/2014.
  */
 public class TagUtils {
-    public static final String TAG_SELECT_CLASS_ID = "Class-Selected-ID";
-    public static final String TAG_SELECT_CLASS_NAME = "Class-Selected-Name";
+    public static final String TAG_SELECT_CLASS_ID = "TAG_SELECT_CLASS_ID";
+    public static final String TAG_SELECT_CLASS_NAME = "TAG_SELECT_CLASS_NAME";
+    public static final String TAG_SERIALIZABLE_LIST = "TAG_SERIALIZABLE_LIST";
     public static final String TAG_SELECT_NEW = "New-Selected-ID";
 
     public static final String TAG_ACTIVITY = "TAG_ACTIVITY";

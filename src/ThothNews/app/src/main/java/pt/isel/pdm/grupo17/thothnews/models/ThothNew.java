@@ -14,21 +14,13 @@ import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ADAPTER;
 
 public class ThothNew implements Serializable {
 
-    class ThothNewLinks {
-        public String self;
-        public ThothNewLinks(String self){
-            this.self = self;
-        }
-    }
-
-    static final String ITEM_SEP = System.getProperty("line.separator");
+     static final String ITEM_SEP = System.getProperty("line.separator");
     static final int READ = 1;
 
     long _id;
     String title;
     Date _when = new Date();
     String _content;
-    ThothNewLinks _links;
     Boolean _read = false;
 
     public long getID() {
@@ -75,13 +67,6 @@ public class ThothNew implements Serializable {
         _when = when;
         _read = read;
         _content = content;
-    }
-
-    public ThothNew(long id, String title, Date when, String self){
-        _id = id;
-        this.title = title;
-        _when = when;
-        _links = new ThothNewLinks(self);
     }
 
     public static ThothNew fromCursor(Cursor cursor){
