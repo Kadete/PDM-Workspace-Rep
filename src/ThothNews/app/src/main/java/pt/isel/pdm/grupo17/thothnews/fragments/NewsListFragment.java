@@ -1,6 +1,7 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -11,9 +12,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.activities.NewsActivity;
 import pt.isel.pdm.grupo17.thothnews.activities.SingeNewActivity;
 import pt.isel.pdm.grupo17.thothnews.adapters.NewsAdapter;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
+import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
@@ -28,15 +31,31 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     static final String[] CURSOR_COLUMNS = {ThothContract.News._ID, ThothContract.News.TITLE,
             ThothContract.News.WHEN_CREATED, ThothContract.News.READ, ThothContract.News.CONTENT};
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    private static final String STATE_ACTIVATED_POSITION = "activated_position";
+    private Callbacks mCallbacks = sDummyCallbacks;
+    public static int mActivatedPosition = ListView.INVALID_POSITION;
+
+    public interface Callbacks {
+        public void onItemSelected(ThothNew thothNew);
     }
 
-    @SuppressWarnings("unchecked")
+    private static Callbacks sDummyCallbacks = new Callbacks() {
+        @Override
+        public void onItemSelected(ThothNew thothNew) {
+        }
+    };
+
+    public NewsListFragment() {
+    }
+
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState != null
+                && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
+            setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
+        }
 
         Intent intent = getActivity().getIntent();
         sClassID = intent.getLongExtra(TagUtils.TAG_SELECT_CLASS_ID, ARG_CLASS_ID_DEFAULT_VALUE);
@@ -49,6 +68,46 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        if (!(activity instanceof Callbacks)) {
+            throw new IllegalStateException("Activity must implement fragment's callbacks.");
+        }
+        mCallbacks = (Callbacks) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = sDummyCallbacks;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mActivatedPosition != ListView.INVALID_POSITION) {
+            outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
+        }
+    }
+
+    public void setActivateOnItemClick(boolean activateOnItemClick) {
+        getListView().setChoiceMode(activateOnItemClick
+                ? ListView.CHOICE_MODE_SINGLE
+                : ListView.CHOICE_MODE_NONE);
+    }
+
+    private void setActivatedPosition(int position) {
+        if (position == ListView.INVALID_POSITION) {
+            getListView().setItemChecked(mActivatedPosition, false);
+        } else {
+            getListView().setItemChecked(position, true);
+            getListView().setBackground(getResources().getDrawable(R.drawable.new_selected));
+        }
+        mActivatedPosition = position;
+    }
+
+    @Override
     public void onResume(){
         super.onResume();
         if(mAdapter.isEmpty())
@@ -56,18 +115,23 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
         refreshLoader();
     }
 
-
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        Intent i = new Intent(getActivity(), SingeNewActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.putExtra(TagUtils.TAG_SELECT_CLASS_NAME, sClassName);
-        i.putExtra(TagUtils.TAG_SERIALIZABLE_LIST, mAdapter.getList());
-        i.putExtra("ix", position);
+        ThothNew thothNew = (ThothNew) mAdapter.getItem(position);
 
-        startActivity(i);
+        if (NewsActivity.mTwoPane) {
+            //            mAdapter.setSelectedNewID(position);
+            mCallbacks.onItemSelected(thothNew);
+        } else {
+            Intent i = new Intent(getActivity(), SingeNewActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra(TagUtils.TAG_SELECT_CLASS_NAME, sClassName);
+            i.putExtra(TagUtils.TAG_SERIALIZABLE_LIST, mAdapter.getNewsList());
+            i.putExtra(TagUtils.TAG_SELECT_NEW_POS, position);
+            startActivity(i);
+        }
     }
 
     @Override
@@ -93,4 +157,7 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     public void refreshLoader() {
         getLoaderManager().restartLoader(NEWS_CURSOR_LOADER_ID, null, this);
     }
+
+
+
 }

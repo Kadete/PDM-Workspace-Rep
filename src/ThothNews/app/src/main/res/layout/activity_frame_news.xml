@@ -20,7 +20,9 @@ limitations under the License.
     tools:context="pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_alignParentBottom="true">
+    android:layout_alignParentBottom="true"
+    android:orientation="vertical"
+    >
     <TextView
         android:id="@+id/tv_error_news"
         android:layout_width="wrap_content"
@@ -32,9 +34,9 @@ limitations under the License.
         android:visibility="gone"
         android:gravity="center"
         />
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragment_container_news"
-        />
+
+    <fragment android:id="@+id/fragment_container_news_list" android:name="pt.isel.pdm.grupo17.thothnews.fragments.NewsListFragment"
+        android:layout_width="wrap_content" android:layout_height="match_parent"
+        tools:layout="@android:layout/list_content" />
+
 </RelativeLayout>

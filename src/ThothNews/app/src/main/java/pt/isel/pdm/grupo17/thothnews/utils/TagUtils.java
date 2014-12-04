@@ -7,7 +7,8 @@ public class TagUtils {
     public static final String TAG_SELECT_CLASS_ID = "TAG_SELECT_CLASS_ID";
     public static final String TAG_SELECT_CLASS_NAME = "TAG_SELECT_CLASS_NAME";
     public static final String TAG_SERIALIZABLE_LIST = "TAG_SERIALIZABLE_LIST";
-    public static final String TAG_SELECT_NEW = "New-Selected-ID";
+    public static final String TAG_SERIALIZABLE_NEW = "TAG_SERIALIZABLE_NEW";
+    public static final String TAG_SELECT_NEW_POS = "TAG_SELECT_NEW_POS";
 
     public static final String TAG_ACTIVITY = "TAG_ACTIVITY";
     public static final String TAG_ADAPTER = "TAG_ADAPTER";
@@ -16,5 +17,4 @@ public class TagUtils {
     public static final String TAG_FRAGMENT = "TAG_FRAGMENT";
     public static final String TAG_MODEL = "TAG_MODEL";
     public static final String TAG_UTILS = "TAG_UTILS";
-
 }

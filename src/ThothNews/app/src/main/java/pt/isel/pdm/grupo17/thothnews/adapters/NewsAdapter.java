@@ -17,7 +17,7 @@ import java.util.Date;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
-import pt.isel.pdm.grupo17.thothnews.models.ThothNewList;
+import pt.isel.pdm.grupo17.thothnews.models.ThothNewsList;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
@@ -34,8 +34,11 @@ public class NewsAdapter extends CursorAdapter {
     }
 
     static LayoutInflater sLayoutInflater = null;
-    ThothNewList mNews = new ThothNewList();
+    ThothNewsList mNews = new ThothNewsList();
     Context mContext;
+
+    private static final int NO_NEW_SELECTED = -1;
+    private long newSelectID = NO_NEW_SELECTED;
 
     public NewsAdapter(Context context) {
         super(context, null, 0);
@@ -54,9 +57,14 @@ public class NewsAdapter extends CursorAdapter {
         return mNews.get(position);
     }
 
-    public ThothNewList getList() {
+    public ThothNewsList getNewsList() {
         return mNews;
     }
+
+    public void setSelectedNewID(long id) {
+        newSelectID = id;
+    }
+
 
     @Override
     public Cursor swapCursor(Cursor newCursor) {
@@ -109,6 +117,10 @@ public class NewsAdapter extends CursorAdapter {
         holder.checkRead.setChecked(read);
         holder.title.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
         holder.when.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
-        view.setBackground(new ColorDrawable((!read) ? 0x44440000 : 0x44444444));
+
+        if (newSelectID != NO_NEW_SELECTED && newSelectID == Long.valueOf(holder.id.getText().toString()))
+            view.setBackground( view.getResources().getDrawable(R.drawable.new_selected));
+        else
+            view.setBackground(new ColorDrawable((!read) ? 0x44440000 : 0x44444444));
     }
 }

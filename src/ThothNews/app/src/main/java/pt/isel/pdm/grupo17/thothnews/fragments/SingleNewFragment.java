@@ -14,37 +14,50 @@ import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
-/**
- * Created by Kadete on 03/12/2014.
- */
 public class SingleNewFragment extends Fragment {
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstance){
+    private ThothNew mThothNew;
 
-        View view = inflater.inflate(R.layout.activity_single_new, parent, false);
-        final TextView title = (TextView) view.findViewById(R.id.new_view_title);
-        final TextView when = (TextView) view.findViewById(R.id.new_view_when);
-        final TextView content = (TextView) view.findViewById(R.id.new_view_content);
-
-        Bundle b = getArguments();
-        ThothNew thothNew = (ThothNew) b.getSerializable(TagUtils.TAG_SELECT_NEW);
-
-        title.setText(thothNew.getTitle());
-        when.setText(thothNew.getFormattedWhen());
-        content.setText(thothNew.getContent());
-
-        ContentValues values = new ContentValues();
-        values.put(ThothContract.News.READ, 1);
-        getActivity().getContentResolver().update(UriUtils.News.parseFromNewID(thothNew.getID()), values, null, null );
-
-        return view;
+    public SingleNewFragment() {
     }
 
-    public static SingleNewFragment newInstance(ThothNew model){
+    public static SingleNewFragment newInstance(ThothNew thothNew){
         SingleNewFragment f = new SingleNewFragment();
         Bundle b = new Bundle();
-        b.putSerializable(TagUtils.TAG_SELECT_NEW, model);
+        b.putSerializable(TagUtils.TAG_SERIALIZABLE_NEW, thothNew);
         f.setArguments(b);
         return f;
     }
+
+    @Override
+      public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mThothNew = (ThothNew) getArguments().getSerializable(TagUtils.TAG_SERIALIZABLE_NEW);
+    }
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstance){
+        View view = inflater.inflate(R.layout.activity_single_new, parent, false);
+
+        if(mThothNew != null){
+            final TextView title = (TextView) view.findViewById(R.id.new_view_title);
+            final TextView when = (TextView) view.findViewById(R.id.new_view_when);
+            final TextView content = (TextView) view.findViewById(R.id.new_view_content);
+
+            title.setText(mThothNew.getTitle());
+            when.setText(mThothNew.getFormattedWhen());
+            content.setText(mThothNew.getContent());
+        }
+        return view;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            ContentValues values = new ContentValues();
+            values.put(ThothContract.News.READ, 1);
+            getActivity().getContentResolver().update(UriUtils.News.parseFromNewID(mThothNew.getID()), values, null, null );
+        }
+    }
+
 }

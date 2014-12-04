@@ -11,7 +11,7 @@ import android.view.MenuItem;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.fragments.SingleNewFragment;
-import pt.isel.pdm.grupo17.thothnews.models.ThothNewList;
+import pt.isel.pdm.grupo17.thothnews.models.ThothNewsList;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
 public class SingeNewActivity extends FragmentActivity {
@@ -21,27 +21,31 @@ public class SingeNewActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
 
         getActionBar().setTitle(getIntent().getStringExtra(TagUtils.TAG_SELECT_CLASS_NAME));
-        ViewPager pager = new ViewPager(this);
-        pager.setId(R.id.viewPager);
-        setContentView(pager);
 
-        Intent i = getIntent();
-        final ThothNewList list = (ThothNewList)i.getExtras().getSerializable(TagUtils.TAG_SERIALIZABLE_LIST);
-        int ix = i.getExtras().getInt("ix",0);
+        if(!NewsActivity.mTwoPane) {
+            ViewPager pager = new ViewPager(this);
 
-        pager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()){
-            @Override
-            public android.support.v4.app.Fragment getItem(int pos) {
-                SingleNewFragment f = SingleNewFragment.newInstance(list.getItems().get(pos));
-                return f;
-            }
+            pager.setId(R.id.viewPager);
+            setContentView(pager);
 
-            @Override
-            public int getCount() {
-                return list.getItems().size();
-            }
-        });
-        pager.setCurrentItem(ix);
+            Intent intent = getIntent();
+            final ThothNewsList list = (ThothNewsList) intent.getExtras().getSerializable(TagUtils.TAG_SERIALIZABLE_LIST);
+            int newClickPosition = intent.getExtras().getInt(TagUtils.TAG_SELECT_NEW_POS, 0);
+
+            pager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+                @Override
+                public android.support.v4.app.Fragment getItem(int pos) {
+                    SingleNewFragment singleNewFragment = SingleNewFragment.newInstance(list.getItems().get(pos));
+                    return singleNewFragment;
+                }
+
+                @Override
+                public int getCount() {
+                    return list.getItems().size();
+                }
+            });
+            pager.setCurrentItem(newClickPosition);
+        }
     }
 
     @Override
