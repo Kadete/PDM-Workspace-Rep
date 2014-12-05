@@ -37,9 +37,6 @@ public class NewsAdapter extends CursorAdapter {
     ThothNewsList mNews = new ThothNewsList();
     Context mContext;
 
-    private static final int NO_NEW_SELECTED = -1;
-    private long newSelectID = NO_NEW_SELECTED;
-
     public NewsAdapter(Context context) {
         super(context, null, 0);
         mContext = context;
@@ -60,11 +57,6 @@ public class NewsAdapter extends CursorAdapter {
     public ThothNewsList getNewsList() {
         return mNews;
     }
-
-    public void setSelectedNewID(long id) {
-        newSelectID = id;
-    }
-
 
     @Override
     public Cursor swapCursor(Cursor newCursor) {
@@ -101,7 +93,9 @@ public class NewsAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         NewViewHolder holder = (NewViewHolder)view.getTag();
 
-        holder.id.setText(cursor.getString(cursor.getColumnIndex(ThothContract.News._ID)));
+        final String id = cursor.getString(cursor.getColumnIndex(ThothContract.News._ID));
+
+        holder.id.setText(id);
         holder.title.setText(cursor.getString(cursor.getColumnIndex(ThothContract.News.TITLE)));
 
         Date date = new Date();
@@ -118,9 +112,8 @@ public class NewsAdapter extends CursorAdapter {
         holder.title.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
         holder.when.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
 
-        if (newSelectID != NO_NEW_SELECTED && newSelectID == Long.valueOf(holder.id.getText().toString()))
-            view.setBackground( view.getResources().getDrawable(R.drawable.new_selected));
-        else
-            view.setBackground(new ColorDrawable((!read) ? 0x44440000 : 0x44444444));
+        view.setBackground(new ColorDrawable((!read) ? 0x44440000 : 0x44444444));
     }
+
+
 }

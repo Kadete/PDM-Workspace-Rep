@@ -22,10 +22,15 @@ limitations under the License.
 
     <fragment android:id="@+id/fragment_container_news_list" android:name="pt.isel.pdm.grupo17.thothnews.fragments.NewsListFragment"
         android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
-        tools:layout="@android:layout/list_content" />
+        tools:layout="@android:layout/list_content"
+        />
 
     <FrameLayout android:id="@+id/fragment_container_detail_new" android:layout_width="0dp"
         android:layout_height="match_parent" android:layout_weight="2"
+        android:layout_marginTop="@dimen/activity_vertical_margin_neg"
+        android:layout_marginBottom="@dimen/activity_vertical_margin_neg"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin_neg"
+        android:layout_marginRight="@dimen/activity_horizontal_margin_neg"
         >
         <TextView
             android:layout_gravity="center"

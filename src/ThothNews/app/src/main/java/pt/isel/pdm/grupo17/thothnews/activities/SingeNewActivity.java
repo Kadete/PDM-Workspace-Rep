@@ -35,8 +35,7 @@ public class SingeNewActivity extends FragmentActivity {
             pager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
                 @Override
                 public android.support.v4.app.Fragment getItem(int pos) {
-                    SingleNewFragment singleNewFragment = SingleNewFragment.newInstance(list.getItems().get(pos));
-                    return singleNewFragment;
+                    return SingleNewFragment.newInstance(list.getItems().get(pos));
                 }
 
                 @Override

@@ -33,7 +33,7 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
 
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private Callbacks mCallbacks = sDummyCallbacks;
-    public static int mActivatedPosition = ListView.INVALID_POSITION;
+    private static int mActivatedPosition = ListView.INVALID_POSITION;
 
     public interface Callbacks {
         public void onItemSelected(ThothNew thothNew);
@@ -101,8 +101,9 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
         if (position == ListView.INVALID_POSITION) {
             getListView().setItemChecked(mActivatedPosition, false);
         } else {
+
+            getListView().setSelector(R.drawable.new_selected);
             getListView().setItemChecked(position, true);
-            getListView().setBackground(getResources().getDrawable(R.drawable.new_selected));
         }
         mActivatedPosition = position;
     }
@@ -116,14 +117,11 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-
-        ThothNew thothNew = (ThothNew) mAdapter.getItem(position);
+    public void onListItemClick(ListView l, View view, int position, long id) {
+        super.onListItemClick(l, view, position, id);
 
         if (NewsActivity.mTwoPane) {
-            //            mAdapter.setSelectedNewID(position);
-            mCallbacks.onItemSelected(thothNew);
+            mCallbacks.onItemSelected((ThothNew) mAdapter.getItem(position));
         } else {
             Intent i = new Intent(getActivity(), SingeNewActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -157,7 +155,5 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     public void refreshLoader() {
         getLoaderManager().restartLoader(NEWS_CURSOR_LOADER_ID, null, this);
     }
-
-
 
 }

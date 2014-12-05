@@ -3,42 +3,14 @@
 
     <item>
         <shape android:shape="rectangle">
-            <size
-                android:width="100dp"
-                android:height="40dp" />
-            <corners android:radius="0dp"/>
+            <corners android:bottomRightRadius="20dp"
+                android:topRightRadius="20dp"/>
             <gradient
-                android:startColor="#ffd1d1d1"
-                android:endColor="#44440000"
+                android:startColor="#44553737"
+                android:endColor="#fff5f5f5"
                 android:angle="0"
                 android:type="linear"/>
         </shape>
-    </item>
-
-    <item
-        android:top="-40dp"
-        android:bottom="65dp"
-        android:right="-400dp">
-        <rotate
-            android:fromDegrees="45">
-            <shape android:shape="rectangle">
-                <size android:height="50dp" android:width="50dp"></size>
-                <solid android:color="#ffebebeb" />
-            </shape>
-        </rotate>
-    </item>
-
-    <item
-        android:top="65dp"
-        android:bottom="-40dp"
-        android:right="-400dp">
-        <rotate
-            android:fromDegrees="-45">
-            <shape android:shape="rectangle">
-                <size android:height="50dp" android:width="50dp"></size>
-                <solid android:color="#ffebebeb" />
-            </shape>
-        </rotate>
     </item>
 
 </layer-list>
