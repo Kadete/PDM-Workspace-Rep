@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="planets_array">
+        <item>@string/drawer_item_lbl_news</item>
+        <item>@string/drawer_item_lbl_students</item>
+    </string-array>
+</resources>

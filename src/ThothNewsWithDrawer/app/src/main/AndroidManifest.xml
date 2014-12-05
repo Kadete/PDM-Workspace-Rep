@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="pt.isel.pdm.grupo17.thothnews"
+    android:versionCode="3"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="18"
+        android:targetSdkVersion="21" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_thoth"
+        android:theme="@style/AppTheme"
+        >
+        <activity
+            android:name=".activities.ClassesActivity"
+            android:label="@string/label_app_name"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activities.PreferencesActivity" android:label="@string/label_activity_preferences"/>
+
+        <activity android:name=".activities.ClassesSelectionActivity" android:label="@string/title_activity_class_selection"/>
+
+        <activity android:name=".activities.NewsActivity" android:label="@string/label_app_name"/>
+
+        <activity android:name=".activities.SingeNewActivity" android:label="@string/label_activity_new_view"/>
+
+        <receiver android:name=".broadcastreceivers.NetworkReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name="pt.isel.pdm.grupo17.thothnews.data.ThothProvider"
+            android:authorities="pt.isel.pdm.grupo17.thothnews"
+            android:enabled="true"
+            android:exported="true" >
+        </provider>
+
+        <service
+            android:name="pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService"
+            android:exported="false" >
+        </service>
+
+    </application>
+
+</manifest>

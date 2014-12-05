@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- AndroidManifest - Activity Name -->
+    <string name="label_activity_new_view">New View Activity</string>
+    <string name="label_activity_preferences">Definições</string>
+
+    <!-- layout: layout_classes_list -->
+    <string name="title_classes_view">As tuas turmas</string>
+
+    <!-- layout: layout_news_list -->
+
+
+    <!-- layout: activity_single_new -->
+    <string name="label_news_view">Your Classes News</string>
+
+    <!-- layout: item_class -->
+
+    <!-- layout: item_new -->
+
+    <!-- layout: activity_single_new -->
+    <string name="new_view_when"></string>
+    <string name="new_view_title"></string>
+    <string name="new_view_content"></string>
+
+    <!-- menu: main & new_view -->
+    <string name="title_action_settings">Definições</string>
+
+    <!-- xml: preferences -->
+    <string name="category_title">Turmas</string>
+    <string name="thoth_classes_title">Lista de Turmas</string>
+    <string name="thoth_classes_summary">Seleccione as turmas a receber noticias</string>
+    <string name="action_settings">Definições</string>
+    <string name="title_action_refresh">Actualizar notícias</string>
+    <string name="clean_classes_title">Limpar inscrições</string>
+    <string name="clean_classes_warning">Cuidado! As preferências de turmas serão eliminadas!</string>
+    <string name="clean_classes_cancel">Cancelar</string>
+    <string name="clean_classes_toast">Preferências limpas!</string>
+
+    <string name="thoth_connection_failed_toast">A conexão falhou!</string>
+    <string name="get_news_success_toast">Recebeu as últimas notícias com sucesso!</string>
+    <string name="get_news_fail_toast">Ocorreu um erro ao receber as últimas notícias!</string>
+    <string name="request_select_class_toast">Seleccione pelo menos uma turma!</string>
+
+    <string name="notification_txt">Texto de notificação</string>
+    <string name="classes_loading_error">Houve um problema ao carregar a sua lista de turmas.\nVerifique a sua ligação!</string>
+    <string name="label_activity_classes">As Tuas Turmas</string>
+    <string name="title_activity_class_selection">Selecciona as tuas turmas</string>
+    <string name="class_selection_cancel">Selecção Descartada!</string>
+    <string name="class_selection_ok">Turmas seleccionadas guardadas com sucesso!</string>
+    <string name="discard">Descartar</string>
+    <string name="save">Gravar</string>
+    <string name="classes_selection_loading_error">Houve um problema ao carregar a lista de todas as turmas.\nVerifique a sua ligação!</string>
+    <string name="news_loading_error">Houve um problema ao carregar a lista de notícias desta turma.\nVerifique a sua ligação!</string>
+
+
+    <string name="drawer_item_lbl_news">Notícias</string>
+    <string name="drawer_item_lbl_students">Estudantes</string>
+
+</resources>
