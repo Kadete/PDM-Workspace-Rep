@@ -33,7 +33,7 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
 
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private Callbacks mCallbacks = sDummyCallbacks;
-    private static int mActivatedPosition = ListView.INVALID_POSITION;
+    public static int mActivatedPosition = ListView.INVALID_POSITION;
 
     public interface Callbacks {
         public void onItemSelected(ThothNew thothNew);
@@ -46,6 +46,14 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     };
 
     public NewsListFragment() {
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        getListView().setSelector(R.drawable.new_selected);
+        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     @Override
@@ -98,13 +106,7 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     }
 
     private void setActivatedPosition(int position) {
-        if (position == ListView.INVALID_POSITION) {
-            getListView().setItemChecked(mActivatedPosition, false);
-        } else {
-
-            getListView().setSelector(R.drawable.new_selected);
-            getListView().setItemChecked(position, true);
-        }
+        getListView().setItemChecked((position == ListView.INVALID_POSITION) ? mActivatedPosition : position, false);
         mActivatedPosition = position;
     }
 
@@ -119,8 +121,9 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onListItemClick(ListView l, View view, int position, long id) {
         super.onListItemClick(l, view, position, id);
-
+        ThothNew thothNew = (ThothNew) mAdapter.getItem(position);
         if (NewsActivity.mTwoPane) {
+            NewsAdapter.setSelectedNewID(thothNew.getID());
             mCallbacks.onItemSelected((ThothNew) mAdapter.getItem(position));
         } else {
             Intent i = new Intent(getActivity(), SingeNewActivity.class);

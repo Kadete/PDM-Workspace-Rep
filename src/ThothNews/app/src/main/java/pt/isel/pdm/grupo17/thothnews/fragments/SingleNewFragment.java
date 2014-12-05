@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.activities.NewsActivity;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
@@ -46,17 +47,24 @@ public class SingleNewFragment extends Fragment {
             title.setText(mThothNew.getTitle());
             when.setText(mThothNew.getFormattedWhen());
             content.setText(mThothNew.getContent());
+
+            if(NewsActivity.mTwoPane)
+                updateNew();
         }
         return view;
+    }
+
+    public void updateNew(){
+        ContentValues values = new ContentValues();
+        values.put(ThothContract.News.READ, 1);
+        getActivity().getContentResolver().update(UriUtils.News.parseFromNewID(mThothNew.getID()), values, null, null );
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            ContentValues values = new ContentValues();
-            values.put(ThothContract.News.READ, 1);
-            getActivity().getContentResolver().update(UriUtils.News.parseFromNewID(mThothNew.getID()), values, null, null );
+            updateNew();
         }
     }
 

@@ -28,7 +28,7 @@ public class NewsActivity extends FragmentActivity implements NewsListFragment.C
         setContentView(R.layout.activity_frame_news);
 
         FragmentManager fm = getSupportFragmentManager();
-        if (fm.findFragmentById(R.id.fragment_container_news_list) != null) {
+        if (fm.findFragmentById(R.id.fragment_container_news_list) == null) {
             NewsListFragment newsListFragment = new NewsListFragment();
             fm.beginTransaction()
                     .add(R.id.fragment_container_news_list, newsListFragment)

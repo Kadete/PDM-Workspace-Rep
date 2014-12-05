@@ -33,6 +33,13 @@ public class NewsAdapter extends CursorAdapter {
         public CheckBox checkRead;
     }
 
+    private static final int NO_NEW_SELECTED = -1;
+    private static long newSelectID = NO_NEW_SELECTED;
+
+    public static void setSelectedNewID(long id) {
+        newSelectID = id;
+    }
+
     static LayoutInflater sLayoutInflater = null;
     ThothNewsList mNews = new ThothNewsList();
     Context mContext;
@@ -112,7 +119,18 @@ public class NewsAdapter extends CursorAdapter {
         holder.title.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
         holder.when.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
 
-        view.setBackground(new ColorDrawable((!read) ? 0x44440000 : 0x44444444));
+        if (newSelectID == Long.valueOf(holder.id.getText().toString())) {
+            view.findViewById(R.id.arrow).setVisibility(View.VISIBLE);
+            view.setBackground(view.getResources().getDrawable(R.drawable.new_selected));
+            holder.title.setTextSize(22);
+            holder.when.setTextSize(18);
+        }
+        else {
+            view.setBackground(new ColorDrawable((!read) ? 0x44440000 : 0x44444444));
+            view.findViewById(R.id.arrow).setVisibility(View.INVISIBLE);
+            holder.title.setTextSize(18);
+            holder.when.setTextSize(14);
+        }
     }
 
 
