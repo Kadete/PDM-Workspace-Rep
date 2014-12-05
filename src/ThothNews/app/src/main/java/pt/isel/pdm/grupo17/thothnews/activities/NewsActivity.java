@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.adapters.NewsAdapter;
 import pt.isel.pdm.grupo17.thothnews.fragments.NewsListFragment;
 import pt.isel.pdm.grupo17.thothnews.fragments.SingleNewFragment;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
@@ -79,6 +80,13 @@ public class NewsActivity extends FragmentActivity implements NewsListFragment.C
     }
 
     @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        if(NewsActivity.isTwoPane())
+            NewsAdapter.setSelectedNewID(NewsAdapter.NO_NEW_SELECTED);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -95,5 +103,5 @@ public class NewsActivity extends FragmentActivity implements NewsListFragment.C
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }
+

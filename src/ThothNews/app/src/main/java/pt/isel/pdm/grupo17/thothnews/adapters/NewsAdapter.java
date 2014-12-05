@@ -34,7 +34,7 @@ public class NewsAdapter extends CursorAdapter {
         public CheckBox checkRead;
     }
 
-    private static final int NO_NEW_SELECTED = -1;
+    public static final int NO_NEW_SELECTED = -1;
     private static long newSelectID = NO_NEW_SELECTED;
 
     public static void setSelectedNewID(long id) {
