@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.activities.NewsActivity;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNewsList;
@@ -119,18 +120,22 @@ public class NewsAdapter extends CursorAdapter {
         holder.title.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
         holder.when.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
 
-        if (newSelectID == Long.valueOf(holder.id.getText().toString())) {
-            view.findViewById(R.id.arrow).setVisibility(View.VISIBLE);
-            view.setBackground(view.getResources().getDrawable(R.drawable.new_selected));
-            holder.title.setTextSize(22);
-            holder.when.setTextSize(18);
+        if(NewsActivity.mTwoPane){
+            if (newSelectID == Long.valueOf(holder.id.getText().toString())) {
+                view.findViewById(R.id.arrow).setVisibility(View.VISIBLE);
+                view.setBackground(view.getResources().getDrawable(R.drawable.new_selected));
+                holder.title.setTextSize(22);
+                holder.when.setTextSize(18);
+            }
+            else {
+                view.setBackground(new ColorDrawable((!read) ? 0x44440000 : 0x44444444));
+                view.findViewById(R.id.arrow).setVisibility(View.INVISIBLE);
+                holder.title.setTextSize(18);
+                holder.when.setTextSize(14);
+            }
         }
-        else {
+        else
             view.setBackground(new ColorDrawable((!read) ? 0x44440000 : 0x44444444));
-            view.findViewById(R.id.arrow).setVisibility(View.INVISIBLE);
-            holder.title.setTextSize(18);
-            holder.when.setTextSize(14);
-        }
     }
 
 

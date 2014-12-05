@@ -1,6 +1,5 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -46,14 +45,6 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     };
 
     public NewsListFragment() {
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        getListView().setSelector(R.drawable.new_selected);
-        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     @Override
