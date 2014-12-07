@@ -2,9 +2,11 @@ package pt.isel.pdm.grupo17.thothnews.models;
 
 import android.database.Cursor;
 
+import java.io.Serializable;
+
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 
-public class ThothClass {
+public class ThothClass implements Serializable{
 
     public static final String ITEM_SEP = System.getProperty("line.separator");
 

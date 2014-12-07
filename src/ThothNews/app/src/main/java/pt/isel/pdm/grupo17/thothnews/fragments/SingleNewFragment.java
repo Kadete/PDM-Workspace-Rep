@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.activities.NewsActivity;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
@@ -37,27 +36,30 @@ public class SingleNewFragment extends Fragment {
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstance){
-        View view = inflater.inflate(R.layout.activity_single_new, parent, false);
+        View view = inflater.inflate(R.layout.fragment_single_new, parent, false);
+
+        final TextView title = (TextView) view.findViewById(R.id.new_view_title);
+        final TextView when = (TextView) view.findViewById(R.id.new_view_when);
+        final TextView content = (TextView) view.findViewById(R.id.new_view_content);
 
         if(mThothNew != null){
-            final TextView title = (TextView) view.findViewById(R.id.new_view_title);
-            final TextView when = (TextView) view.findViewById(R.id.new_view_when);
-            final TextView content = (TextView) view.findViewById(R.id.new_view_content);
-
             title.setText(mThothNew.getTitle());
             when.setText(mThothNew.getFormattedWhen());
             content.setText(mThothNew.getContent());
 
-            if(NewsActivity.isTwoPane())
+            if(NewsListFragment.isTwoPane())
                 updateNew();
-        }
+        }else
+            title.setText("Some Error Occur");
+
         return view;
     }
 
     public void updateNew(){
         ContentValues values = new ContentValues();
         values.put(ThothContract.News.READ, 1);
-        getActivity().getContentResolver().update(UriUtils.News.parseFromNewID(mThothNew.getID()), values, null, null );
+        if(mThothNew != null)
+            getActivity().getContentResolver().update(UriUtils.News.parseFromNewID(mThothNew.getID()), values, null, null );
     }
 
     @Override

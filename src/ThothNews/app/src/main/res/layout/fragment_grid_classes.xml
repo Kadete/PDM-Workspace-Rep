@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swiperefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <GridView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="1"
+            android:listSelector="@android:color/transparent"
+            android:horizontalSpacing="1dp"
+            android:verticalSpacing="1dp"
+            android:padding="1dp"/>
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_text"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+</pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout>

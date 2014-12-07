@@ -84,7 +84,7 @@ public class ClassesAdapter extends CursorAdapter {
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, final Context context, Cursor cursor) {
         ClassViewHolder holder = (ClassViewHolder)view.getTag();
 
         Long classeID = cursor.getLong(cursor.getColumnIndex(ThothContract.Clazz._ID));
@@ -104,7 +104,26 @@ public class ClassesAdapter extends CursorAdapter {
         cursorNewsRead.close();
         holder.full_name.setTypeface(null, (newsToRead) ? Typeface.BOLD : Typeface.NORMAL);
         holder.teacher.setTypeface(null, (newsToRead) ? Typeface.BOLD : Typeface.NORMAL);
-        view.setBackground(new ColorDrawable((newsToRead) ? 0x44440000 : 0x44444444));
+        view.setBackground(new ColorDrawable((newsToRead) ? 0x33440000 : 0x33333333));
+
+
+//        view.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                int position = v.getId();
+//
+//                ThothClass clazz = (ThothClass) getItem(position);
+////        Intent i = new Intent(getActivity(), NewsActivity.class);
+//                Intent i = new Intent(mContext, ClassSectionsActivity.class);
+//                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                i.putExtra(TagUtils.TAG_SELECT_CLASS_NAME, clazz.getFullName());
+//                i.putExtra(TagUtils.TAG_SELECT_CLASS_ID, clazz.getID());
+//                mContext.startActivity(i);
+//
+//            }
+//        });
+
     }
 
 }

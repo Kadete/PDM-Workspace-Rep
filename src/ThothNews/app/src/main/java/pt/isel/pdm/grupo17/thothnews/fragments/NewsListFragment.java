@@ -6,33 +6,45 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.activities.NewsActivity;
+import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
 import pt.isel.pdm.grupo17.thothnews.activities.SingeNewActivity;
 import pt.isel.pdm.grupo17.thothnews.adapters.NewsAdapter;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
+import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
+import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
 public class NewsListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    NewsAdapter mAdapter;
-    long sClassID;
-    String sClassName;
-    static final int ARG_CLASS_ID_DEFAULT_VALUE = -1;
-    static final int NEWS_CURSOR_LOADER_ID = 2;
+    private static final int NEWS_CURSOR_LOADER_ID = 2;
 
-    static final String[] CURSOR_COLUMNS = {ThothContract.News._ID, ThothContract.News.TITLE,
+    private static final String[] CURSOR_COLUMNS = {ThothContract.News._ID, ThothContract.News.TITLE,
             ThothContract.News.WHEN_CREATED, ThothContract.News.READ, ThothContract.News.CONTENT};
 
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
+
+    private static int mActivatedPosition = ListView.INVALID_POSITION;
+    private static ThothClass sThothClass;
+    private static boolean mTwoPane;
+    public static boolean isTwoPane() {
+        return mTwoPane;
+    }
+
     private Callbacks mCallbacks = sDummyCallbacks;
-    public static int mActivatedPosition = ListView.INVALID_POSITION;
+
+    private MultiSwipeRefreshLayout mSwipeRefreshLayout;
+    private ListView mListView;
+    private View mEmptyView;
+    private NewsAdapter mListAdapter;
 
     public interface Callbacks {
         public void onItemSelected(ThothNew thothNew);
@@ -44,26 +56,52 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
         }
     };
 
-    public NewsListFragment() {
+    public static NewsListFragment newInstance() {
+        Bundle bundle = new Bundle();
+        NewsListFragment fragment = new NewsListFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_section_news, container, false);
+
+        mSwipeRefreshLayout = (MultiSwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        mListView = (ListView) view.findViewById(android.R.id.list);
+        mEmptyView = view.findViewById(android.R.id.empty);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (savedInstanceState != null
-                && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION))
             setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
-        }
 
-        Intent intent = getActivity().getIntent();
-        sClassID = intent.getLongExtra(TagUtils.TAG_SELECT_CLASS_ID, ARG_CLASS_ID_DEFAULT_VALUE);
-        sClassName = intent.getStringExtra(TagUtils.TAG_SELECT_CLASS_NAME);
+        sThothClass = ClassSectionsActivity.getThothClass();
 
-        mAdapter = new NewsAdapter(getActivity());
-        setListAdapter(mAdapter);
+        if (getActivity().findViewById(R.id.fragment_container_detail_new) != null)
+            mTwoPane = true;
+
+        mListAdapter = new NewsAdapter(getActivity());
+
+        mListView.setAdapter(mListAdapter);
+        mListView.setEmptyView(mEmptyView);
+
+        mSwipeRefreshLayout.setSwipeableChildren(android.R.id.list, android.R.id.empty);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshLoader();
+            }
+        });
 
         getLoaderManager().initLoader(NEWS_CURSOR_LOADER_ID, null, this);
+
     }
 
     @Override
@@ -90,12 +128,6 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
         }
     }
 
-    public void setActivateOnItemClick(boolean activateOnItemClick) {
-        getListView().setChoiceMode(activateOnItemClick
-                ? ListView.CHOICE_MODE_SINGLE
-                : ListView.CHOICE_MODE_NONE);
-    }
-
     private void setActivatedPosition(int position) {
         getListView().setItemChecked((position == ListView.INVALID_POSITION) ? mActivatedPosition : position, false);
         mActivatedPosition = position;
@@ -104,23 +136,23 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onResume(){
         super.onResume();
-        if(mAdapter.isEmpty())
-            ThothUpdateService.startActionClassNewsUpdate(getActivity(), sClassID);
+        if(mListAdapter.isEmpty())
+            ThothUpdateService.startActionClassNewsUpdate(getActivity(), sThothClass.getID());
         refreshLoader();
     }
 
     @Override
     public void onListItemClick(ListView l, View view, int position, long id) {
         super.onListItemClick(l, view, position, id);
-        ThothNew thothNew = (ThothNew) mAdapter.getItem(position);
-        if (NewsActivity.isTwoPane()) {
+        ThothNew thothNew = (ThothNew) mListAdapter.getItem(position);
+        if (mTwoPane) {
             NewsAdapter.setSelectedNewID(thothNew.getID());
-            mCallbacks.onItemSelected((ThothNew) mAdapter.getItem(position));
+            mCallbacks.onItemSelected((ThothNew) mListAdapter.getItem(position));
         } else {
             Intent i = new Intent(getActivity(), SingeNewActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.putExtra(TagUtils.TAG_SELECT_CLASS_NAME, sClassName);
-            i.putExtra(TagUtils.TAG_SERIALIZABLE_LIST, mAdapter.getNewsList());
+            i.putExtra(TagUtils.TAG_SELECT_CLASS_NAME, sThothClass.getFullName());
+            i.putExtra(TagUtils.TAG_SERIALIZABLE_LIST, mListAdapter.getNewsList());
             i.putExtra(TagUtils.TAG_SELECT_NEW_POS, position);
             startActivity(i);
         }
@@ -129,25 +161,26 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String selection = ThothContract.News.CLASS_ID + " = ? ";
-        String [] selectionArgs = new String[]{ String.valueOf(sClassID) };
+        String [] selectionArgs = new String[]{ String.valueOf(sThothClass.getID()) };
         return new android.support.v4.content.CursorLoader(getActivity(), ThothContract.News.CONTENT_URI,
                 CURSOR_COLUMNS, selection, selectionArgs, ThothContract.News.READ +", "+ ThothContract.News.WHEN_CREATED + " DESC");
     }
 
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> cursorLoader, Cursor cursor) {
-        final TextView _tv1 = (TextView) getActivity().findViewById(R.id.tv_error_news);
-        _tv1.setVisibility((cursor.getCount() == 0) ? View.VISIBLE: View.GONE);
-        mAdapter.swapCursor(cursor);
+        mListAdapter.swapCursor(cursor);
     }
 
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<Cursor> cursorLoader) {
-        mAdapter.swapCursor(null);
+        mListAdapter.swapCursor(null);
     }
 
     public void refreshLoader() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        ThothUpdateService.startActionClassNewsUpdate(getActivity(), sThothClass.getID());
         getLoaderManager().restartLoader(NEWS_CURSOR_LOADER_ID, null, this);
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
 }

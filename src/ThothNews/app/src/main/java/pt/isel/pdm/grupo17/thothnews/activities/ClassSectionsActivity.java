@@ -4,51 +4,46 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.adapters.NewsAdapter;
 import pt.isel.pdm.grupo17.thothnews.fragments.NewsListFragment;
 import pt.isel.pdm.grupo17.thothnews.fragments.SingleNewFragment;
+import pt.isel.pdm.grupo17.thothnews.fragments.SlidingTabsColorsFragment;
+import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
-import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
-public class NewsActivity extends FragmentActivity implements NewsListFragment.Callbacks{
+public class ClassSectionsActivity extends FragmentActivity implements NewsListFragment.Callbacks{
 
-    static long sClassID;
-    static String sClassName;
-    static final int ARG_CLASS_ID_DEFAULT_VALUE = -1;
-    private static boolean mTwoPane;
-
-    public static boolean isTwoPane(){
-        return mTwoPane;
+    private static ThothClass sThothClass;
+    public static ThothClass getThothClass() {
+        return sThothClass;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_frame_news);
+        setContentView(R.layout.activity_frame_class_sections);
 
-        FragmentManager fm = getSupportFragmentManager();
-        if (fm.findFragmentById(R.id.fragment_container_news_list) == null) {
-            NewsListFragment newsListFragment = new NewsListFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container_news_list, newsListFragment)
-                    .commit();
-        }
-
-        if (findViewById(R.id.fragment_container_detail_new) != null) {
-            mTwoPane = true;
-            ((NewsListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container_news_list)).setActivateOnItemClick(true);
+        if (savedInstanceState == null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            SlidingTabsColorsFragment fragment = new SlidingTabsColorsFragment();
+            transaction.replace(R.id.fragment_container_class_sections, fragment);
+            transaction.commit();
         }
 
         Intent intent = getIntent();
-        sClassID = intent.getLongExtra(TagUtils.TAG_SELECT_CLASS_ID, ARG_CLASS_ID_DEFAULT_VALUE);
-        sClassName = intent.getStringExtra(TagUtils.TAG_SELECT_CLASS_NAME);
-        getActionBar().setTitle(sClassName);
+        sThothClass = (ThothClass) intent.getSerializableExtra(TagUtils.TAG_SERIALIZABLE_CLASS);
+
+        final TextView tvClass = (TextView) findViewById(R.id.tv_class_name);
+        tvClass.setText(sThothClass.getFullName());
+        final TextView tvTeacher = (TextView) findViewById(R.id.tv_teacher_name);
+        tvTeacher.setText(sThothClass.getTeacher());
     }
 
     @Override
@@ -62,7 +57,7 @@ public class NewsActivity extends FragmentActivity implements NewsListFragment.C
 
     @Override
     public void onItemSelected(ThothNew thothNew) {
-        if (mTwoPane) {
+        if (NewsListFragment.isTwoPane()) {
             Bundle arguments = new Bundle();
             arguments.putSerializable(TagUtils.TAG_SERIALIZABLE_NEW, thothNew);
             SingleNewFragment fragment = new SingleNewFragment();
@@ -82,7 +77,7 @@ public class NewsActivity extends FragmentActivity implements NewsListFragment.C
     @Override
     public void onBackPressed(){
         super.onBackPressed();
-        if(NewsActivity.isTwoPane())
+        if(NewsListFragment.isTwoPane())
             NewsAdapter.setSelectedNewID(NewsAdapter.NO_NEW_SELECTED);
     }
 
@@ -93,8 +88,7 @@ public class NewsActivity extends FragmentActivity implements NewsListFragment.C
                 onBackPressed();
                 return true;
             case R.id.action_refresh:
-                ThothUpdateService.startActionClassNewsUpdate(this, sClassID);
-                ((NewsListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container_news_list)).refreshLoader();
+                ((NewsListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container_class_sections)).refreshLoader();
                 return true;
             case R.id.action_settings:
                 startActivity(new Intent(this, PreferencesActivity.class));
@@ -104,4 +98,3 @@ public class NewsActivity extends FragmentActivity implements NewsListFragment.C
         }
     }
 }
-

@@ -11,14 +11,14 @@
     <!-- layout: layout_news_list -->
 
 
-    <!-- layout: activity_single_new -->
+    <!-- layout: fragment_single_new -->
     <string name="label_news_view">Your Classes News</string>
 
     <!-- layout: item_class -->
 
     <!-- layout: item_new -->
 
-    <!-- layout: activity_single_new -->
+    <!-- layout: fragment_single_new -->
     <string name="new_view_when"></string>
     <string name="new_view_title"></string>
     <string name="new_view_content"></string>
@@ -52,5 +52,11 @@
     <string name="save">Gravar</string>
     <string name="classes_selection_loading_error">Houve um problema ao carregar a lista de todas as turmas.\nVerifique a sua ligação!</string>
     <string name="news_loading_error">Houve um problema ao carregar a lista de notícias desta turma.\nVerifique a sua ligação!</string>
+    <string name="tab_Students">Estudantes</string>
+    <string name="tab_news">Notícias</string>
+    <string name="label_class_section_view">A tua turma no Thoth</string>
+    <string name="empty_text">A lista está vazia! Desliza para baixo para fazer refresh.</string>
+    <string name="item_class_lbl">Turma:</string>
+    <string name="item_teacher_lbl">Docente:</string>
 
 </resources>

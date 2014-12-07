@@ -84,13 +84,13 @@ public class ThothProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db =_helper.getReadableDatabase();
-        Cursor c;
+        Cursor cursor;
 
         final int match = _matcher.match(uri);
         switch (match){
             case ROUTE_CLASSES:
                 d("Uri = %s, ROUTE_CLASSES", uri.toString());
-                c = db.query(ThothContract.Clazz.TABLE_NAME,projection
+                cursor = db.query(ThothContract.Clazz.TABLE_NAME,projection
                         ,selection,selectionArgs,null,null,sortOrder);
                 break;
             case ROUTE_CLASSES_ID:{
@@ -98,7 +98,7 @@ public class ThothProvider extends ContentProvider {
                 long classID = getID(uri,CLASS_ID_POSITION);
                 selection = SQLiteUtils.appendWhereCondition(selection,ThothContract.Clazz._ID);
                 selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(classID));
-                c = db.query(ThothContract.Clazz.TABLE_NAME, projection
+                cursor = db.query(ThothContract.Clazz.TABLE_NAME, projection
                         , selection, selectionArgs ,null,null, sortOrder);
                 break;
             }
@@ -106,35 +106,35 @@ public class ThothProvider extends ContentProvider {
                 d("Uri = %s, ROUTE_CLASSES_ENROLLED", uri.toString());
                 selection = SQLiteUtils.appendWhereCondition(selection,ThothContract.Clazz.ENROLLED);
                 selectionArgs = SQLiteUtils.appendArgs(selectionArgs, SQLiteUtils.TRUE);
-                c = db.query(ThothContract.Clazz.TABLE_NAME,projection,
-                        selection, selectionArgs, null, null,sortOrder);
+                cursor = db.query(ThothContract.Clazz.TABLE_NAME, projection,
+                        selection, selectionArgs, null, null, sortOrder);
                 break;
             case ROUTE_CLASSES_ID_NEWS: {
                 d("Uri = %s, ROUTE_CLASSES_ID_NEWS", uri.toString());
                 long classID = getID(uri, CLASS_ID_POSITION);
                 selection = SQLiteUtils.appendWhereCondition(selection, ThothContract.News.CLASS_ID);
                 selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(classID));
-                c = db.query(ThothContract.News.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor = db.query(ThothContract.News.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             }
             case ROUTE_NEWS:
                 d("Uri = %s, ROUTE_NEWS", uri.toString());
-                c = db.query(ThothContract.News.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                cursor = db.query(ThothContract.News.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
             case ROUTE_NEWS_ID:
                 d("Uri = %s, ROUTE_NEWS_ID", uri.toString());
                 long newsID = getID(uri,NEWS_ID_POSITION);
                 selection = SQLiteUtils.appendWhereCondition(ThothContract.News._ID);
                 selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(newsID));
-                c = db.query(ThothContract.News.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                cursor = db.query(ThothContract.News.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
             default:
                 d("Uri = %s, Unmatched URI", uri.toString());
                 // The URI given doesn't match any table of the database
                 throw new UnsupportedOperationException("Unknown URI: "+uri);
         }
-        c.setNotificationUri(getContext().getContentResolver(),uri);
-        return c;
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
     }
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {

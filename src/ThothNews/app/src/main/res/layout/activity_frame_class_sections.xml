@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/class_sections_layout">
+    <FrameLayout
+        style="@style/Widget.SampleMessageTile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_gradient">
+            <TextView
+                android:id="@+id/class_lbl"
+                style="@style/Widget.SampleMessage"
+                android:layout_width="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/margin_small"
+                android:paddingRight="@dimen/margin_small"
+                android:text="@string/item_class_lbl" />
+            <TextView
+                style="@style/Widget.SampleMessage"
+                android:id="@+id/tv_class_name"
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@+id/class_lbl"
+                android:layout_height="wrap_content"
+                android:text=""/>
+            <TextView
+                android:id="@+id/teacher_lbl"
+                style="@style/Widget.SampleMessage"
+                android:layout_width="wrap_content"
+                android:layout_below="@+id/class_lbl"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/margin_small"
+                android:paddingRight="@dimen/margin_small"
+                android:text="@string/item_teacher_lbl" />
+            <TextView
+                style="@style/Widget.SampleMessage"
+                android:id="@+id/tv_teacher_name"
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@+id/teacher_lbl"
+                android:layout_below="@+id/class_lbl"
+                android:layout_height="wrap_content"
+                android:text="" />
+        </RelativeLayout>
+    </FrameLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+    <FrameLayout
+        android:id="@+id/fragment_container_class_sections"
+        android:layout_weight="8"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+</LinearLayout>

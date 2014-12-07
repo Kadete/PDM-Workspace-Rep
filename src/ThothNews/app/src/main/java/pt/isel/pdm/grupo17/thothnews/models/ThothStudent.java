@@ -12,7 +12,10 @@ import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
 import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ADAPTER;
 
-public class ThothNew implements Serializable {
+/**
+ * Created by Kadete on 07/12/2014.
+ */
+public class ThothStudent implements Serializable {
 
     static final String ITEM_SEP = System.getProperty("line.separator");
     static final int READ = 1;
@@ -62,9 +65,9 @@ public class ThothNew implements Serializable {
         this._content = _content;
     }
 
-    public ThothNew(){}
+    public ThothStudent(){}
 
-    public ThothNew(long id, String title, Date when, Boolean read, String content){
+    public ThothStudent(long id, String title, Date when, Boolean read, String content){
         _id = id;
         this.title = title;
         _when = when;
@@ -94,4 +97,5 @@ public class ThothNew implements Serializable {
     public String toString() {
         return _id + ITEM_SEP + title + ITEM_SEP + DateUtils.SAVE_DATE_FORMAT.format(_when) + ITEM_SEP + _read+ ITEM_SEP + _content;
     }
+
 }

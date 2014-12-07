@@ -175,14 +175,15 @@ public class ThothUpdateService extends IntentService {
      */
     private void handleNewsUpdate() {
         ContentResolver resolver = getContentResolver();
-        Cursor c = resolver.query(ThothContract.Clazz.ENROLLED_URI,new String[]{ThothContract.Clazz._ID}
+        Cursor cursor = resolver.query(ThothContract.Clazz.ENROLLED_URI,new String[]{ThothContract.Clazz._ID}
                 ,String.format("%s = 1",ThothContract.Clazz.ENROLLED),null,null);
 
         long classID;
-        while(c.moveToNext()){
-            classID = c.getLong(COLUMN_CLASS_ID);
+        while(cursor.moveToNext()){
+            classID = cursor.getLong(COLUMN_CLASS_ID);
             handleClassNewsUpdate(classID);
         }
+        cursor.close();
     }
 
     private final long[] mVibratePattern = { 0, 200, 200, 300 };
@@ -212,6 +213,7 @@ public class ThothUpdateService extends IntentService {
                 Uri classNewsUri = UriUtils.Classes.parseNewsFromClasseID(classID);
                 Cursor classNewsIDsCursor = resolver.query(classNewsUri, new String[]{ThothContract.News._ID},null,null,null);
                 List<Long> classNewsIDs = getListFromCursor(classNewsIDsCursor);
+                classNewsIDsCursor.close();
                 long currNewsID;
                 for (int idx = 0; idx < thothNews.length(); ++idx) {
                     JSONObject jnews = thothNews.getJSONObject(idx), jnewsDetails;

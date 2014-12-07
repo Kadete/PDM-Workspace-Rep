@@ -15,9 +15,11 @@ public class PreferencesActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         getActionBar().setTitle(R.string.label_activity_preferences);
 
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment())
-                .commit();
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, new SettingsFragment())
+                    .commit();
+        }
     }
 
     @Override

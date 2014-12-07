@@ -1,11 +1,10 @@
 package pt.isel.pdm.grupo17.thothnews.utils;
 
-/**
- * Created by Kadete on 29/11/2014.
- */
 public class TagUtils {
     public static final String TAG_SELECT_CLASS_ID = "TAG_SELECT_CLASS_ID";
     public static final String TAG_SELECT_CLASS_NAME = "TAG_SELECT_CLASS_NAME";
+    public static final String TAG_SELECT_CLASS_TEACHER = "TAG_SELECT_CLASS_TEACHER";
+    public static final String TAG_SERIALIZABLE_CLASS = "TAG_SERIALIZABLE_CLASS";
     public static final String TAG_SERIALIZABLE_LIST = "TAG_SERIALIZABLE_LIST";
     public static final String TAG_SERIALIZABLE_NEW = "TAG_SERIALIZABLE_NEW";
     public static final String TAG_SELECT_NEW_POS = "TAG_SELECT_NEW_POS";

@@ -3,28 +3,27 @@ package pt.isel.pdm.grupo17.thothnews.activities;
 import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.fragments.ClassesSelectionListFragment;
-import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
+import pt.isel.pdm.grupo17.thothnews.fragments.ClassesSelectionFragment;
 
 public class ClassesSelectionActivity extends FragmentActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_frame_classes_selection);
+        setContentView(R.layout.activity_frame_classes);
 
-        FragmentManager fm = getSupportFragmentManager();
-        if(fm.findFragmentById(R.id.fragment_container_classes_selection) == null){
-            ClassesSelectionListFragment f = new ClassesSelectionListFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container_classes_selection, f)
-                    .commit();
+        if (savedInstanceState == null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            ClassesSelectionFragment fragment = new ClassesSelectionFragment();
+            transaction.replace(R.id.fragment_container_classes, fragment);
+            transaction.commit();
         }
+
     }
 
     @Override
@@ -48,8 +47,7 @@ public class ClassesSelectionActivity extends FragmentActivity{
                 onBackPressed();
                 return true;
             case R.id.action_refresh:
-                ThothUpdateService.startActionClassesUpdate(this);
-                ((ClassesSelectionListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes_selection)).refreshLoader();
+                ((ClassesSelectionFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes)).refreshLoader();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

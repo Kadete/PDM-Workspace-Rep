@@ -9,14 +9,14 @@
             <corners android:radius="0dp"/>
             <gradient
                 android:startColor="#ffd1d1d1"
-                android:endColor="#44440000"
+                android:endColor="#33b5e5"
                 android:angle="0"
                 android:type="linear"/>
         </shape>
     </item>
     <item
         android:top="-100dp"
-        android:bottom="160dp"
+        android:bottom="140dp"
         android:right="-300dp">
         <rotate
             android:fromDegrees="45">

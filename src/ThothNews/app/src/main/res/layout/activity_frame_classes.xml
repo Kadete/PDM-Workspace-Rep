@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_alignParentBottom="true">
-    <TextView
-        android:id="@+id/tv_error_class"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/classes_loading_error"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="gone"
-        android:gravity="center"
-        />
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragment_container_classes"
-        />
-</RelativeLayout>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_container_classes"/>
+</LinearLayout>

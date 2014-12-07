@@ -94,7 +94,7 @@ public class ClassesSelectionAdapter extends CursorAdapter {
         Boolean isEnrolled = cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.ENROLLED)).equals(TRUE);
         holder.checkBox.setChecked(isEnrolled);
 
-        view.setBackground(new ColorDrawable((isEnrolled) ? 0x44440000 : 0x44444444));
+        view.setBackground(new ColorDrawable((isEnrolled) ? 0x33440000 : 0x33333333));
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +109,7 @@ public class ClassesSelectionAdapter extends CursorAdapter {
                 mContext.getContentResolver().update(UriUtils.Classes.parseClasseID(id), values, null, null );
                 ThothUpdateService.startActionClassNewsUpdate(context, id);
 
-                view.setBackground(new ColorDrawable((toggleChecked) ? 0x44440000 : 0x44444444));
+                view.setBackground(new ColorDrawable((toggleChecked) ? 0x33440000 : 0x33333333));
             }
         });
     }

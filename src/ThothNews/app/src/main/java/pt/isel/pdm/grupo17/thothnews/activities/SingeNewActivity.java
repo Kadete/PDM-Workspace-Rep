@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.fragments.NewsListFragment;
 import pt.isel.pdm.grupo17.thothnews.fragments.SingleNewFragment;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNewsList;
@@ -23,8 +24,8 @@ public class SingeNewActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(!NewsActivity.isTwoPane()) {
-            setContentView(R.layout.activity_pager_news);
+        if(!NewsListFragment.isTwoPane()) {
+            setContentView(R.layout.fragment_pager_news);
             mViewPager = (ViewPager) findViewById(R.id.pager);
             mViewPager.setId(R.id.viewPager);
 
