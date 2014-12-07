@@ -39,8 +39,13 @@
         android:layout_height="wrap_content"
         android:text="@string/new_view_content"
         android:paddingTop="@dimen/activity_vertical_margin"
+        android:scrollbars="vertical"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:fadeScrollbars="true"
         android:layout_below="@id/divisor"
         android:autoLink="web"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+    />
 
 </RelativeLayout>
