@@ -11,28 +11,29 @@ import android.view.MenuItem;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.fragments.SingleNewFragment;
+import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNewsList;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
 public class SingeNewActivity extends FragmentActivity {
 
+    ViewPager mViewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getActionBar().setTitle(getIntent().getStringExtra(TagUtils.TAG_SELECT_CLASS_NAME));
-
         if(!NewsActivity.isTwoPane()) {
-            ViewPager pager = new ViewPager(this);
-
-            pager.setId(R.id.viewPager);
-            setContentView(pager);
+            setContentView(R.layout.activity_pager_news);
+            mViewPager = (ViewPager) findViewById(R.id.pager);
+            mViewPager.setId(R.id.viewPager);
 
             Intent intent = getIntent();
+            getActionBar().setTitle(getIntent().getStringExtra(TagUtils.TAG_SELECT_CLASS_NAME));
             final ThothNewsList list = (ThothNewsList) intent.getExtras().getSerializable(TagUtils.TAG_SERIALIZABLE_LIST);
             int newClickPosition = intent.getExtras().getInt(TagUtils.TAG_SELECT_NEW_POS, 0);
 
-            pager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+            mViewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
                 @Override
                 public android.support.v4.app.Fragment getItem(int pos) {
                     return SingleNewFragment.newInstance(list.getItems().get(pos));
@@ -42,8 +43,12 @@ public class SingeNewActivity extends FragmentActivity {
                 public int getCount() {
                     return list.getItems().size();
                 }
+                @Override
+                public CharSequence getPageTitle(int position) {
+                    return ((ThothNew)list.get(position)).getShortWhen();
+                }
             });
-            pager.setCurrentItem(newClickPosition);
+            mViewPager.setCurrentItem(newClickPosition);
         }
     }
 

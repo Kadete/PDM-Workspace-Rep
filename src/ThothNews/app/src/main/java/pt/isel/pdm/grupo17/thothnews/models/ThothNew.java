@@ -44,6 +44,9 @@ public class ThothNew implements Serializable {
     public String getFormattedWhen() {
         return DateUtils.SHOW_DATE_FORMAT.format(_when);
     }
+    public String getShortWhen() {
+        return DateUtils.SHOW_SHORT_DATE_FORMAT.format(_when);
+    }
 
     public Boolean getRead() {
         return _read;
