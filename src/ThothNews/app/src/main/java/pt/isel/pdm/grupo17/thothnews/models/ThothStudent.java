@@ -12,19 +12,16 @@ import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
 import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ADAPTER;
 
-/**
- * Created by Kadete on 07/12/2014.
- */
 public class ThothStudent implements Serializable {
 
     static final String ITEM_SEP = System.getProperty("line.separator");
-    static final int READ = 1;
 
     long _id;
-    String title;
-    Date _when = new Date();
-    String _content;
-    Boolean _read = false;
+    Date _enrolledDate = new Date();
+    String _fullName;
+    String _email;
+    int _currentGroup;
+//    AVATAR_URL = "avatarUrl",
 
     public long getID() {
         return _id;
@@ -33,69 +30,78 @@ public class ThothStudent implements Serializable {
         _id = id;
     }
 
-    public String getTitle() {
-        return title;
+//    public int getNumber() {
+//        return _number;
+//    }
+//    public void setNumber(int number) {
+//        this._number = number;
+//    }
+
+    public Date getEnrolledDate() {
+        return _enrolledDate;
     }
-    public void setTitle(String title) {
-        this.title = title;
+    public void setEnrolledDate(Date when){
+        _enrolledDate = when;}
+
+    public String getFormattedEnrolledDate() {
+        return DateUtils.SHOW_DATE_FORMAT.format(_enrolledDate);
+    }
+    public String getShortEnrolledDate() {
+        return DateUtils.SHOW_SHORT_DATE_FORMAT.format(_enrolledDate);
     }
 
-    public Date getWhen() {
-        return _when;
+    public String getFullName() {
+        return _fullName;
     }
-    public void setWhen(Date when){_when = when;}
-    public String getFormattedWhen() {
-        return DateUtils.SHOW_DATE_FORMAT.format(_when);
-    }
-    public String getShortWhen() {
-        return DateUtils.SHOW_SHORT_DATE_FORMAT.format(_when);
+    public void setFullName(String fullName) {
+        this._fullName = fullName;
     }
 
-    public Boolean getRead() {
-        return _read;
+    public String getEmail() {
+        return _email;
     }
-    public void setRead(Boolean read) {
-        _read = read;
+    public void setEmail(String email) {
+        this._email = email;
     }
 
-    public String getContent() {
-        return _content;
+    public int getGroup() {
+        return _currentGroup;
     }
-    public void setContent(String _content) {
-        this._content = _content;
+    public void setGroup(int group) {
+        this._currentGroup = group;
     }
 
     public ThothStudent(){}
 
-    public ThothStudent(long id, String title, Date when, Boolean read, String content){
+    public ThothStudent(long id, Date when, String fullName, String email, int group){
         _id = id;
-        this.title = title;
-        _when = when;
-        _read = read;
-        _content = content;
+        _enrolledDate = when;
+        _fullName = fullName;
+        _email = email;
+        _currentGroup = group;
     }
 
-    public static ThothNew fromCursor(Cursor cursor){
+    public static ThothStudent fromCursor(Cursor cursor){
 
-        Date when = new Date();
+        Date whenEnrolled = new Date();
         try {
-            String whenStr = cursor.getString(cursor.getColumnIndex(ThothContract.News.WHEN_CREATED));
-            when = DateUtils.SAVE_DATE_FORMAT.parse(whenStr);
+            String whenStr = cursor.getString(cursor.getColumnIndex(ThothContract.Students.ENROLLED_DATE));
+            whenEnrolled = DateUtils.SAVE_DATE_FORMAT.parse(whenStr);
         } catch (ParseException e) {
-            d(TAG_ADAPTER, "Error on Parse Date >> NewsAdapter.SwapCursor");
+            d(TAG_ADAPTER, "Error on Parse Date >> ParticipantsAdapter.SwapCursor");
         }
 
-        return new ThothNew(
-                cursor.getLong(cursor.getColumnIndex(ThothContract.News._ID)),
-                cursor.getString(cursor.getColumnIndex(ThothContract.News.TITLE)),
-                when,
-                (cursor.getString(cursor.getColumnIndex(ThothContract.News.READ)).equals(READ)),
-                cursor.getString(cursor.getColumnIndex(ThothContract.News.CONTENT))
+        return new ThothStudent(
+            cursor.getLong(cursor.getColumnIndex(ThothContract.Students._ID)),
+            whenEnrolled,
+            cursor.getString(cursor.getColumnIndex(ThothContract.Students.FULL_NAME)),
+            cursor.getString(cursor.getColumnIndex(ThothContract.Students.ACADEMIC_EMAIL)),
+            cursor.getInt(cursor.getColumnIndex(ThothContract.Students.GROUP))
         );
     }
 
     public String toString() {
-        return _id + ITEM_SEP + title + ITEM_SEP + DateUtils.SAVE_DATE_FORMAT.format(_when) + ITEM_SEP + _read+ ITEM_SEP + _content;
+        return _id + ITEM_SEP + DateUtils.SAVE_DATE_FORMAT.format(_enrolledDate) + ITEM_SEP + _email + ITEM_SEP + _fullName + ITEM_SEP + _currentGroup;
     }
 
 }

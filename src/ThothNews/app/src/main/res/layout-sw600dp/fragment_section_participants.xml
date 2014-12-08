@@ -10,10 +10,12 @@
         <GridView
             android:id="@android:id/list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:numColumns="auto_fit"
-            android:listSelector="@android:color/transparent"
+            android:layout_height="wrap_content"
+            android:numColumns="4"
+            android:background="#ff9ba5a5"
             android:horizontalSpacing="2dp"
+            android:stretchMode="columnWidth"
+            android:listSelector="@android:color/transparent"
             android:verticalSpacing="2dp"
             android:padding="2dp"/>
         <TextView

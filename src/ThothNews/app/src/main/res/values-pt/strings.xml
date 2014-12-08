@@ -44,7 +44,7 @@
 
     <string name="notification_txt">Texto de notificação</string>
     <string name="classes_loading_error">Houve um problema ao carregar a sua lista de turmas.\nVerifique a sua ligação!</string>
-    <string name="label_activity_classes">As Tuas Turmas</string>
+    <string name="label_activity_classes">As Tuas Turmas Thoth</string>
     <string name="title_activity_class_selection">Selecciona as tuas turmas</string>
     <string name="class_selection_cancel">Selecção Descartada!</string>
     <string name="class_selection_ok">Turmas seleccionadas guardadas com sucesso!</string>
@@ -52,11 +52,12 @@
     <string name="save">Gravar</string>
     <string name="classes_selection_loading_error">Houve um problema ao carregar a lista de todas as turmas.\nVerifique a sua ligação!</string>
     <string name="news_loading_error">Houve um problema ao carregar a lista de notícias desta turma.\nVerifique a sua ligação!</string>
-    <string name="tab_Students">Estudantes</string>
+    <string name="tab_participants">Participantes</string>
     <string name="tab_news">Notícias</string>
-    <string name="label_class_section_view">A tua turma no Thoth</string>
+    <string name="label_class_section_view">A Tua Turma</string>
     <string name="empty_text">A lista está vazia! Desliza para baixo para fazer refresh.</string>
     <string name="item_class_lbl">Turma:</string>
     <string name="item_teacher_lbl">Docente:</string>
+    <string name="participant_main_info_tv">, Grupo:</string>
 
 </resources>

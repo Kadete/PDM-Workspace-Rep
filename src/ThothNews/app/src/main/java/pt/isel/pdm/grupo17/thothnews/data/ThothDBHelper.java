@@ -11,7 +11,7 @@ public class ThothDBHelper extends SQLiteOpenHelper {
     /** Filename for SQLite file. */
     final private static String DB_NAME = "thoth.db";
     /** Schema version. */
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 2;
 
 //    final private Context mContext;
 
@@ -26,6 +26,8 @@ public class ThothDBHelper extends SQLiteOpenHelper {
         db.execSQL(ThothContract.Clazz.CREATE_QUERY);
         d("HELPER",ThothContract.News.CREATE_QUERY);
         db.execSQL(ThothContract.News.CREATE_QUERY);
+        d("HELPER", ThothContract.Students.CREATE_QUERY);
+        db.execSQL(ThothContract.Students.CREATE_QUERY);
     }
 
     @Override

@@ -40,11 +40,9 @@
 
         <activity android:name=".activities.ClassesSelectionActivity" android:label="@string/title_activity_class_selection"/>
 
-        <activity android:name=".activities.NewsActivity" android:label="@string/label_app_name"/>
+        <activity android:name=".activities.ClassSectionsActivity" android:label="@string/label_class_section_view"/>
 
         <activity android:name=".activities.SingeNewActivity" android:label="@string/label_activity_new_view"/>
-
-        <activity android:name=".activities.ClassSectionsActivity" android:label="@string/label_class_section_view"/>
 
         <receiver android:name=".broadcastreceivers.NetworkReceiver" >
             <intent-filter>
@@ -57,7 +55,7 @@
             android:name="pt.isel.pdm.grupo17.thothnews.data.ThothProvider"
             android:authorities="pt.isel.pdm.grupo17.thothnews"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="false" >
         </provider>
 
         <service

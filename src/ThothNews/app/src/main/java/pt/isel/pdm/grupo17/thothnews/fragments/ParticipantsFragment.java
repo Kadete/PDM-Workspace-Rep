@@ -1,6 +1,5 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,27 +10,39 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
-import pt.isel.pdm.grupo17.thothnews.adapters.ClassesAdapter;
+import pt.isel.pdm.grupo17.thothnews.adapters.ParticipantsAdapter;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
-import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
-public class ClassesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ParticipantsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    static final int CLASSES_CURSOR_LOADER_ID = 0;
-    static final String[] CURSOR_COLUMNS = {ThothContract.Clazz._ID,ThothContract.Clazz.FULL_NAME,ThothContract.Clazz.TEACHER, ThothContract.Clazz.UNREAD_NEWS};
+    public static ParticipantsFragment newInstance() {
+        Bundle bundle = new Bundle();
+
+        ParticipantsFragment fragment = new ParticipantsFragment();
+        fragment.setArguments(bundle);
+
+        return fragment;
+    }
+
+    static final int PARTICIPANTS_CURSOR_LOADER_ID = 3;
+    static final String[] CURSOR_COLUMNS = {ThothContract.Students._ID, ThothContract.Students.FULL_NAME,
+            ThothContract.Students.ACADEMIC_EMAIL, ThothContract.Students.ENROLLED_DATE, ThothContract.Students.GROUP};
+            //ThothContract.Participants.AVATAR_URL
 
     private MultiSwipeRefreshLayout mSwipeRefreshLayout;
     private GridView mGridView;
     private View mEmptyView;
-    private ClassesAdapter mListAdapter;
+    private ParticipantsAdapter mListAdapter;
+
+    private static ThothClass sThothClass;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,15 +50,11 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_grid_classes, container, false);
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_section_participants, container, false);
         mSwipeRefreshLayout = (MultiSwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
         mGridView = (GridView) view.findViewById(android.R.id.list);
         mEmptyView = view.findViewById(android.R.id.empty);
-
         return view;
     }
 
@@ -55,20 +62,13 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mListAdapter = new ClassesAdapter(getActivity());
+        sThothClass = ClassSectionsActivity.getThothClass();
+
+        mListAdapter = new ParticipantsAdapter(getActivity());
+
 
         mGridView.setAdapter(mListAdapter);
         mGridView.setEmptyView(mEmptyView);
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ThothClass clazz = (ThothClass) mListAdapter.getItem(position);
-                Intent i = new Intent(getActivity(), ClassSectionsActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.putExtra(TagUtils.TAG_SERIALIZABLE_CLASS, clazz);
-                startActivity(i);
-            }
-        });
 
         mSwipeRefreshLayout.setSwipeableChildren(android.R.id.list, android.R.id.empty);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -78,20 +78,28 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
             }
         });
 
-        getLoaderManager().initLoader(CLASSES_CURSOR_LOADER_ID, null, this);
-
+        getLoaderManager().initLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        refreshLoader();
+        if(mListAdapter.isEmpty())
+            refreshLoader();
+    }
+
+    public boolean isFragmentUIActive() {
+        return isVisible() && isAdded() && !isDetached() && !isRemoving();
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String OrderBy = ThothContract.Clazz.SEMESTER + " DESC, "+ ThothContract.Clazz.FULL_NAME + " ASC";
-        return new CursorLoader(getActivity(), ThothContract.Clazz.ENROLLED_URI, CURSOR_COLUMNS , null, null, OrderBy);
+        if(isFragmentUIActive()){
+            String OrderBy = ThothContract.Students.GROUP + " DESC, " + ThothContract.Students._ID + " ASC";
+            return new CursorLoader(getActivity(), UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()),
+                    CURSOR_COLUMNS, null, null, OrderBy);
+        }
+        return null;
     }
 
     @Override
@@ -105,10 +113,19 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     public void refreshLoader() {
+        if(!isFragmentUIActive())
+            return;
         mSwipeRefreshLayout.setRefreshing(true);
-        ThothUpdateService.startActionNewsUpdate(getActivity());
-        getLoaderManager().restartLoader(CLASSES_CURSOR_LOADER_ID, null, this);
+        ThothUpdateService.startActionClassParticipantsUpdate(getActivity(), sThothClass.getID());
+        getLoaderManager().restartLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+           // TODO: request participants photos
+        }
+    }
 }

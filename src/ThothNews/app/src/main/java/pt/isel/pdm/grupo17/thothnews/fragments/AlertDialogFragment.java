@@ -5,17 +5,13 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
-import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.FALSE;
-import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
 
 public class AlertDialogFragment extends DialogFragment {
 

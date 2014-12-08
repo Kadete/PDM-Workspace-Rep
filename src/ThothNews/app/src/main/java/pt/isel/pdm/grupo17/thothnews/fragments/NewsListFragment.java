@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,6 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     private static MultiSwipeRefreshLayout mSwipeRefreshLayout;
     private ListView mListView;
     private View mEmptyView;
-    private static View sNewsView;
 
     private NewsAdapter mListAdapter;
 
@@ -66,11 +66,8 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        sNewsView = inflater.inflate(R.layout.fragment_section_news, container, false);
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View sNewsView = inflater.inflate(R.layout.fragment_section_news, container, false);
         mSwipeRefreshLayout = (MultiSwipeRefreshLayout) sNewsView.findViewById(R.id.swiperefresh);
         mListView = (ListView) sNewsView.findViewById(android.R.id.list);
         mEmptyView = sNewsView.findViewById(android.R.id.empty);
@@ -136,7 +133,7 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         if(mListAdapter.isEmpty())
             ThothUpdateService.startActionClassNewsUpdate(getActivity(), sThothClass.getID());
@@ -161,7 +158,7 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     }
 
     @Override
-    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String selection = ThothContract.News.CLASS_ID + " = ? ";
         String [] selectionArgs = new String[]{ String.valueOf(sThothClass.getID()) };
         return new android.support.v4.content.CursorLoader(getActivity(), ThothContract.News.CONTENT_URI,
@@ -169,12 +166,12 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     }
 
     @Override
-    public void onLoadFinished(android.support.v4.content.Loader<Cursor> cursorLoader, Cursor cursor) {
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         mListAdapter.swapCursor(cursor);
     }
 
     @Override
-    public void onLoaderReset(android.support.v4.content.Loader<Cursor> cursorLoader) {
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mListAdapter.swapCursor(null);
     }
 

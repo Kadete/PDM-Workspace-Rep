@@ -5,7 +5,7 @@
     <string name="label_app_name" translatable="false">Thoth News</string>
     <string name="label_activity_new_view">New View Activity</string>
     <string name="label_activity_preferences">Settings</string>
-    <string name="label_activity_classes">Your Classes</string>
+    <string name="label_activity_classes">Your Thoth Classes</string>
 
     <!-- layout: layout_classes_list -->
     <string name="title_classes_view">Your Classes</string>
@@ -69,11 +69,16 @@
     
     <string name="dummy_section_text" translatable="false">Section %1d is just a dummy section.</string>
     <string name="tab_news">News</string>
-    <string name="tab_Students">Students</string>
-    <string name="label_class_section_view">Your Thoth Class</string>
+    <string name="tab_participants">Participants</string>
+    <string name="label_class_section_view">Your Class</string>
 
     <string name="empty_text">List is empty! Swipe down to refresh.</string>
     <string name="item_class_lbl">Class:</string>
     <string name="item_teacher_lbl">Teacher:</string>
+
+    <string name="participant_item_full_name" translatable="false">participant_item_full_name</string>
+    <string name="participant_item_email" translatable="false">participant_item_email</string>
+    <string name="participant_item_number_and_group" translatable="false">participant_item_number_and_group</string>
+    <string name="participant_main_info_tv">, Group:</string>
 
 </resources>

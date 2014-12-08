@@ -96,7 +96,7 @@ public class ClassesAdapter extends CursorAdapter {
         String selection = ThothContract.News.READ + " =  ? ";
         String [] selectionArgs =  new String[] { FALSE };
         String orderBy = ThothContract.News.READ;
-        Uri classNewsUri = UriUtils.Classes.parseNewsFromClasseID(classeID);
+        Uri classNewsUri = UriUtils.Classes.parseNewsFromClassID(classeID);
         Cursor cursorNewsRead = mContext.getContentResolver().query(classNewsUri, new String[] {ThothContract.Clazz._ID}, selection, selectionArgs, orderBy);
 
         Boolean newsToRead = cursorNewsRead.moveToNext();
@@ -105,25 +105,6 @@ public class ClassesAdapter extends CursorAdapter {
         holder.full_name.setTypeface(null, (newsToRead) ? Typeface.BOLD : Typeface.NORMAL);
         holder.teacher.setTypeface(null, (newsToRead) ? Typeface.BOLD : Typeface.NORMAL);
         view.setBackground(new ColorDrawable((newsToRead) ? 0x33440000 : 0x33333333));
-
-
-//        view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                int position = v.getId();
-//
-//                ThothClass clazz = (ThothClass) getItem(position);
-////        Intent i = new Intent(getActivity(), NewsActivity.class);
-//                Intent i = new Intent(mContext, ClassSectionsActivity.class);
-//                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                i.putExtra(TagUtils.TAG_SELECT_CLASS_NAME, clazz.getFullName());
-//                i.putExtra(TagUtils.TAG_SELECT_CLASS_ID, clazz.getID());
-//                mContext.startActivity(i);
-//
-//            }
-//        });
-
     }
 
 }

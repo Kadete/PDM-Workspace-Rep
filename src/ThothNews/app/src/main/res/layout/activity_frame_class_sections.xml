@@ -8,47 +8,59 @@
     <FrameLayout
         style="@style/Widget.SampleMessageTile"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_gradient">
-            <TextView
-                android:id="@+id/class_lbl"
-                style="@style/Widget.SampleMessage"
-                android:layout_width="wrap_content"
-                android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_tab_participants"
+                android:padding="2dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="2dp"/>
+            <RelativeLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/margin_small"
-                android:paddingRight="@dimen/margin_small"
-                android:text="@string/item_class_lbl" />
-            <TextView
-                style="@style/Widget.SampleMessage"
-                android:textStyle="bold"
-                android:id="@+id/tv_class_name"
-                android:layout_width="wrap_content"
-                android:layout_toRightOf="@+id/class_lbl"
-                android:layout_height="wrap_content"
-                android:text=""/>
-            <TextView
-                android:id="@+id/teacher_lbl"
-                style="@style/Widget.SampleMessage"
-                android:layout_width="wrap_content"
-                android:layout_below="@+id/class_lbl"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/margin_small"
-                android:paddingRight="@dimen/margin_small"
-                android:text="@string/item_teacher_lbl"/>
-            <TextView
-                style="@style/Widget.SampleMessage"
-                android:textStyle="bold"
-                android:id="@+id/tv_teacher_name"
-                android:layout_width="wrap_content"
-                android:layout_toRightOf="@+id/teacher_lbl"
-                android:layout_below="@+id/class_lbl"
-                android:layout_height="wrap_content"
-                android:text=""/>
-        </RelativeLayout>
+                android:layout_gravity="center_vertical">
+                <TextView
+                    android:id="@+id/class_lbl"
+                    style="@style/Widget.SampleMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/margin_small"
+                    android:paddingRight="@dimen/margin_small"
+                    android:text="@string/item_class_lbl" />
+                <TextView
+                    style="@style/Widget.SampleMessage"
+                    android:textStyle="bold"
+                    android:id="@+id/tv_class_name"
+                    android:layout_width="wrap_content"
+                    android:layout_toRightOf="@+id/class_lbl"
+                    android:layout_height="wrap_content"
+                    android:text=""/>
+                <TextView
+                    android:id="@+id/teacher_lbl"
+                    style="@style/Widget.SampleMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_below="@+id/class_lbl"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/margin_small"
+                    android:paddingRight="@dimen/margin_small"
+                    android:text="@string/item_teacher_lbl"/>
+                <TextView
+                    style="@style/Widget.SampleMessage"
+                    android:textStyle="bold"
+                    android:id="@+id/tv_teacher_name"
+                    android:layout_width="wrap_content"
+                    android:layout_toRightOf="@+id/teacher_lbl"
+                    android:layout_below="@+id/class_lbl"
+                    android:layout_height="wrap_content"
+                    android:text=""/>
+            </RelativeLayout>
+        </LinearLayout>
     </FrameLayout>
     <View
         android:layout_width="match_parent"

@@ -13,7 +13,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp">
         <TextView
             android:id="@+id/new_item_when"
             android:layout_width="wrap_content"
@@ -35,13 +36,12 @@
     <ImageView
         android:id="@+id/arrow"
         android:src="@android:drawable/ic_media_play"
-        android:rotation="180"
         android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="-8dp"/>
+        android:layout_marginLeft="-10dp"/>
     <CheckBox
         android:id="@+id/new_item_checkread"
         android:layout_width="wrap_content"

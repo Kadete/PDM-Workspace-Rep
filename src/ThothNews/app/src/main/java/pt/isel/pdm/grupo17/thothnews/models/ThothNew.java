@@ -83,11 +83,11 @@ public class ThothNew implements Serializable {
         }
 
         return new ThothNew(
-                cursor.getLong(cursor.getColumnIndex(ThothContract.News._ID)),
-                cursor.getString(cursor.getColumnIndex(ThothContract.News.TITLE)),
-                when,
-                (cursor.getString(cursor.getColumnIndex(ThothContract.News.READ)).equals(READ)),
-                cursor.getString(cursor.getColumnIndex(ThothContract.News.CONTENT))
+            cursor.getLong(cursor.getColumnIndex(ThothContract.News._ID)),
+            cursor.getString(cursor.getColumnIndex(ThothContract.News.TITLE)),
+            when,
+            (cursor.getString(cursor.getColumnIndex(ThothContract.News.READ)).equals(READ)),
+            cursor.getString(cursor.getColumnIndex(ThothContract.News.CONTENT))
         );
     }
 

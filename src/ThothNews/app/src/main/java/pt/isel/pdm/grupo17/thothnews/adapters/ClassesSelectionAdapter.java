@@ -106,7 +106,7 @@ public class ClassesSelectionAdapter extends CursorAdapter {
                 ContentValues values = new ContentValues();
                 values.put(ThothContract.Clazz.ENROLLED, (toggleChecked) ? TRUE : FALSE);
 
-                mContext.getContentResolver().update(UriUtils.Classes.parseClasseID(id), values, null, null );
+                mContext.getContentResolver().update(UriUtils.Classes.parseClass(id), values, null, null );
                 ThothUpdateService.startActionClassNewsUpdate(context, id);
 
                 view.setBackground(new ColorDrawable((toggleChecked) ? 0x33440000 : 0x33333333));
