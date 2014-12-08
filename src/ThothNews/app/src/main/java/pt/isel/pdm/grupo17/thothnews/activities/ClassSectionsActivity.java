@@ -3,6 +3,7 @@ package pt.isel.pdm.grupo17.thothnews.activities;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
@@ -88,7 +89,9 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
                 onBackPressed();
                 return true;
             case R.id.action_refresh:
-                ((NewsListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container_class_sections)).refreshLoader();
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_class_sections);
+                if(fragment != null)
+                    ((SlidingTabsColorsFragment) fragment).refreshLoader();
                 return true;
             case R.id.action_settings:
                 startActivity(new Intent(this, PreferencesActivity.class));

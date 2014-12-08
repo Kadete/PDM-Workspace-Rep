@@ -41,9 +41,11 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
 
     private Callbacks mCallbacks = sDummyCallbacks;
 
-    private MultiSwipeRefreshLayout mSwipeRefreshLayout;
+    private static MultiSwipeRefreshLayout mSwipeRefreshLayout;
     private ListView mListView;
     private View mEmptyView;
+    private static View sNewsView;
+
     private NewsAdapter mListAdapter;
 
     public interface Callbacks {
@@ -67,12 +69,12 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_section_news, container, false);
+        sNewsView = inflater.inflate(R.layout.fragment_section_news, container, false);
 
-        mSwipeRefreshLayout = (MultiSwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
-        mListView = (ListView) view.findViewById(android.R.id.list);
-        mEmptyView = view.findViewById(android.R.id.empty);
-        return view;
+        mSwipeRefreshLayout = (MultiSwipeRefreshLayout) sNewsView.findViewById(R.id.swiperefresh);
+        mListView = (ListView) sNewsView.findViewById(android.R.id.list);
+        mEmptyView = sNewsView.findViewById(android.R.id.empty);
+        return sNewsView;
     }
 
     @Override

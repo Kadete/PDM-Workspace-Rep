@@ -67,4 +67,6 @@ public class StudentsFragment extends Fragment {
         }
     }
 
+    public void refreshLoader() {
+    }
 }

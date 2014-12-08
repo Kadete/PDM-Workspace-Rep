@@ -23,17 +23,19 @@ public class SlidingTabsColorsFragment extends Fragment {
         private final int mIndicatorColor;
         private final int mDividerColor;
 
+
+
         SamplePagerItem(CharSequence title, int indicatorColor, int dividerColor) {
             mTitle = title;
             mIndicatorColor = indicatorColor;
             mDividerColor = dividerColor;
         }
 
-        Fragment createStudentsFragment() {
+        StudentsFragment createStudentsFragment() {
             return StudentsFragment.newInstance();
         }
 
-        Fragment createNewsFragment() {
+        NewsListFragment createNewsListFragment() {
             return NewsListFragment.newInstance();
         }
 
@@ -50,7 +52,8 @@ public class SlidingTabsColorsFragment extends Fragment {
         }
     }
 
-    private List<SamplePagerItem> mTabs = new ArrayList<SamplePagerItem>();
+    SampleFragmentPagerAdapter sampleFragmentPagerAdapter;
+    private List<SamplePagerItem> mTabs = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,14 +75,15 @@ public class SlidingTabsColorsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_pager_class_features, container, false);
+        return inflater.inflate(R.layout.fragment_pager_class_sections, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         ViewPager mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
-        mViewPager.setAdapter(new SampleFragmentPagerAdapter(getChildFragmentManager()));
+        sampleFragmentPagerAdapter = new SampleFragmentPagerAdapter(getChildFragmentManager());
+        mViewPager.setAdapter(sampleFragmentPagerAdapter);
 
         SlidingTabLayout mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setViewPager(mViewPager);
@@ -99,19 +103,32 @@ public class SlidingTabsColorsFragment extends Fragment {
         });
     }
 
-    class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
+    static final int NEWS_FRAGMENT_POSITION = 0;
+    static final int STUDENTS_FRAGMENT_POSITION = 1;
+
+    public void refreshLoader() {
+        sampleFragmentPagerAdapter.newsListFragment.refreshLoader();
+        sampleFragmentPagerAdapter.studentsFragment.refreshLoader();
+    }
+
+    public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 
         SampleFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
+        private NewsListFragment newsListFragment;
+        private StudentsFragment studentsFragment;
+
         @Override
         public Fragment getItem(int i) {
             switch (i){
-                case 0:
-                    return mTabs.get(0).createNewsFragment();
-                case 1:
-                    return mTabs.get(1).createStudentsFragment();
+                case NEWS_FRAGMENT_POSITION:
+                    newsListFragment = mTabs.get(NEWS_FRAGMENT_POSITION).createNewsListFragment();
+                    return newsListFragment;
+                case STUDENTS_FRAGMENT_POSITION:
+                    studentsFragment = mTabs.get(STUDENTS_FRAGMENT_POSITION).createStudentsFragment();
+                    return studentsFragment;
                 default:
                     throw new IllegalStateException();
             }

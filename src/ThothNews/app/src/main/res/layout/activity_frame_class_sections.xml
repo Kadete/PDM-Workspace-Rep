@@ -24,6 +24,7 @@
                 android:text="@string/item_class_lbl" />
             <TextView
                 style="@style/Widget.SampleMessage"
+                android:textStyle="bold"
                 android:id="@+id/tv_class_name"
                 android:layout_width="wrap_content"
                 android:layout_toRightOf="@+id/class_lbl"
@@ -37,15 +38,16 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/margin_small"
                 android:paddingRight="@dimen/margin_small"
-                android:text="@string/item_teacher_lbl" />
+                android:text="@string/item_teacher_lbl"/>
             <TextView
                 style="@style/Widget.SampleMessage"
+                android:textStyle="bold"
                 android:id="@+id/tv_teacher_name"
                 android:layout_width="wrap_content"
                 android:layout_toRightOf="@+id/teacher_lbl"
                 android:layout_below="@+id/class_lbl"
                 android:layout_height="wrap_content"
-                android:text="" />
+                android:text=""/>
         </RelativeLayout>
     </FrameLayout>
     <View

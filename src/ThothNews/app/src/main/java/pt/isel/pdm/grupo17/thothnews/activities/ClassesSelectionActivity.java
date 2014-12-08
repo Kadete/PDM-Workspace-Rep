@@ -2,6 +2,7 @@ package pt.isel.pdm.grupo17.thothnews.activities;
 
 import android.app.ActionBar;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
@@ -47,7 +48,9 @@ public class ClassesSelectionActivity extends FragmentActivity{
                 onBackPressed();
                 return true;
             case R.id.action_refresh:
-                ((ClassesSelectionFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes)).refreshLoader();
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
+                if(fragment != null)
+                    ((ClassesSelectionFragment) fragment).refreshLoader();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

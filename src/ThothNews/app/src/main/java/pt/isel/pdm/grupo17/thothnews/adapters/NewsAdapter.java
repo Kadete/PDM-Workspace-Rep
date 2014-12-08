@@ -128,14 +128,16 @@ public class NewsAdapter extends CursorAdapter {
                 holder.when.setTextSize(18);
             }
             else {
+                view.findViewById(R.id.arrow).setVisibility((!read) ? View.VISIBLE :  View.INVISIBLE);
                 view.setBackground(new ColorDrawable((!read) ? 0x33440000 : 0x44444444));
-                view.findViewById(R.id.arrow).setVisibility(View.INVISIBLE);
                 holder.title.setTextSize(18);
                 holder.when.setTextSize(14);
             }
         }
-        else
+        else {
+            view.findViewById(R.id.arrow).setVisibility((!read) ? View.VISIBLE :  View.INVISIBLE);
             view.setBackground(new ColorDrawable((!read) ? 0x33440000 : 0x33333333));
+        }
     }
 
 
