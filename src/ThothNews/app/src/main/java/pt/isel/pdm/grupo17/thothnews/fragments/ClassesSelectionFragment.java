@@ -10,7 +10,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +26,10 @@ import pt.isel.pdm.grupo17.thothnews.adapters.ClassesSelectionAdapter;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
+import pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
-
-import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.FALSE;
-import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
 
 public class ClassesSelectionFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -65,8 +62,7 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity.getApplicationContext(), getString(R.string.class_selection_cancel), Toast.LENGTH_LONG).show();
-                activity.finish();
+                updateClassesSelection(activity, false);
             }
         });
 
@@ -74,30 +70,30 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
-                if(fragment == null)
-                    return;
-                Map<Long, Boolean> mapSelection = ((ClassesSelectionFragment) fragment).getMapSelection();
-                for(Map.Entry<Long, Boolean> entryClass : mapSelection.entrySet()) {
-                    ContentValues values = new ContentValues();
-                    values.put(ThothContract.Clazz.ENROLLED, (entryClass.getValue()) ? TRUE : FALSE);
-                    activity.getContentResolver().update(UriUtils.Classes.parseClass(entryClass.getKey()), values, null, null );
-                    ThothUpdateService.startActionClassNewsUpdate(activity, entryClass.getKey());
-                }
-                Toast.makeText(activity.getApplicationContext(),getString(R.string.class_selection_ok), Toast.LENGTH_LONG).show();
-                activity.finish();
+                updateClassesSelection(activity, true);
             }
         });
 
         return view;
     }
 
+    public void updateClassesSelection(FragmentActivity activity, boolean toSave){
+        for(Map.Entry<Long, ClassesSelectionAdapter.SelectionState> entryClass : mListAdapter.getMapSelection().entrySet()) {
+            ContentValues values = new ContentValues();
+            boolean enrolled = ((toSave) ? entryClass.getValue().finalState : entryClass.getValue().initialState);
+            values.put(ThothContract.Clazz.ENROLLED, enrolled ? SQLiteUtils.TRUE : SQLiteUtils.FALSE);
+            activity.getContentResolver().update(UriUtils.Classes.parseClass(entryClass.getKey()), values, null, null );
+            ThothUpdateService.startActionClassNewsUpdate(activity, entryClass.getKey());
+        }
+        Toast.makeText(activity.getApplicationContext(),getString((toSave)? R.string.class_selection_ok : R.string.class_selection_cancel), Toast.LENGTH_LONG).show();
+        activity.finish();
+    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mListAdapter = new ClassesSelectionAdapter(getActivity());
+        mListAdapter = new ClassesSelectionAdapter(getActivity(), null);
 
         mGridView.setAdapter(mListAdapter);
         mGridView.setEmptyView(mEmptyView);
@@ -124,13 +120,6 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
     }
 
     @Override
-    public void onStop(){
-        super.onStop();
-        Map<Long, Boolean> map = mListAdapter.getMapSelection();
-        Log.d(">>> Fragment","onStop");
-    }
-
-    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String OrderBy = ThothContract.Clazz.SEMESTER + " DESC" + ", " + ThothContract.Clazz.COURSE;
         return new CursorLoader(getActivity(), ThothContract.Clazz.CONTENT_URI, CURSOR_COLUMNS, null, null, OrderBy);
@@ -152,9 +141,5 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
         getLoaderManager().restartLoader(CLASSES_SELECTION_CURSOR_LOADER_ID, null, this);
         mSwipeRefreshLayout.setRefreshing(false);
 
-    }
-
-    public Map<Long,Boolean> getMapSelection() {
-        return mListAdapter.getMapSelection();
     }
 }

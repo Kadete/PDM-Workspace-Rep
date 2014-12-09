@@ -1,5 +1,6 @@
 package pt.isel.pdm.grupo17.thothnews.adapters;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
@@ -18,7 +19,10 @@ import java.util.Map;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
+import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
+import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
+import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.FALSE;
 import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
 
 public class ClassesSelectionAdapter extends CursorAdapter {
@@ -31,13 +35,24 @@ public class ClassesSelectionAdapter extends CursorAdapter {
     }
 
     static LayoutInflater sLayoutInflater = null;
-    List<ThothClass> mClasses = new ArrayList<ThothClass>();
-    Map<Long,Boolean> mMapSelection = new HashMap<>();
-    Context mContext;
+    List<ThothClass> mClasses = new ArrayList<>();
 
-    public Map<Long,Boolean> getMapSelection (){
-        return mMapSelection;
+    public class SelectionState{
+        public boolean initialState;
+        public boolean finalState;
+
+        public SelectionState(boolean initial){
+            initialState = initial;
+            finalState = !initial;
+        }
     }
+
+    static Map<Long,SelectionState> sMapSelection = new HashMap<>();
+    public Map<Long,SelectionState> getMapSelection (){
+        return sMapSelection;
+    }
+
+    Context mContext;
 
     public ClassesSelectionAdapter(Context context) {
         super(context, null, 0);
@@ -107,16 +122,24 @@ public class ClassesSelectionAdapter extends CursorAdapter {
             holder.checkBox.setChecked(toggleChecked);
             long id = Long.valueOf(holder.id.getText().toString());
 
-//            ContentValues values = new ContentValues();
-//            values.put(ThothContract.Clazz.ENROLLED, (toggleChecked) ? TRUE : FALSE);
+            ContentValues values = new ContentValues();
+            values.put(ThothContract.Clazz.ENROLLED, (toggleChecked) ? TRUE : FALSE);
 
-//            mContext.getContentResolver().update(UriUtils.Classes.parseClass(id), values, null, null );
-//            ThothUpdateService.startActionClassNewsUpdate(context, id);
+            mContext.getContentResolver().update(UriUtils.Classes.parseClass(id), values, null, null );
+            ThothUpdateService.startActionClassNewsUpdate(context, id);
 
             view.setBackground(new ColorDrawable((toggleChecked) ? 0x33440000 : 0x33333333));
 
-            mMapSelection.put(id, toggleChecked);
+            if(sMapSelection.containsKey(id)){
+                SelectionState selectionState = sMapSelection.get(id);
+                selectionState.finalState = toggleChecked;
+                sMapSelection.put(id, selectionState);
+            }
+            else
+                sMapSelection.put(id, new SelectionState(!toggleChecked));
             }
         });
+
     }
 }
+

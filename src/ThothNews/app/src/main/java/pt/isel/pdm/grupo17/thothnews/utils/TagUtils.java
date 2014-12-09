@@ -4,10 +4,12 @@ public class TagUtils {
     public static final String TAG_SELECT_CLASS_ID = "TAG_SELECT_CLASS_ID";
     public static final String TAG_SELECT_CLASS_NAME = "TAG_SELECT_CLASS_NAME";
     public static final String TAG_SELECT_CLASS_TEACHER = "TAG_SELECT_CLASS_TEACHER";
+    public static final String TAG_EXTRA_MAP_SELECTION = "TAG_EXTRA_MAP_SELECTION";
     public static final String TAG_SERIALIZABLE_CLASS = "TAG_SERIALIZABLE_CLASS";
     public static final String TAG_SERIALIZABLE_LIST = "TAG_SERIALIZABLE_LIST";
     public static final String TAG_SERIALIZABLE_NEW = "TAG_SERIALIZABLE_NEW";
     public static final String TAG_SELECT_NEW_POS = "TAG_SELECT_NEW_POS";
+
 
     public static final String TAG_ACTIVITY = "TAG_ACTIVITY";
     public static final String TAG_ADAPTER = "TAG_ADAPTER";
