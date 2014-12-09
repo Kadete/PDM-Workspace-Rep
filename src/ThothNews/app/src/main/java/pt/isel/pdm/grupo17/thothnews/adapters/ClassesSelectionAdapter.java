@@ -1,6 +1,5 @@
 package pt.isel.pdm.grupo17.thothnews.adapters;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
@@ -12,15 +11,14 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
-import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
-import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.FALSE;
 import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
 
 public class ClassesSelectionAdapter extends CursorAdapter {
@@ -34,7 +32,12 @@ public class ClassesSelectionAdapter extends CursorAdapter {
 
     static LayoutInflater sLayoutInflater = null;
     List<ThothClass> mClasses = new ArrayList<ThothClass>();
+    Map<Long,Boolean> mMapSelection = new HashMap<>();
     Context mContext;
+
+    public Map<Long,Boolean> getMapSelection (){
+        return mMapSelection;
+    }
 
     public ClassesSelectionAdapter(Context context) {
         super(context, null, 0);
@@ -87,7 +90,8 @@ public class ClassesSelectionAdapter extends CursorAdapter {
     public void bindView(View view, final Context context, Cursor cursor) {
         final ClassViewHolder holder = (ClassViewHolder)view.getTag();
 
-        holder.id.setText(String.valueOf(cursor.getLong(cursor.getColumnIndex(ThothContract.Clazz._ID))));
+        long id = cursor.getLong(cursor.getColumnIndex(ThothContract.Clazz._ID));
+        holder.id.setText(String.valueOf(id));
         holder.full_name.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.FULL_NAME)));
         holder.teacher.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.TEACHER)));
 
@@ -99,17 +103,19 @@ public class ClassesSelectionAdapter extends CursorAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Boolean toggleChecked = !holder.checkBox.isChecked();
-                holder.checkBox.setChecked(toggleChecked);
-                long id = Long.valueOf(holder.id.getText().toString());
+            Boolean toggleChecked = !holder.checkBox.isChecked();
+            holder.checkBox.setChecked(toggleChecked);
+            long id = Long.valueOf(holder.id.getText().toString());
 
-                ContentValues values = new ContentValues();
-                values.put(ThothContract.Clazz.ENROLLED, (toggleChecked) ? TRUE : FALSE);
+//            ContentValues values = new ContentValues();
+//            values.put(ThothContract.Clazz.ENROLLED, (toggleChecked) ? TRUE : FALSE);
 
-                mContext.getContentResolver().update(UriUtils.Classes.parseClass(id), values, null, null );
-                ThothUpdateService.startActionClassNewsUpdate(context, id);
+//            mContext.getContentResolver().update(UriUtils.Classes.parseClass(id), values, null, null );
+//            ThothUpdateService.startActionClassNewsUpdate(context, id);
 
-                view.setBackground(new ColorDrawable((toggleChecked) ? 0x33440000 : 0x33333333));
+            view.setBackground(new ColorDrawable((toggleChecked) ? 0x33440000 : 0x33333333));
+
+            mMapSelection.put(id, toggleChecked);
             }
         });
     }

@@ -14,6 +14,11 @@
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:listSelector="@android:color/transparent"
+            android:horizontalSpacing="1dp"
+            android:verticalSpacing="1dp"
+            android:padding="1dp"
+            android:stretchMode="columnWidth"
             android:drawSelectorOnTop="false"/>
         <TextView
             android:id="@android:id/empty"

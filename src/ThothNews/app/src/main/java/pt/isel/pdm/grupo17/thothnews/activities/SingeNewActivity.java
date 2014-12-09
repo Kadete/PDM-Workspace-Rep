@@ -80,6 +80,5 @@ public class SingeNewActivity extends FragmentActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }
 

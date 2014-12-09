@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:background="#fff"
     android:layout_centerHorizontal="true">
     <TextView
         android:id="@+id/new_item_id"
@@ -14,7 +15,7 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp">
+        android:layout_marginLeft="5dp">
         <TextView
             android:id="@+id/new_item_when"
             android:layout_width="wrap_content"
@@ -37,8 +38,8 @@
         android:id="@+id/arrow"
         android:src="@android:drawable/ic_media_play"
         android:visibility="visible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="-10dp"/>

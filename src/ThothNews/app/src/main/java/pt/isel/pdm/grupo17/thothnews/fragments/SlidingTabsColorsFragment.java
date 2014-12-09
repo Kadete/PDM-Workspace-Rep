@@ -23,8 +23,6 @@ public class SlidingTabsColorsFragment extends Fragment {
         private final int mIndicatorColor;
         private final int mDividerColor;
 
-
-
         SamplePagerItem(CharSequence title, int indicatorColor, int dividerColor) {
             mTitle = title;
             mIndicatorColor = indicatorColor;

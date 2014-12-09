@@ -12,50 +12,63 @@
         android:layout_gravity="center_vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="2dp">
+            android:layout_height="match_parent">
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:src="@drawable/ic_tab_participants"
-                android:padding="1dp"/>
-            <LinearLayout
-                android:id="@+id/tv1_info"
-                android:layout_width="wrap_content"
+                android:padding="2dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="2dp"/>
+            <RelativeLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp">
+                android:layout_gravity="center_vertical">
+                <TextView
+                    android:id="@+id/class_lbl"
+                    style="@style/Widget.SampleMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/margin_small"
+                    android:paddingRight="@dimen/margin_small"
+                    android:text="@string/item_class_lbl" />
                 <TextView
                     style="@style/Widget.SampleMessage"
-                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:id="@+id/tv_class_name"
                     android:layout_width="wrap_content"
+                    android:layout_toRightOf="@+id/class_lbl"
                     android:layout_height="wrap_content"
                     android:text="tv_class_name"/>
                 <TextView
+                    android:id="@+id/teacher_lbl"
                     style="@style/Widget.SampleMessage"
-                    android:textSize="13sp"
+                    android:layout_width="wrap_content"
+                    android:layout_below="@+id/class_lbl"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/margin_small"
+                    android:paddingRight="@dimen/margin_small"
+                    android:text="@string/item_teacher_lbl"/>
+                <TextView
+                    style="@style/Widget.SampleMessage"
                     android:textStyle="bold"
-                    android:layout_marginTop="-2dp"
                     android:id="@+id/tv_teacher_name"
                     android:layout_width="wrap_content"
+                    android:layout_toRightOf="@+id/teacher_lbl"
+                    android:layout_below="@+id/class_lbl"
                     android:layout_height="wrap_content"
                     android:text="tv_teacher_name"/>
-            </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
         <RelativeLayout
+            android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_marginRight="@dimen/activity_horizontal_margin">
             <TextView
                 android:layout_alignParentRight="true"
                 style="@style/Widget.SampleMessage"
-                android:textSize="13sp"
                 android:textStyle="bold"
                 android:id="@+id/tv_teacher_email"
                 android:layout_width="wrap_content"

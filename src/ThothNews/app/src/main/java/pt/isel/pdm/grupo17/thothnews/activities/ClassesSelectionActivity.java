@@ -24,7 +24,6 @@ public class ClassesSelectionActivity extends FragmentActivity{
             transaction.replace(R.id.fragment_container_classes, fragment);
             transaction.commit();
         }
-
     }
 
     @Override
@@ -56,5 +55,12 @@ public class ClassesSelectionActivity extends FragmentActivity{
                 return super.onOptionsItemSelected(item);
         }
     }
+
+//    @Override
+//    public void onBackPressed(){
+//        super.onBackPressed();
+//        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
+//        fragment.getMapSelection
+//    }
 
 }

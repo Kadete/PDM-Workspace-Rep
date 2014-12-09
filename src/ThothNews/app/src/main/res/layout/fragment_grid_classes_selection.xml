@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swiperefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_text"
+            android:layout_gravity="center"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <GridView
+                android:id="@android:id/list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:numColumns="1"
+                android:listSelector="@android:color/transparent"
+                android:horizontalSpacing="1dp"
+                android:verticalSpacing="1dp"
+                android:padding="1dp"
+                android:layout_marginBottom="40dp"/>
+            <LinearLayout style="?android:buttonBarStyle"
+                android:id="@+id/buttomBtns"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:layout_alignParentBottom="true">
+                <Button style="?android:buttonBarButtonStyle"
+                    android:id="@+id/BtnDiscard"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="@string/discard"/>
+                <Button style="?android:buttonBarButtonStyle"
+                    android:id="@+id/BtnSave"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="@string/save"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </FrameLayout>
+
+</pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout>

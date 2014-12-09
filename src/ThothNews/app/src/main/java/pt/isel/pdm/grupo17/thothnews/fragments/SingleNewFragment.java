@@ -69,5 +69,4 @@ public class SingleNewFragment extends Fragment {
             updateNew();
         }
     }
-
 }
