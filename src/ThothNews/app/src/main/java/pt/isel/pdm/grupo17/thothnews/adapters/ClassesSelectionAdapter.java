@@ -118,25 +118,25 @@ public class ClassesSelectionAdapter extends CursorAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            Boolean toggleChecked = !holder.checkBox.isChecked();
-            holder.checkBox.setChecked(toggleChecked);
-            long id = Long.valueOf(holder.id.getText().toString());
+                Boolean toggleChecked = !holder.checkBox.isChecked();
+                holder.checkBox.setChecked(toggleChecked);
+                long id = Long.valueOf(holder.id.getText().toString());
 
-            ContentValues values = new ContentValues();
-            values.put(ThothContract.Clazz.ENROLLED, (toggleChecked) ? TRUE : FALSE);
+                ContentValues values = new ContentValues();
+                values.put(ThothContract.Clazz.ENROLLED, (toggleChecked) ? TRUE : FALSE);
 
-            mContext.getContentResolver().update(UriUtils.Classes.parseClass(id), values, null, null );
-            ThothUpdateService.startActionClassNewsUpdate(context, id);
+                mContext.getContentResolver().update(UriUtils.Classes.parseClass(id), values, null, null );
+                ThothUpdateService.startActionClassNewsUpdate(context, id);
 
-            view.setBackground(new ColorDrawable((toggleChecked) ? 0x33440000 : 0x33333333));
+                view.setBackground(new ColorDrawable((toggleChecked) ? 0x33440000 : 0x33333333));
 
-            if(sMapSelection.containsKey(id)){
-                SelectionState selectionState = sMapSelection.get(id);
-                selectionState.finalState = toggleChecked;
-                sMapSelection.put(id, selectionState);
-            }
-            else
-                sMapSelection.put(id, new SelectionState(!toggleChecked));
+                if(sMapSelection.containsKey(id)){
+                    SelectionState selectionState = sMapSelection.get(id);
+                    selectionState.finalState = toggleChecked;
+                    sMapSelection.put(id, selectionState);
+                }
+                else
+                    sMapSelection.put(id, new SelectionState(!toggleChecked));
             }
         });
 

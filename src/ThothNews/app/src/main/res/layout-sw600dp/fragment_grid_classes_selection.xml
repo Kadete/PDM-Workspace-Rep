@@ -20,15 +20,15 @@
                 android:id="@android:id/list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:numColumns="1"
+                android:numColumns="auto_fit"
                 android:listSelector="@android:color/transparent"
-                android:horizontalSpacing="1dp"
-                android:verticalSpacing="1dp"
-                android:padding="1dp"
+                android:horizontalSpacing="2dp"
+                android:verticalSpacing="2dp"
+                android:padding="2dp"
                 android:layout_marginBottom="40dp"/>
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="2dp"
                 android:background="@android:color/darker_gray"
                 android:layout_alignBottom="@android:id/list"/>
             <LinearLayout style="?android:buttonBarStyle"
