@@ -93,7 +93,7 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mListAdapter = new ClassesSelectionAdapter(getActivity(), null);
+        mListAdapter = new ClassesSelectionAdapter(getActivity());
 
         mGridView.setAdapter(mListAdapter);
         mGridView.setEmptyView(mEmptyView);
