@@ -57,18 +57,50 @@ public class ThothUpdateService extends IntentService {
     public static final String URI_CLASS_NEWS = URI_API_ROOT + "/classes/%d/newsitems";
     public static final String URI_NEWS_INFO = URI_API_ROOT + "/newsitems/%d";
     public static final String URI_CLASS_PARTICIPANTS = URI_API_ROOT + "/classes/%d/participants";
-    public static final String URI_STUDENTS_INFO = URI_API_ROOT + "/students/%d";
+    public static final String URI_CLASS_INFO = URI_API_ROOT + "/classes/%d";
+    public static final String URI_TEACHER_INFO = URI_API_ROOT + "/teachers/%d";
 
     private static final int COLUMN_CLASS_ID = 0;
 
+    class JsonThothLink{
+        public static final String SELF = "self";
+    }
+
+    class JsonThothAvatar{
+        public static final String SIZE24 = "size24";
+        public static final String SIZE32 = "size32";
+        public static final String SIZE64 = "size64";
+        public static final String SIZE128 = "size128";
+    }
+
+    class JsonThothTeacher{
+        /** Props **/
+        public static final String ID = "id";
+        public static final String NUMBER = "number";
+        public static final String FULL_NAME = "fullName";
+        public static final String SHORT_NAME = "shortName";
+        public static final String ACADEMIC_EMAIL = "academicEmail";
+        /** Object JsonThothAvatar **/
+        public static final String AVATAR = "avatarUrl";
+        /** Object JsonThothLink **/
+        public static final String LINKS = "_links";
+    }
+
     class JsonThothClass{
         public static final String ID = "id";
-        public static final String FULLNAME = "fullName";
+        public static final String FULL_NAME = "fullName";
         public static final String COURSE_NAME = "courseUnitShortName";
         public static final String LECTIVE_SEMESTER = "lectiveSemesterShortName";
         public static final String NAME = "className";
         public static final String TEACHER = "mainTeacherShortName";
+        /** Object JsonThothAvatar **/
+        public static final String LINKS = "_links";
     }
+
+    class JsonThothFullClass{
+        public static final String TEACHER_ID = "mainTeacherId";
+    }
+
     class JsonThothNew {
         /** Array **/
         public static final String ARRAY_NEWS_ITEMS = "newsItems";
@@ -83,10 +115,10 @@ public class ThothUpdateService extends IntentService {
         public static final String ARRAY_STUDENTS = "students";
         /** Props **/
         public static final String ID = "id";
-//        public static final String NUMBER = "number";
         public static final String FULL_NAME = "fullName";
         public static final String ACADEMIC_EMAIL = "academicEmail";
-//        public static final String AVATAR_URL = "avatarUrl"; // TODO: OBJECT -> props size24, size32, size64, size128
+        /** Object JsonThothAvatar **/
+        public static final String AVATAR_URL = "avatarUrl";
         public static final String ENROLL_DATE = "enrollmentDate";
         public static final String GROUP = "currentGroup";
     }
@@ -185,17 +217,42 @@ public class ThothUpdateService extends IntentService {
                 String data = readAllFrom(is);
                 final JSONArray thothClasses = ParseUtils.parseClasses(data);
                 ContentResolver resolver = getContentResolver();
+                ContentValues currValuesClass = new ContentValues(), currValuesTeacher = new ContentValues();
                 // TODO: Insert in batch instead of one by one
                 for(int idx = 0; idx < thothClasses.length();++idx){
-                    JSONObject jclass = thothClasses.getJSONObject(idx);
-                    ContentValues currValues = new ContentValues();
-                    currValues.put(ThothContract.Clazz._ID,jclass.getInt(JsonThothClass.ID));
-                    currValues.put(ThothContract.Clazz.FULL_NAME,jclass.getString(JsonThothClass.FULLNAME));
-                    currValues.put(ThothContract.Clazz.COURSE,jclass.getString(JsonThothClass.COURSE_NAME));
-                    currValues.put(ThothContract.Clazz.SEMESTER,jclass.getString(JsonThothClass.LECTIVE_SEMESTER));
-                    currValues.put(ThothContract.Clazz.SHORT_NAME,jclass.getString(JsonThothClass.NAME));
-                    currValues.put(ThothContract.Clazz.TEACHER,jclass.getString(JsonThothClass.TEACHER));
-                    resolver.insert(ThothContract.Clazz.CONTENT_URI,currValues);
+                    JSONObject jClass = thothClasses.getJSONObject(idx);
+
+                    long classID = jClass.getLong(JsonThothClass.ID);
+                    currValuesClass.clear();
+                    currValuesClass.put(ThothContract.Clazz._ID, classID);
+                    currValuesClass.put(ThothContract.Clazz.FULL_NAME, jClass.getString(JsonThothClass.FULL_NAME));
+                    currValuesClass.put(ThothContract.Clazz.COURSE, jClass.getString(JsonThothClass.COURSE_NAME));
+                    currValuesClass.put(ThothContract.Clazz.SEMESTER, jClass.getString(JsonThothClass.LECTIVE_SEMESTER));
+                    currValuesClass.put(ThothContract.Clazz.SHORT_NAME, jClass.getString(JsonThothClass.NAME));
+                    currValuesClass.put(ThothContract.Clazz.TEACHER_NAME, jClass.getString(JsonThothClass.TEACHER));
+                    currValuesClass.put(ThothContract.Clazz.LINKS, jClass.getString(JsonThothClass.LINKS));
+
+                    JSONObject jFullClass = getClassObject(classID);
+                    long teacherID = jFullClass.getLong(JsonThothFullClass.TEACHER_ID);
+
+                    Uri classTeacherUri = UriUtils.Teachers.parseFromTeacherID(teacherID);
+                    Cursor classTeacherIDCursor = resolver.query(classTeacherUri, new String[]{ThothContract.Teacher._ID},null,null,null);
+                    if(!classTeacherIDCursor.moveToNext()){
+                        currValuesTeacher.clear();
+                        JSONObject jFullTeacher = getTeacherObject(teacherID);
+                        currValuesTeacher.put(ThothContract.Teacher._ID, jFullTeacher.getLong(JsonThothTeacher.ID));
+                        currValuesTeacher.put(ThothContract.Teacher.NUMBER, jFullTeacher.getLong(JsonThothTeacher.NUMBER));
+                        currValuesTeacher.put(ThothContract.Teacher.SHORT_NAME, jFullTeacher.getString(JsonThothTeacher.SHORT_NAME));
+                        currValuesTeacher.put(ThothContract.Teacher.FULL_NAME, jFullTeacher.getString(JsonThothTeacher.FULL_NAME));
+                        currValuesTeacher.put(ThothContract.Teacher.ACADEMIC_EMAIL, jFullTeacher.getString(JsonThothTeacher.ACADEMIC_EMAIL));
+                        currValuesTeacher.put(ThothContract.Teacher.AVATAR_URL, jFullTeacher.getString(JsonThothTeacher.AVATAR)); /* TODO */
+                        currValuesTeacher.put(ThothContract.Teacher.LINKS, jFullTeacher.getString(JsonThothTeacher.LINKS));
+                        resolver.insert(ThothContract.Teacher.CONTENT_URI, currValuesTeacher); /** INSERT TEACHER_NAME **/
+
+                        currValuesClass.put(ThothContract.Clazz.TEACHER_ID, jFullClass.getLong(JsonThothFullClass.TEACHER_ID));
+                    }
+                    classTeacherIDCursor.close();
+                    resolver.insert(ThothContract.Clazz.CONTENT_URI, currValuesClass); /** INSERT CLASS **/
                 }
             } catch (JSONException e) {
                 Log.e(SERVICE_TAG, "ERROR: handleClassesUpdate(..) while parsing JSON response");
@@ -206,7 +263,7 @@ public class ThothUpdateService extends IntentService {
         }catch (MalformedURLException e) {
             d(TAG_ACTIVITY,"An error ocurred while trying to create URL to request classes list!\nMessage: "+e.getMessage());
         } catch (IOException e) {
-            d(TAG_ACTIVITY,"An error ocurred while trying to estabilish connection to Thoth API!\nMessage: "+e.getMessage());
+            d(TAG_ACTIVITY, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
         }
     }
 
@@ -255,18 +312,18 @@ public class ThothUpdateService extends IntentService {
                 List<Long> classNewsIDs = getListFromCursor(classNewsIDsCursor);
                 classNewsIDsCursor.close();
                 long currNewID;
+                ContentValues currValues = new ContentValues();
                 for (int idx = 0; idx < thothNews.length(); ++idx) {
                     JSONObject jnews = thothNews.getJSONObject(idx), jnewsDetails;
                     currNewID = jnews.getLong(JsonThothNew.ID);
                     if(!classNewsIDs.contains(currNewID)){
-
-                        jnewsDetails = getNewDetails(currNewID);
-                        ContentValues currValues = new ContentValues();
-                        currValues.put(ThothContract.News._ID,jnews.getInt(JsonThothNew.ID));
+                        currValues.clear();
+                        currValues.put(ThothContract.News._ID, currNewID);
                         currValues.put(ThothContract.News.TITLE,jnews.getString(JsonThothNew.TITLE));
-
                         String when = jnews.getString(JsonThothNew.WHEN);
                         currValues.put(ThothContract.News.WHEN_CREATED, when);
+
+                        jnewsDetails = getNewDetails(currNewID);
                         String content = String.valueOf(Html.fromHtml(jnewsDetails.getString(JsonThothNew.CONTENT)));
                         currValues.put(ThothContract.News.CONTENT,content);
                         currValues.put(ThothContract.News.CLASS_ID,classID);
@@ -325,26 +382,26 @@ public class ThothUpdateService extends IntentService {
                 // TODO: Insert in batch instead of one by one
                 // TODO: Only make request for content of the news that don't exist in the database
                 Uri classNewsUri = UriUtils.Classes.parseParticipantsFromClassID(classID);
-                Cursor classParticipantsIDsCursor = resolver.query(classNewsUri, new String[]{ThothContract.Students._ID},null,null,null);
+                Cursor classParticipantsIDsCursor = resolver.query(classNewsUri, new String[]{ThothContract.Student._ID},null,null,null);
                 List<Long>classParticipantsIDs = getListFromCursor(classParticipantsIDsCursor);
                 classParticipantsIDsCursor.close();
                 long currParticipantID;
+                ContentValues currValues = new ContentValues();
                 for (int idx = 0; idx < thothParticipants.length(); ++idx) {
                     JSONObject jnews = thothParticipants.getJSONObject(idx);
                     currParticipantID = jnews.getLong(JsonThothParticipant.ID);
                     if(!classParticipantsIDs.contains(currParticipantID)){
-                        ContentValues currValues = new ContentValues();
-                        currValues.put(ThothContract.Students._ID,jnews.getInt(JsonThothParticipant.ID));
-//                        currValues.put(ThothContract.Students.NUMBER,jnews.getInt(JsonThothParticipant.NUMBER)); ID == NUMBER
-                        currValues.put(ThothContract.Students.FULL_NAME,jnews.getString(JsonThothParticipant.FULL_NAME));
-                        currValues.put(ThothContract.Students.ACADEMIC_EMAIL,jnews.getString(JsonThothParticipant.ACADEMIC_EMAIL));
-//                        currValues.put(ThothContract.Participants.AVATAR_URL,jnews.getString(JsonThothParticipant.AVATAR_URL)); /* TODO */
+                        currValues.clear();
+                        currValues.put(ThothContract.Student._ID,jnews.getLong(JsonThothParticipant.ID));
+                        currValues.put(ThothContract.Student.FULL_NAME,jnews.getString(JsonThothParticipant.FULL_NAME));
+                        currValues.put(ThothContract.Student.ACADEMIC_EMAIL,jnews.getString(JsonThothParticipant.ACADEMIC_EMAIL));
+                        currValues.put(ThothContract.Student.AVATAR_URL,jnews.getString(JsonThothParticipant.AVATAR_URL)); /* TODO */
                         String group = jnews.getString(JsonThothParticipant.GROUP);
                         int nGroup = (group.equals("-") ? 0 : Integer.valueOf(group));
-                        currValues.put(ThothContract.Students.GROUP, nGroup);
-                        currValues.put(ThothContract.Students.ENROLLED_DATE, jnews.getString(JsonThothParticipant.ENROLL_DATE));
-                        currValues.put(ThothContract.Students.CLASS_ID,classID);
-                        resolver.insert(ThothContract.Students.CONTENT_URI, currValues); /* TODO review */
+                        currValues.put(ThothContract.Student.GROUP, nGroup);
+                        currValues.put(ThothContract.Student.ENROLLED_DATE, jnews.getString(JsonThothParticipant.ENROLL_DATE));
+                        currValues.put(ThothContract.Student.CLASS_ID,classID);
+                        resolver.insert(ThothContract.Student.CONTENT_URI, currValues);
                     }
                 }
             } catch (JSONException e) {
@@ -382,13 +439,22 @@ public class ThothUpdateService extends IntentService {
         return new JSONObject(newsData);
     }
 
-    private static JSONObject getParicipantDetails(long studentID) throws IOException, JSONException {
-        URL studentsURL = new URL(String.format(URI_STUDENTS_INFO, studentID));
-        HttpURLConnection studentsConn = (HttpURLConnection) studentsURL.openConnection();
-        InputStream studentsStream = studentsConn.getInputStream();
-        String studentsData = readAllFrom(studentsStream);
-        studentsStream.close();
-        return new JSONObject(studentsData);
+    private static JSONObject getClassObject(long classID) throws IOException, JSONException {
+        URL classURL = new URL(String.format(URI_CLASS_INFO, classID));
+        HttpURLConnection teacherConn = (HttpURLConnection) classURL.openConnection();
+        InputStream classStream = teacherConn.getInputStream();
+        String classData = readAllFrom(classStream);
+        classStream.close();
+        return new JSONObject(classData);
+    }
+
+    private static JSONObject getTeacherObject(long teacherID) throws IOException, JSONException {
+        URL teacherURL = new URL(String.format(URI_TEACHER_INFO, teacherID));
+        HttpURLConnection teacherConn = (HttpURLConnection) teacherURL.openConnection();
+        InputStream teacherStream = teacherConn.getInputStream();
+        String teacherData = readAllFrom(teacherStream);
+        teacherStream.close();
+        return new JSONObject(teacherData);
     }
 
 }

@@ -84,14 +84,14 @@ public class ParticipantsAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         NewViewHolder holder = (NewViewHolder)view.getTag();
 
-        String mainInfo = "Nº" + String.valueOf(cursor.getInt(cursor.getColumnIndex(ThothContract.Students._ID))); // _ID == NUMBER
-        int nGroup = cursor.getInt(cursor.getColumnIndex(ThothContract.Students.GROUP));
+        String mainInfo = "Nº" + String.valueOf(cursor.getLong(cursor.getColumnIndex(ThothContract.Student._ID))); // _ID == NUMBER
+        int nGroup = cursor.getInt(cursor.getColumnIndex(ThothContract.Student.GROUP));
         mainInfo += mContext.getString(R.string.participant_main_info_tv) + ((nGroup == WITHOUT_GROUP) ? "-" : String.valueOf(nGroup));
 
         holder.number_and_group.setText(mainInfo);
 
-        holder.fullName.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Students.FULL_NAME)));
-        holder.email.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Students.ACADEMIC_EMAIL)));
+        holder.fullName.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Student.FULL_NAME)));
+        holder.email.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Student.ACADEMIC_EMAIL)));
 
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

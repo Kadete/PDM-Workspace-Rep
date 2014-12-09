@@ -1,5 +1,6 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
+import android.content.ContentValues;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,7 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
+import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 import pt.isel.pdm.grupo17.thothnews.view.SlidingTabLayout;
+
+import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
 
 public class SlidingTabsColorsFragment extends Fragment {
 
@@ -112,10 +117,25 @@ public class SlidingTabsColorsFragment extends Fragment {
     static final int PARTICIPANTS_FRAGMENT_POSITION = 1;
 
     public void refreshLoader() {
+        refreshNewsLoader();
+        refreshParticipantsLoader();
+    }
+
+    private void refreshNewsLoader(){
         if(sampleFragmentPagerAdapter.newsListFragment != null)
             sampleFragmentPagerAdapter.newsListFragment.refreshLoader();
+    }
+
+    private void refreshParticipantsLoader(){
         if(sampleFragmentPagerAdapter.participantsFragment != null)
             sampleFragmentPagerAdapter.participantsFragment.refreshLoader();
+    }
+
+    public void updateReadAll(long classID) {
+        ContentValues values = new ContentValues();
+        values.put(ThothContract.News.READ, TRUE);
+        getActivity().getContentResolver().update(UriUtils.Classes.parseNewsFromClassID(classID), values, null, null );
+        refreshNewsLoader();
     }
 
     public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
@@ -131,9 +151,11 @@ public class SlidingTabsColorsFragment extends Fragment {
         public Fragment getItem(int i) {
             switch (i){
                 case NEWS_FRAGMENT_POSITION:
-                    return mTabs.get(NEWS_FRAGMENT_POSITION).createNewsListFragment();
+                    newsListFragment = mTabs.get(NEWS_FRAGMENT_POSITION).createNewsListFragment();
+                    return newsListFragment;
                 case PARTICIPANTS_FRAGMENT_POSITION:
-                    return mTabs.get(PARTICIPANTS_FRAGMENT_POSITION).createParticipantsFragment();
+                    participantsFragment = mTabs.get(PARTICIPANTS_FRAGMENT_POSITION).createParticipantsFragment();
+                    return participantsFragment;
                 default:
                     throw new IllegalStateException();
             }

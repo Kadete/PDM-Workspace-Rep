@@ -85,18 +85,18 @@ public class ThothStudent implements Serializable {
 
         Date whenEnrolled = new Date();
         try {
-            String whenStr = cursor.getString(cursor.getColumnIndex(ThothContract.Students.ENROLLED_DATE));
+            String whenStr = cursor.getString(cursor.getColumnIndex(ThothContract.Student.ENROLLED_DATE));
             whenEnrolled = DateUtils.SAVE_DATE_FORMAT.parse(whenStr);
         } catch (ParseException e) {
             d(TAG_ADAPTER, "Error on Parse Date >> ParticipantsAdapter.SwapCursor");
         }
 
         return new ThothStudent(
-            cursor.getLong(cursor.getColumnIndex(ThothContract.Students._ID)),
+            cursor.getLong(cursor.getColumnIndex(ThothContract.Student._ID)),
             whenEnrolled,
-            cursor.getString(cursor.getColumnIndex(ThothContract.Students.FULL_NAME)),
-            cursor.getString(cursor.getColumnIndex(ThothContract.Students.ACADEMIC_EMAIL)),
-            cursor.getInt(cursor.getColumnIndex(ThothContract.Students.GROUP))
+            cursor.getString(cursor.getColumnIndex(ThothContract.Student.FULL_NAME)),
+            cursor.getString(cursor.getColumnIndex(ThothContract.Student.ACADEMIC_EMAIL)),
+            cursor.getInt(cursor.getColumnIndex(ThothContract.Student.GROUP))
         );
     }
 

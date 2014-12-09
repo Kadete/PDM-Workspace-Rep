@@ -34,7 +34,8 @@ import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 public class ClassesSelectionFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     static final int CLASSES_SELECTION_CURSOR_LOADER_ID = 1;
-    static final String[] CURSOR_COLUMNS = {ThothContract.Clazz._ID, ThothContract.Clazz.FULL_NAME, ThothContract.Clazz.TEACHER, ThothContract.Clazz.ENROLLED};
+    static final String[] CURSOR_COLUMNS = {ThothContract.Clazz._ID, ThothContract.Clazz.FULL_NAME, ThothContract.Clazz.TEACHER_NAME, ThothContract.Clazz.SHORT_NAME,
+                                            ThothContract.Clazz.SEMESTER, ThothContract.Clazz.COURSE, ThothContract.Clazz.TEACHER_ID, ThothContract.Clazz.ENROLLED};
 
     private MultiSwipeRefreshLayout mSwipeRefreshLayout;
     private GridView mGridView;
@@ -71,6 +72,7 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
             @Override
             public void onClick(View view) {
                 updateClassesSelection(activity, true);
+                ThothUpdateService.startActionNewsUpdate(getActivity());
             }
         });
 
@@ -136,6 +138,7 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
     }
 
     public void refreshLoader() {
+        Toast.makeText(getActivity(),getString(R.string.toast_wait_message),Toast.LENGTH_LONG).show();
         mSwipeRefreshLayout.setRefreshing(true);
         ThothUpdateService.startActionClassesUpdate(getActivity());
         getLoaderManager().restartLoader(CLASSES_SELECTION_CURSOR_LOADER_ID, null, this);

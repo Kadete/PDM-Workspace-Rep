@@ -91,7 +91,7 @@ public class ClassesAdapter extends CursorAdapter {
 
         holder.id.setText(String.valueOf(classeID));
         holder.full_name.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.FULL_NAME)));
-        holder.teacher.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.TEACHER)));
+        holder.teacher.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.TEACHER_NAME)));
 
         String selection = ThothContract.News.READ + " =  ? ";
         String [] selectionArgs =  new String[] { FALSE };

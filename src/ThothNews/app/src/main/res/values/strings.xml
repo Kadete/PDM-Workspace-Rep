@@ -51,8 +51,8 @@
     <string name="title_action_refresh">Refresh All</string>
     <string name="clean_classes_title">Clear enrollments</string>
     <string name="clean_classes_warning">Carefull!! You will lose all the previous preferences stored!</string>
-    <string name="clean_clasess_ok" translatable="false">OK</string>
-    <string name="clean_classes_cancel">Cancel</string>
+    <string name="dialog_ok" translatable="false">OK</string>
+    <string name="dialog_cancel">Cancel</string>
     <string name="clean_classes_toast">Preferences set to default!</string>
 
     <string name="thoth_connection_failed_toast">Thoth connection failed!</string>
@@ -65,7 +65,6 @@
 
     <string name="discard">Discard</string>
     <string name="save">Save</string>
-
     
     <string name="dummy_section_text" translatable="false">Section %1d is just a dummy section.</string>
     <string name="tab_news">News</string>
@@ -80,5 +79,15 @@
     <string name="participant_item_email" translatable="false">participant_item_email</string>
     <string name="participant_item_number_and_group" translatable="false">participant_item_number_and_group</string>
     <string name="participant_main_info_tv">, Group:</string>
+    <string name="tv_teacher_email" translatable="false">tv_teacher_email</string>
+    <string name="tv_teacher_name" translatable="false">tv_teacher_name</string>
+    <string name="tv_class_name" translatable="false">tv_class_name</string>
+    <string name="toast_wait_message">This Process may take a while.\nPlease wait!</string>
+    <string name="news_read_all_title">Mark all news as read</string>
+    <string name="news_read_all_warning">You really want to mark all news from this class as read??</string>
+    <string name="news_read_all_toast_success">Your news was been marked as read with success!</string>
+    <string name="news_read_all_toast_fail">Some unexpected error.\nYour news couldn\'t been update!</string>
+    <string name="service_update_classes_success">Classes Updated with Success!!</string>
+    <string name="service_update_classes_error">Some error occur on updating your classes!</string>
 
 </resources>

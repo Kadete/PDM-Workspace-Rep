@@ -63,7 +63,14 @@ public class SingleNewFragment extends Fragment {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        updateNew();
+    }
+
+    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
+//        Log.d("setUserVisibleHint", );
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             updateNew();

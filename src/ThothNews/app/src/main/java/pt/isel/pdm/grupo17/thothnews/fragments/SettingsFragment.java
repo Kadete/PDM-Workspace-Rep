@@ -7,6 +7,7 @@ import android.preference.PreferenceFragment;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassesSelectionActivity;
+import pt.isel.pdm.grupo17.thothnews.fragments.dialogs.CleanPreferencesDialogFragment;
 
 
 public class SettingsFragment extends PreferenceFragment {
@@ -35,9 +36,9 @@ public class SettingsFragment extends PreferenceFragment {
 
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                AlertDialogFragment dFragment = new AlertDialogFragment();
-                dFragment.show(getFragmentManager(), "Dialog Fragment");
-                return true;
+            CleanPreferencesDialogFragment dFragment = new CleanPreferencesDialogFragment();
+            dFragment.show(getFragmentManager(), "Dialog Fragment");
+            return true;
             }
         });
     }

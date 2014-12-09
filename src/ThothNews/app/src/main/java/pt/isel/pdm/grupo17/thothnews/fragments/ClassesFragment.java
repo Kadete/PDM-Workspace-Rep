@@ -26,7 +26,8 @@ import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 public class ClassesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     static final int CLASSES_CURSOR_LOADER_ID = 0;
-    static final String[] CURSOR_COLUMNS = {ThothContract.Clazz._ID,ThothContract.Clazz.FULL_NAME,ThothContract.Clazz.TEACHER, ThothContract.Clazz.UNREAD_NEWS};
+    static final String[] CURSOR_COLUMNS = {ThothContract.Clazz._ID, ThothContract.Clazz.FULL_NAME, ThothContract.Clazz.TEACHER_NAME, ThothContract.Clazz.SHORT_NAME,
+            ThothContract.Clazz.SEMESTER, ThothContract.Clazz.COURSE, ThothContract.Clazz.TEACHER_ID, ThothContract.Clazz.UNREAD_NEWS};
 
     private MultiSwipeRefreshLayout mSwipeRefreshLayout;
     private GridView mGridView;

@@ -135,8 +135,6 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onResume() {
         super.onResume();
-        if(mListAdapter.isEmpty())
-            ThothUpdateService.startActionClassNewsUpdate(getActivity(), sThothClass.getID());
         refreshLoader();
     }
 

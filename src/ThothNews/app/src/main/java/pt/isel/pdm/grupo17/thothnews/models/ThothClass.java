@@ -15,12 +15,13 @@ public class ThothClass implements Serializable{
     String _courseName;
     String _lectiveSemester;
     String _className;
-    String _teacher;
+    String _teacherName;
+    long _teacherID;
 
     public long getID() {
         return _id;
     }
-    public void setID(int _id) {
+    public void setID(long _id) {
         this._id = _id;
     }
 
@@ -52,39 +53,51 @@ public class ThothClass implements Serializable{
         this._className = className;
     }
 
-    public String getTeacher() {
-        return _teacher;
+    public String getTeacherName() {
+        return _teacherName;
     }
-    public void setTeacher(String _teacher) {
-        this._teacher = _teacher;
+    public void setTeacherName(String teacherID) {
+        this._teacherName = teacherID;
+    }
+
+    public long getTeacherID() {
+        return _teacherID;
+    }
+    public void setTeacherID(long teacherID) {
+        this._teacherID = teacherID;
     }
 
     public ThothClass(){}
 
-    public ThothClass(int id, String name, String teacher){
+    public ThothClass(long id, String name, String teacher){
         _id = id;
         _fullname = name;
-        _teacher = teacher;
+        _teacherName = teacher;
     }
-    public ThothClass(int id, String fullName,String courseName,String lectiveSemester
-            ,String className, String teacher){
+    public ThothClass(long id, String fullName,String courseName,String lectiveSemester
+            ,String className, String teacherName, long teacherID){
         _id = id;
         _fullname = fullName;
         _courseName = courseName;
         _lectiveSemester = lectiveSemester;
         _className = className;
-        _teacher = teacher;
+        _teacherName = teacherName;
+        _teacherID = teacherID;
     }
 
     public static ThothClass fromCursor(Cursor cursor) {
         return new ThothClass(
-            cursor.getInt(cursor.getColumnIndex(ThothContract.Clazz._ID)),
+            cursor.getLong(cursor.getColumnIndex(ThothContract.Clazz._ID)),
             cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.FULL_NAME)),
-            cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.TEACHER))
+            cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.COURSE)),
+            cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.SEMESTER)),
+            cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.SHORT_NAME)),
+            cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.TEACHER_NAME)),
+            cursor.getLong(cursor.getColumnIndex(ThothContract.Clazz.TEACHER_ID))
         );
     }
 
     public String toString() {
-        return _id + ITEM_SEP + _fullname + ITEM_SEP + _teacher;
+        return _id + ITEM_SEP + _fullname + ITEM_SEP + _teacherName;
     }
 }

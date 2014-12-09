@@ -19,7 +19,6 @@ import java.util.Map;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
-import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.FALSE;
@@ -108,7 +107,7 @@ public class ClassesSelectionAdapter extends CursorAdapter {
         long id = cursor.getLong(cursor.getColumnIndex(ThothContract.Clazz._ID));
         holder.id.setText(String.valueOf(id));
         holder.full_name.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.FULL_NAME)));
-        holder.teacher.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.TEACHER)));
+        holder.teacher.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.TEACHER_NAME)));
 
         Boolean isEnrolled = cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.ENROLLED)).equals(TRUE);
         holder.checkBox.setChecked(isEnrolled);
@@ -126,7 +125,6 @@ public class ClassesSelectionAdapter extends CursorAdapter {
                 values.put(ThothContract.Clazz.ENROLLED, (toggleChecked) ? TRUE : FALSE);
 
                 mContext.getContentResolver().update(UriUtils.Classes.parseClass(id), values, null, null );
-                ThothUpdateService.startActionClassNewsUpdate(context, id);
 
                 view.setBackground(new ColorDrawable((toggleChecked) ? 0x33440000 : 0x33333333));
 

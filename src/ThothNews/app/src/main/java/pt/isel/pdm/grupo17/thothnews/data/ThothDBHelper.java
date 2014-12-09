@@ -22,12 +22,14 @@ public class ThothDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        d("HELPER",ThothContract.Clazz.CREATE_QUERY);
+        d("HELPER CREATE Clazz",ThothContract.Clazz.CREATE_QUERY);
         db.execSQL(ThothContract.Clazz.CREATE_QUERY);
-        d("HELPER",ThothContract.News.CREATE_QUERY);
+        d("HELPER CREATE News",ThothContract.News.CREATE_QUERY);
         db.execSQL(ThothContract.News.CREATE_QUERY);
-        d("HELPER", ThothContract.Students.CREATE_QUERY);
-        db.execSQL(ThothContract.Students.CREATE_QUERY);
+        d("HELPER CREATE Students", ThothContract.Student.CREATE_QUERY);
+        db.execSQL(ThothContract.Student.CREATE_QUERY);
+        d("HELPER CREATE Teachers", ThothContract.Teacher.CREATE_QUERY);
+        db.execSQL(ThothContract.Teacher.CREATE_QUERY);
     }
 
     @Override

@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <ImageView
+                android:id="@+id/iv_teacher_avatar"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:src="@drawable/ic_tab_participants"
@@ -40,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_toRightOf="@+id/class_lbl"
                     android:layout_height="wrap_content"
-                    android:text="tv_class_name"/>
+                    android:text="@string/tv_class_name"/>
                 <TextView
                     android:id="@+id/teacher_lbl"
                     style="@style/Widget.SampleMessage"
@@ -58,7 +59,7 @@
                     android:layout_toRightOf="@+id/teacher_lbl"
                     android:layout_below="@+id/class_lbl"
                     android:layout_height="wrap_content"
-                    android:text="tv_teacher_name"/>
+                    android:text="@string/tv_teacher_name"/>
             </RelativeLayout>
         </LinearLayout>
         <RelativeLayout
@@ -74,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:autoLink="web"
-                android:text="mcarvalho@cc.isel.ipl.pt"/>
+                android:text="@string/tv_teacher_email"/>
         </RelativeLayout>
     </FrameLayout>
     <View

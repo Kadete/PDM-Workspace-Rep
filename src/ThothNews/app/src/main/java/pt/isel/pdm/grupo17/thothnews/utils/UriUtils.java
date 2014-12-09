@@ -29,4 +29,11 @@ public class UriUtils {
             return uri;
         }
     }
+
+    public static class Teachers {
+        public static Uri parseFromTeacherID(long teacherID){
+            Uri uri = Uri.parse(String.format("%s/%d", ThothContract.Teacher.CONTENT_URI, teacherID));
+            return uri;
+        }
+    }
 }
