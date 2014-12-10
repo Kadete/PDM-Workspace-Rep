@@ -123,10 +123,6 @@ public class ParticipantsAdapter extends CursorAdapter {
         th.start();
         ImageHandler ih = new ImageHandler(svh, th.getLooper());
         String avatarUrl = cursor.getString(cursor.getColumnIndex(ThothContract.Student.AVATAR_URL));
-
-        ImageView iv = (ImageView) view.findViewById(R.id.iv_student_avatar);
-        ImageView iv2 = holder.avatar;
-        ih.fetchImage(iv ,avatarUrl);
-        ih.fetchImage(iv2 ,avatarUrl);
+        ih.fetchImage(holder.avatar ,avatarUrl);
     }
 }

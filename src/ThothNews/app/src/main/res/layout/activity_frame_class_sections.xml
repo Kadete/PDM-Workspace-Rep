@@ -17,16 +17,17 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp">
             <FrameLayout
-                android:layout_width="50dp"
-                android:layout_height="50dp">
+                android:layout_marginTop="-5dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp">
                 <ImageView
                     android:id="@+id/iv_teacher_avatar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="8dp"
+                    android:padding="9dp"
                     android:src="@drawable/ic_tab_participants"/>
                 <ImageView
-                    android:src="@drawable/frame_teacher"
+                    android:src="@drawable/frame_phone"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </FrameLayout>

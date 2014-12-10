@@ -93,8 +93,6 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
             th.start();
             ImageHandler ih = new ImageHandler(svh, th.getLooper());
             ih.fetchImage(ivTeacherAvatar, teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teacher.AVATAR_URL)));
-
-//            ivTeacherAvatar.setImageDrawable();
         }else
             tvTeacherEmail.setText("N/A");
         teacherCursor.close();
@@ -120,6 +118,7 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
                     .replace(R.id.fragment_container_detail_new, fragment)
                     .commit();
         }
+
     }
 
     @Override
@@ -157,4 +156,5 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }

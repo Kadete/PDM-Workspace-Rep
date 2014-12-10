@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:layout_gravity="center_vertical"
     android:gravity="center_vertical"
@@ -15,10 +15,10 @@
             android:id="@+id/iv_student_avatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10dp"
+            android:padding="9dp"
             android:src="@drawable/ic_tab_participants"/>
         <ImageView
-            android:src="@drawable/frame_student"
+            android:src="@drawable/frame_phone"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </FrameLayout>

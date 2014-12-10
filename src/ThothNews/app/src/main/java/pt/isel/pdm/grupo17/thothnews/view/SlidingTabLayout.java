@@ -74,6 +74,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private int mTabViewLayoutId;
     private int mTabViewTextViewId;
 
+    private static int sCurrentPostiion;
+
     private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
 
@@ -100,6 +102,11 @@ public class SlidingTabLayout extends HorizontalScrollView {
         mTabStrip = new SlidingTabStrip(context);
         addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
     }
+
+    public static int getCurrentPosition(){
+        return sCurrentPostiion;
+    }
+
 
     /**
      * Set the custom {@link TabColorizer} to be used.
@@ -229,6 +236,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
         super.onAttachedToWindow();
 
         if (mViewPager != null) {
+            sCurrentPostiion = mViewPager.getCurrentItem();
             scrollToTab(mViewPager.getCurrentItem(), 0);
         }
     }
@@ -274,6 +282,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 mViewPagerPageChangeListener.onPageScrolled(position, positionOffset,
                         positionOffsetPixels);
             }
+
         }
 
         @Override

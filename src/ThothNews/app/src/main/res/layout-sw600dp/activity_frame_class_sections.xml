@@ -15,16 +15,17 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/activity_horizontal_margin">
             <FrameLayout
+                android:layout_marginTop="-5dp"
                 android:layout_width="80dp"
                 android:layout_height="80dp">
                 <ImageView
                     android:id="@+id/iv_teacher_avatar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="8dp"
+                    android:padding="12dp"
                     android:src="@drawable/ic_tab_participants"/>
                 <ImageView
-                    android:src="@drawable/frame_teacher"
+                    android:src="@drawable/frame_tablet"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </FrameLayout>

@@ -8,16 +8,16 @@
     android:background="#fff"
     android:padding="5dp">
     <FrameLayout
-        android:layout_width="60dp"
-        android:layout_height="60dp">
+        android:layout_width="80dp"
+        android:layout_height="80dp">
         <ImageView
             android:id="@+id/iv_student_avatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="6dp"
+            android:padding="12dp"
             android:src="@drawable/ic_tab_participants"/>
         <ImageView
-            android:src="@drawable/frame_student"
+            android:src="@drawable/frame_tablet"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </FrameLayout>

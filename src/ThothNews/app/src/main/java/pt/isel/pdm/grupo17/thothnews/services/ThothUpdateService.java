@@ -22,6 +22,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -433,7 +435,7 @@ public class ThothUpdateService extends IntentService {
                         currValuesParticipants.put(ThothContract.Teacher.AVATAR_URL, avatarsObj.getString(JsonThothAvatar.SIZE128));/* TODO */
 
                         String group = jParticipant.getString(JsonThothParticipant.GROUP);
-                        int nGroup = (group.equals("-") ? 0 : Integer.valueOf(group));
+                        int nGroup = (!isNumeric(group) ? 0 : Integer.parseInt(group));
                         currValuesParticipants.put(ThothContract.Student.GROUP, nGroup);
                         currValuesParticipants.put(ThothContract.Student.ENROLLED_DATE, jParticipant.getString(JsonThothParticipant.ENROLL_DATE));
                         currValuesParticipants.put(ThothContract.Student.CLASS_ID, classID);
@@ -451,6 +453,14 @@ public class ThothUpdateService extends IntentService {
         } catch (IOException e) {
             d(TAG_ACTIVITY, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
         }
+    }
+
+    public static boolean isNumeric(String str)
+    {
+        NumberFormat formatter = NumberFormat.getInstance();
+        ParsePosition pos = new ParsePosition(0);
+        formatter.parse(str, pos);
+        return str.length() == pos.getIndex();
     }
 
     /**

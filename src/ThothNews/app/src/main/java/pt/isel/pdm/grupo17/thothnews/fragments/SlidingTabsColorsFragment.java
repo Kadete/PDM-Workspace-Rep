@@ -64,7 +64,7 @@ public class SlidingTabsColorsFragment extends Fragment {
 
         for(int idx = 0; idx < TOTAL_FRAGMENTS;idx++) {
             switch (idx){
-                case NEWS_FRAGMENT_POSITION:
+                case NEWS_LIST_FRAGMENT_POSITION:
                     mTabs.add(new SamplePagerItem(
                             getString(R.string.tab_news), // Title
                             Color.RED, // Indicator color
@@ -89,13 +89,13 @@ public class SlidingTabsColorsFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
 
         ViewPager mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
         sampleFragmentPagerAdapter = new SampleFragmentPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(sampleFragmentPagerAdapter);
 
-        SlidingTabLayout mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
+        final SlidingTabLayout mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setViewPager(mViewPager);
 
         mSlidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
@@ -113,8 +113,8 @@ public class SlidingTabsColorsFragment extends Fragment {
         });
     }
     static final int TOTAL_FRAGMENTS = 2;
-    static final int NEWS_FRAGMENT_POSITION = 0;
-    static final int PARTICIPANTS_FRAGMENT_POSITION = 1;
+    public static final int NEWS_LIST_FRAGMENT_POSITION = 0;
+    public static final int PARTICIPANTS_FRAGMENT_POSITION = 1;
 
     public void refreshLoader() {
         refreshNewsLoader();
@@ -138,6 +138,7 @@ public class SlidingTabsColorsFragment extends Fragment {
         refreshNewsLoader();
     }
 
+
     public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 
         SampleFragmentPagerAdapter(FragmentManager fm) {
@@ -150,8 +151,8 @@ public class SlidingTabsColorsFragment extends Fragment {
         @Override
         public Fragment getItem(int i) {
             switch (i){
-                case NEWS_FRAGMENT_POSITION:
-                    newsListFragment = mTabs.get(NEWS_FRAGMENT_POSITION).createNewsListFragment();
+                case NEWS_LIST_FRAGMENT_POSITION:
+                    newsListFragment = mTabs.get(NEWS_LIST_FRAGMENT_POSITION).createNewsListFragment();
                     return newsListFragment;
                 case PARTICIPANTS_FRAGMENT_POSITION:
                     participantsFragment = mTabs.get(PARTICIPANTS_FRAGMENT_POSITION).createParticipantsFragment();
