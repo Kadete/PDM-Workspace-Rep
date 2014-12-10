@@ -3,15 +3,20 @@ package pt.isel.pdm.grupo17.thothnews.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
+import pt.isel.pdm.grupo17.thothnews.handlers.ImageHandler;
+import pt.isel.pdm.grupo17.thothnews.handlers.ImageHandlerThread;
+import pt.isel.pdm.grupo17.thothnews.handlers.SetViewHandler;
 import pt.isel.pdm.grupo17.thothnews.models.ThothStudent;
 import pt.isel.pdm.grupo17.thothnews.models.ThothStudentsList;
 
@@ -23,6 +28,7 @@ public class ParticipantsAdapter extends CursorAdapter {
         public TextView number_and_group;
         public TextView fullName;
         public TextView email;
+        public ImageView avatar;
     }
 
     static LayoutInflater sLayoutInflater = null;
@@ -75,6 +81,7 @@ public class ParticipantsAdapter extends CursorAdapter {
         holder.number_and_group = (TextView)newView.findViewById(R.id.participant_item_number_and_group);
         holder.fullName = (TextView)newView.findViewById(R.id.participant_item_full_name);
         holder.email = (TextView)newView.findViewById(R.id.participant_item_email);
+        holder.avatar = (ImageView)newView.findViewById(R.id.iv_student_avatar);
 
         newView.setTag(holder);
         return newView;
@@ -86,28 +93,40 @@ public class ParticipantsAdapter extends CursorAdapter {
 
         String mainInfo = "Nº" + String.valueOf(cursor.getLong(cursor.getColumnIndex(ThothContract.Student._ID))); // _ID == NUMBER
         int nGroup = cursor.getInt(cursor.getColumnIndex(ThothContract.Student.GROUP));
+        final String studentEmail = cursor.getString(cursor.getColumnIndex(ThothContract.Student.ACADEMIC_EMAIL));
+        final String studentName = cursor.getString(cursor.getColumnIndex(ThothContract.Student.FULL_NAME));
+
         mainInfo += mContext.getString(R.string.participant_main_info_tv) + ((nGroup == WITHOUT_GROUP) ? "-" : String.valueOf(nGroup));
-
         holder.number_and_group.setText(mainInfo);
-
-        holder.fullName.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Student.FULL_NAME)));
-        holder.email.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Student.ACADEMIC_EMAIL)));
+        holder.email.setText(studentEmail);
+        holder.fullName.setText(studentName);
 
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("message/rfc822");
-                i.putExtra(Intent.EXTRA_EMAIL, new String[]{String.valueOf(((TextView)v.findViewById(R.id.participant_item_email)).getText())});
-                i.putExtra(Intent.EXTRA_SUBJECT, "subject of email");
-                i.putExtra(Intent.EXTRA_TEXT, "body of email");
+                i.putExtra(Intent.EXTRA_EMAIL, studentEmail);
+                i.putExtra(Intent.EXTRA_SUBJECT, mContext.getString(R.string.send_email_subject));
+                i.putExtra(Intent.EXTRA_TEXT, mContext.getString(R.string.send_email_body));
                 try {
-                    mContext.startActivity(Intent.createChooser(i, "Send mail..."));
+                    mContext.startActivity(Intent.createChooser(i, mContext.getString(R.string.send_mail_to) + studentName));
                 } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(mContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, mContext.getString(R.string.send_mail_fail_no_app), Toast.LENGTH_SHORT).show();
                 }
                 return true;
             }
         });
+
+        SetViewHandler svh = new SetViewHandler(Looper.getMainLooper());
+        ImageHandlerThread th = new ImageHandlerThread();
+        th.start();
+        ImageHandler ih = new ImageHandler(svh, th.getLooper());
+        String avatarUrl = cursor.getString(cursor.getColumnIndex(ThothContract.Student.AVATAR_URL));
+
+        ImageView iv = (ImageView) view.findViewById(R.id.iv_student_avatar);
+        ImageView iv2 = holder.avatar;
+        ih.fetchImage(iv ,avatarUrl);
+        ih.fetchImage(iv2 ,avatarUrl);
     }
 }

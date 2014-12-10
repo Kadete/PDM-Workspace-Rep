@@ -33,7 +33,7 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     }
 
     static final int PARTICIPANTS_CURSOR_LOADER_ID = 3;
-    static final String[] CURSOR_COLUMNS = {ThothContract.Student._ID, ThothContract.Student.FULL_NAME,
+    static final String[] CURSOR_COLUMNS = {ThothContract.Student._ID, ThothContract.Student.FULL_NAME, ThothContract.Student.AVATAR_URL,
             ThothContract.Student.ACADEMIC_EMAIL, ThothContract.Student.ENROLLED_DATE, ThothContract.Student.GROUP};
             //ThothContract.Participants.AVATAR_URL
 

@@ -4,10 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:layout_gravity="center_vertical"
-    android:gravity="center_vertical"
+    android:gravity="center"
     android:background="#fff"
-    android:padding="1dp">
+    android:padding="5dp">
     <FrameLayout
         android:layout_width="60dp"
         android:layout_height="60dp">
@@ -15,7 +14,7 @@
             android:id="@+id/iv_student_avatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10dp"
+            android:padding="6dp"
             android:src="@drawable/ic_tab_participants"/>
         <ImageView
             android:src="@drawable/frame_student"
@@ -25,7 +24,7 @@
     <LinearLayout
         android:gravity="center_vertical"
         android:layout_marginLeft="5dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <TextView
@@ -34,7 +33,7 @@
             android:id="@+id/participant_item_number_and_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:text="@string/participant_item_number_and_group"
             android:textAppearance="?android:attr/textAppearanceLarge" />
         <TextView
@@ -42,7 +41,7 @@
             android:id="@+id/participant_item_full_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:textSize="13sp"
             android:text="@string/participant_item_full_name"
             android:textAppearance="?android:attr/textAppearanceLarge" />
         <TextView

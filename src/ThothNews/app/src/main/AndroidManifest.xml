@@ -28,8 +28,7 @@
         >
         <activity
             android:name=".activities.ClassesActivity"
-            android:label="@string/label_app_name"
-            android:launchMode="singleTop">
+            android:label="@string/label_app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

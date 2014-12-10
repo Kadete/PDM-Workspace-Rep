@@ -3,14 +3,19 @@ package pt.isel.pdm.grupo17.thothnews.activities;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.adapters.NewsAdapter;
@@ -19,6 +24,9 @@ import pt.isel.pdm.grupo17.thothnews.fragments.NewsListFragment;
 import pt.isel.pdm.grupo17.thothnews.fragments.SingleNewFragment;
 import pt.isel.pdm.grupo17.thothnews.fragments.SlidingTabsColorsFragment;
 import pt.isel.pdm.grupo17.thothnews.fragments.dialogs.ReadAllDialogFragment;
+import pt.isel.pdm.grupo17.thothnews.handlers.ImageHandler;
+import pt.isel.pdm.grupo17.thothnews.handlers.ImageHandlerThread;
+import pt.isel.pdm.grupo17.thothnews.handlers.SetViewHandler;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
@@ -57,14 +65,39 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
         long teacherID = sThothClass.getTeacherID();
         Uri teacherUri = UriUtils.Teachers.parseFromTeacherID(teacherID);
         String [] cursorColumns = new String[] {ThothContract.Teacher._ID, ThothContract.Teacher.ACADEMIC_EMAIL, ThothContract.Teacher.AVATAR_URL};
-        Cursor cursorNewsRead = getApplication().getContentResolver().query(teacherUri,cursorColumns , null, null, null);
+        Cursor teacherCursor = getApplication().getContentResolver().query(teacherUri,cursorColumns , null, null, null);
 
-        if(cursorNewsRead.moveToNext()){
-            tvTeacherEmail.setText(cursorNewsRead.getString(cursorNewsRead.getColumnIndex(ThothContract.Teacher.ACADEMIC_EMAIL)));
+        if(teacherCursor.moveToNext()){
+            tvTeacherEmail.setMovementMethod(LinkMovementMethod.getInstance());
+            final String teacherEmail = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teacher.ACADEMIC_EMAIL));
+            tvTeacherEmail.setText(teacherEmail);
+            tvTeacherEmail.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+            tvTeacherEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("message/rfc822");
+                    i.putExtra(Intent.EXTRA_EMAIL, teacherEmail);
+                    i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.send_email_subject));
+                    i.putExtra(Intent.EXTRA_TEXT, getString(R.string.send_email_body));
+                    try {
+                        startActivity(Intent.createChooser(i, getString(R.string.send_mail_to) + sThothClass.getTeacherName()));
+                    } catch (android.content.ActivityNotFoundException ex) {
+                        Toast.makeText(ClassSectionsActivity.this, getString(R.string.send_mail_fail_no_app), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            SetViewHandler svh = new SetViewHandler(Looper.getMainLooper());
+            ImageHandlerThread th = new ImageHandlerThread();
+            th.start();
+            ImageHandler ih = new ImageHandler(svh, th.getLooper());
+            ih.fetchImage(ivTeacherAvatar, teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teacher.AVATAR_URL)));
+
 //            ivTeacherAvatar.setImageDrawable();
         }else
             tvTeacherEmail.setText("N/A");
-        cursorNewsRead.close();
+        teacherCursor.close();
     }
 
     @Override

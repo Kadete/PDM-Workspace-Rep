@@ -85,7 +85,8 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
             boolean enrolled = ((toSave) ? entryClass.getValue().finalState : entryClass.getValue().initialState);
             values.put(ThothContract.Clazz.ENROLLED, enrolled ? SQLiteUtils.TRUE : SQLiteUtils.FALSE);
             activity.getContentResolver().update(UriUtils.Classes.parseClass(entryClass.getKey()), values, null, null );
-            ThothUpdateService.startActionClassNewsUpdate(activity, entryClass.getKey());
+            if(toSave)
+                ThothUpdateService.startActionClassNewsUpdate(activity, entryClass.getKey());
         }
         Toast.makeText(activity.getApplicationContext(),getString((toSave)? R.string.class_selection_ok : R.string.class_selection_cancel), Toast.LENGTH_LONG).show();
         activity.finish();

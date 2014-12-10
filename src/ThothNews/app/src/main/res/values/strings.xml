@@ -89,5 +89,9 @@
     <string name="news_read_all_toast_fail">Some unexpected error.\nYour news couldn\'t been update!</string>
     <string name="service_update_classes_success">Classes Updated with Success!!</string>
     <string name="service_update_classes_error">Some error occur on updating your classes!</string>
+    <string name="send_email_subject">Subject of email</string>
+    <string name="send_email_body">Body of email</string>
+    <string name="send_mail_to">"Send mail to "</string>
+    <string name="send_mail_fail_no_app">There are no email clients installed.</string>
 
 </resources>

@@ -12,15 +12,22 @@
         android:layout_gravity="center_vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ImageView
-                android:id="@+id/iv_teacher_avatar"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_tab_participants"
-                android:padding="2dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="2dp"/>
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin">
+            <FrameLayout
+                android:layout_width="80dp"
+                android:layout_height="80dp">
+                <ImageView
+                    android:id="@+id/iv_teacher_avatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_tab_participants"/>
+                <ImageView
+                    android:src="@drawable/frame_teacher"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </FrameLayout>
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -70,11 +77,11 @@
             <TextView
                 android:layout_alignParentRight="true"
                 style="@style/Widget.SampleMessage"
-                android:textStyle="bold"
+                android:textStyle="bold|italic"
+                android:textColor="@android:color/holo_blue_light"
                 android:id="@+id/tv_teacher_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:autoLink="web"
                 android:text="@string/tv_teacher_email"/>
         </RelativeLayout>
     </FrameLayout>
