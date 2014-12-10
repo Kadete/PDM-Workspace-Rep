@@ -9,6 +9,8 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.List;
+
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.fragments.NewsListFragment;
 import pt.isel.pdm.grupo17.thothnews.fragments.SingleNewFragment;
@@ -19,6 +21,7 @@ import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 public class SingeNewActivity extends FragmentActivity {
 
     ViewPager mViewPager;
+    static List<ThothNew> sThothNewList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,25 +34,25 @@ public class SingeNewActivity extends FragmentActivity {
 
             Intent intent = getIntent();
             getActionBar().setTitle(getIntent().getStringExtra(TagUtils.TAG_SELECT_CLASS_NAME));
-            final ThothNewsList list = (ThothNewsList) intent.getExtras().getSerializable(TagUtils.TAG_SERIALIZABLE_LIST);
-            int newClickPosition = intent.getExtras().getInt(TagUtils.TAG_SELECT_NEW_POS, 0);
+            int thothNewPosition = intent.getExtras().getInt(TagUtils.TAG_SELECT_NEW_POSITION, 0);
+            ThothNewsList list = (ThothNewsList) intent.getExtras().getSerializable(TagUtils.TAG_SERIALIZABLE_LIST);
+            sThothNewList = list.getItems();
 
             mViewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
                 @Override
-                public android.support.v4.app.Fragment getItem(int pos) {
-                    return SingleNewFragment.newInstance(list.getItems().get(pos));
+                public android.support.v4.app.Fragment getItem(int position) {
+                    return SingleNewFragment.newInstance(sThothNewList.get(position));
                 }
-
                 @Override
                 public int getCount() {
-                    return list.getItems().size();
+                    return sThothNewList.size();
                 }
                 @Override
                 public CharSequence getPageTitle(int position) {
-                    return ((ThothNew)list.get(position)).getShortWhen();
+                    return sThothNewList.get(position).getShortWhen();
                 }
             });
-            mViewPager.setCurrentItem(newClickPosition);
+            mViewPager.setCurrentItem(thothNewPosition);
         }
     }
 

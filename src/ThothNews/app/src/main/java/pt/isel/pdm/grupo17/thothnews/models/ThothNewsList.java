@@ -6,24 +6,28 @@ import java.util.List;
 
 public class ThothNewsList implements Serializable {
 
-    private static List<ThothNew> NEWS = new ArrayList<ThothNew>();
+    private List<ThothNew> mNews = new ArrayList<>();
 
     public ThothNewsList(){
     }
 
     public List<ThothNew> getItems(){
-        return NEWS;
+        return mNews;
     }
 
     public void add(ThothNew thothNew) {
-        NEWS.add(thothNew);
+        mNews.add(thothNew);
     }
 
     public void clear() {
-        NEWS.clear();
+        mNews.clear();
     }
 
     public Object get(int position) {
-        return NEWS.get(position);
+        return mNews.get(position);
+    }
+
+    public int getPosition(ThothNew thothNew) {
+        return mNews.indexOf(thothNew);
     }
 }

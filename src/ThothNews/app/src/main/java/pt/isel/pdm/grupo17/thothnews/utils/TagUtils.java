@@ -7,7 +7,7 @@ public class TagUtils {
     public static final String TAG_SERIALIZABLE_CLASS = "TAG_SERIALIZABLE_CLASS";
     public static final String TAG_SERIALIZABLE_LIST = "TAG_SERIALIZABLE_LIST";
     public static final String TAG_SERIALIZABLE_NEW = "TAG_SERIALIZABLE_NEW";
-    public static final String TAG_SELECT_NEW_POS = "TAG_SELECT_NEW_POS";
+    public static final String TAG_SELECT_NEW_POSITION = "TAG_SELECT_NEW_POSITION";
     public static final String  TAG_NOTIFICATION_ID = "TAG_NOTIFICATION_ID";
 
 

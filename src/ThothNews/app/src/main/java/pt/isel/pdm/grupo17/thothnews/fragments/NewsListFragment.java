@@ -150,7 +150,7 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             i.putExtra(TagUtils.TAG_SELECT_CLASS_NAME, sThothClass.getFullName());
             i.putExtra(TagUtils.TAG_SERIALIZABLE_LIST, mListAdapter.getNewsList());
-            i.putExtra(TagUtils.TAG_SELECT_NEW_POS, position);
+            i.putExtra(TagUtils.TAG_SELECT_NEW_POSITION, position);
             startActivity(i);
         }
     }
