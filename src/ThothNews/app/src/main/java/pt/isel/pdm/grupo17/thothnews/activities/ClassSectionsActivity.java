@@ -64,12 +64,12 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
 
         long teacherID = sThothClass.getTeacherID();
         Uri teacherUri = UriUtils.Teachers.parseFromTeacherID(teacherID);
-        String [] cursorColumns = new String[] {ThothContract.Teacher._ID, ThothContract.Teacher.ACADEMIC_EMAIL, ThothContract.Teacher.AVATAR_URL};
+        String [] cursorColumns = new String[] {ThothContract.Teachers._ID, ThothContract.Teachers.ACADEMIC_EMAIL, ThothContract.Teachers.AVATAR_URL};
         Cursor teacherCursor = getApplication().getContentResolver().query(teacherUri,cursorColumns , null, null, null);
 
         if(teacherCursor.moveToNext()){
             tvTeacherEmail.setMovementMethod(LinkMovementMethod.getInstance());
-            final String teacherEmail = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teacher.ACADEMIC_EMAIL));
+            final String teacherEmail = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teachers.ACADEMIC_EMAIL));
             tvTeacherEmail.setText(teacherEmail);
             tvTeacherEmail.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
             tvTeacherEmail.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +92,7 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
             ImageHandlerThread th = new ImageHandlerThread();
             th.start();
             ImageHandler ih = new ImageHandler(svh, th.getLooper());
-            ih.fetchImage(ivTeacherAvatar, teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teacher.AVATAR_URL)));
+            ih.fetchImage(ivTeacherAvatar, teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teachers.AVATAR_URL)));
         }else
             tvTeacherEmail.setText("N/A");
         teacherCursor.close();

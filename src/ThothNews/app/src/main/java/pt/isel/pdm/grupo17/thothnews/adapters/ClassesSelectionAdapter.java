@@ -61,7 +61,7 @@ public class ClassesSelectionAdapter extends CursorAdapter {
 
 //    public void clearList() {
 //        mClasses.clear();
-//        mContext.getContentResolver().delete(ThothContract.Clazz.CONTENT_URI, null, null);
+//        mContext.getContentResolver().delete(ThothContract.Classes.CONTENT_URI, null, null);
 //        notifyDataSetChanged();
 //    }
 
@@ -104,12 +104,12 @@ public class ClassesSelectionAdapter extends CursorAdapter {
     public void bindView(View view, final Context context, Cursor cursor) {
         final ClassViewHolder holder = (ClassViewHolder)view.getTag();
 
-        long id = cursor.getLong(cursor.getColumnIndex(ThothContract.Clazz._ID));
+        long id = cursor.getLong(cursor.getColumnIndex(ThothContract.Classes._ID));
         holder.id.setText(String.valueOf(id));
-        holder.full_name.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.FULL_NAME)));
-        holder.teacher.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.TEACHER_NAME)));
+        holder.full_name.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Classes.FULL_NAME)));
+        holder.teacher.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Classes.TEACHER_NAME)));
 
-        Boolean isEnrolled = cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.ENROLLED)).equals(TRUE);
+        Boolean isEnrolled = cursor.getString(cursor.getColumnIndex(ThothContract.Classes.ENROLLED)).equals(TRUE);
         holder.checkBox.setChecked(isEnrolled);
 
         view.setBackground(new ColorDrawable((isEnrolled) ? 0x33440000 : 0x33333333));
@@ -122,7 +122,7 @@ public class ClassesSelectionAdapter extends CursorAdapter {
                 long id = Long.valueOf(holder.id.getText().toString());
 
                 ContentValues values = new ContentValues();
-                values.put(ThothContract.Clazz.ENROLLED, (toggleChecked) ? TRUE : FALSE);
+                values.put(ThothContract.Classes.ENROLLED, (toggleChecked) ? TRUE : FALSE);
 
                 mContext.getContentResolver().update(UriUtils.Classes.parseClass(id), values, null, null );
 

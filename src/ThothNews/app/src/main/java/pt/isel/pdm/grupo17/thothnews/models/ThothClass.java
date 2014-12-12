@@ -87,13 +87,13 @@ public class ThothClass implements Serializable{
 
     public static ThothClass fromCursor(Cursor cursor) {
         return new ThothClass(
-            cursor.getLong(cursor.getColumnIndex(ThothContract.Clazz._ID)),
-            cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.FULL_NAME)),
-            cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.COURSE)),
-            cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.SEMESTER)),
-            cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.SHORT_NAME)),
-            cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.TEACHER_NAME)),
-            cursor.getLong(cursor.getColumnIndex(ThothContract.Clazz.TEACHER_ID))
+            cursor.getLong(cursor.getColumnIndex(ThothContract.Classes._ID)),
+            cursor.getString(cursor.getColumnIndex(ThothContract.Classes.FULL_NAME)),
+            cursor.getString(cursor.getColumnIndex(ThothContract.Classes.COURSE)),
+            cursor.getString(cursor.getColumnIndex(ThothContract.Classes.SEMESTER)),
+            cursor.getString(cursor.getColumnIndex(ThothContract.Classes.SHORT_NAME)),
+            cursor.getString(cursor.getColumnIndex(ThothContract.Classes.TEACHER_NAME)),
+            cursor.getLong(cursor.getColumnIndex(ThothContract.Classes.TEACHER_ID))
         );
     }
 

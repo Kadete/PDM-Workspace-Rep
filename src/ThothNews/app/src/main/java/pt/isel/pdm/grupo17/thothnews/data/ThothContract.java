@@ -15,9 +15,10 @@ public final class ThothContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final String PATH_CLASSES = "classes";
-    public static final String PATH_NEWS = "newsitems";
+    public static final String PATH_NEWS = "news";
     public static final String PATH_TEACHERS = "teachers";
-    public static final String PATH_STUDENTS = "students"; /* TODO N->Classes_Students<-N*/
+    public static final String PATH_STUDENTS = "students";
+    public static final String PATH_CLASSES_STUDENTS = "classesStudents"; /* TODO N->Classes_Students<-N*/
     public static final String PATH_CLASSES_ENROLLED = "enrolled";
 
     private static final String TYPE_TEXT = " TEXT";
@@ -26,18 +27,18 @@ public final class ThothContract {
     private static final String PRIMARY_KEY = " PRIMARY KEY ";
     private static final String COMMA_SEP = ", ";
 
-    public static class Clazz implements BaseColumns{
+    public static class Classes implements BaseColumns{
 
         /**
          * MIME type for lists of classes.
          */
         public static final String CONTENT_DIR_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.thothprovider.clazz";
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.thothprovider.classes";
         /**
          * MIME type for individual class.
          */
         public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.clazz";
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.classes";
         /**
          * Fully qualified URI for "classes" resources.
          */
@@ -52,22 +53,22 @@ public final class ThothContract {
 
 
         public static final String TABLE_NAME = "classes",
-            FULL_NAME = "fullName",
-            COURSE = "courseShortName",
-            SEMESTER = "lectiveSemester",
-            SHORT_NAME = "className",
-            TEACHER_NAME = "mainTeacherShortName",
-            ENROLLED = "enrolled",
-            UNREAD_NEWS = "unreadNews",
-            LINKS = "_links",
-            TEACHER_ID = "teacherId";
+                FULL_NAME = "fullName",
+                COURSE = "courseShortName",
+                SEMESTER = "lectiveSemester",
+                SHORT_NAME = "className",
+                TEACHER_NAME = "mainTeacherShortName",
+                ENROLLED = "enrolled",
+                UNREAD_NEWS = "unreadNews",
+                LINKS = "_links",
+                TEACHER_ID = "teacherId";
 
-        static final String CREATE_QUERY = "CREATE TABLE " + Clazz.TABLE_NAME +
-                " ("+ Clazz._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP + Clazz.FULL_NAME+ TYPE_TEXT +COMMA_SEP
-                + Clazz.COURSE + TYPE_TEXT + COMMA_SEP + Clazz.SEMESTER + TYPE_TEXT + COMMA_SEP
-                + Clazz.SHORT_NAME + TYPE_TEXT + COMMA_SEP + Clazz.TEACHER_NAME + TYPE_TEXT + COMMA_SEP
-                + Clazz.ENROLLED + TYPE_BOOLEAN + COMMA_SEP + Clazz.UNREAD_NEWS + TYPE_BOOLEAN + COMMA_SEP
-                + Clazz.LINKS + TYPE_TEXT + COMMA_SEP + Clazz.TEACHER_ID + TYPE_INTEGER + ")";
+        static final String CREATE_QUERY = "CREATE TABLE " + Classes.TABLE_NAME +
+                " ("+ Classes._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP + Classes.FULL_NAME+ TYPE_TEXT +COMMA_SEP
+                + Classes.COURSE + TYPE_TEXT + COMMA_SEP + Classes.SEMESTER + TYPE_TEXT + COMMA_SEP
+                + Classes.SHORT_NAME + TYPE_TEXT + COMMA_SEP + Classes.TEACHER_NAME + TYPE_TEXT + COMMA_SEP
+                + Classes.ENROLLED + TYPE_BOOLEAN + COMMA_SEP + Classes.UNREAD_NEWS + TYPE_BOOLEAN + COMMA_SEP
+                + Classes.LINKS + TYPE_TEXT + COMMA_SEP + Classes.TEACHER_ID + TYPE_INTEGER + ")";
     }
 
     public static class News implements BaseColumns {
@@ -75,19 +76,19 @@ public final class ThothContract {
          * MIME type for lists of news.
          */
         public static final String CONTENT_DIR_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.thothprovider.newsitems";
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.thothprovider.news";
         /**
          * MIME type for individual news
          */
         public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.newsitems";
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.news";
         /**
          * Fully qualified URI for "News" resources.
          */
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_NEWS).build();
 
-        public static final String TABLE_NAME = "newsitems",
+        public static final String TABLE_NAME = "news",
                 TITLE = "title",
                 WHEN_CREATED = "when_created",
                 CONTENT = "content",
@@ -100,7 +101,7 @@ public final class ThothContract {
                 + News.READ + TYPE_BOOLEAN + COMMA_SEP + News.CLASS_ID + TYPE_INTEGER + ")";
     }
 
-    public static class Student implements BaseColumns {
+    public static class Students implements BaseColumns {
         /**
          * MIME type for lists of news.
          */
@@ -119,21 +120,21 @@ public final class ThothContract {
 
         public static final String TABLE_NAME = "students",
 //                NUMBER = "number",
-                FULL_NAME = "fullName",
+                FULL_NAME = "studentFullName",
                 ACADEMIC_EMAIL = "academicEmail",
                 AVATAR_URL = "avatarUrl",
                 ENROLLED_DATE = "enrollmentDate",
-                GROUP = "currentGroup",
+//                GROUP = "currentGroup",
                 CLASS_ID = "classId";
 
-        static final String CREATE_QUERY = "CREATE TABLE " + Student.TABLE_NAME + " ("
-                + Student._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP
-                + Student.FULL_NAME + TYPE_TEXT + COMMA_SEP + Student.ACADEMIC_EMAIL + TYPE_TEXT + COMMA_SEP
-                + Student.AVATAR_URL + TYPE_TEXT + COMMA_SEP + Student.ENROLLED_DATE + TYPE_TEXT + COMMA_SEP
-                + Student.GROUP + TYPE_INTEGER + COMMA_SEP + Student.CLASS_ID + TYPE_INTEGER + ")";
+        static final String CREATE_QUERY = "CREATE TABLE " + Students.TABLE_NAME + " ("
+                + Students._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP
+                + Students.FULL_NAME + TYPE_TEXT + COMMA_SEP + Students.ACADEMIC_EMAIL + TYPE_TEXT + COMMA_SEP
+                + Students.AVATAR_URL + TYPE_TEXT + COMMA_SEP + Students.ENROLLED_DATE + TYPE_TEXT + COMMA_SEP
+                + Students.CLASS_ID + TYPE_INTEGER + ")";
     }
 
-    public static class Teacher implements BaseColumns {
+    public static class Teachers implements BaseColumns {
         /**
          * MIME type for lists of news.
          */
@@ -158,10 +159,41 @@ public final class ThothContract {
                 AVATAR_URL = "avatarUrl",
                 LINKS = "_linsk";
 
-        static final String CREATE_QUERY = "CREATE TABLE " + Teacher.TABLE_NAME + " ("
-                + Teacher._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP
-                + Teacher.NUMBER + TYPE_INTEGER + COMMA_SEP + Teacher.SHORT_NAME + TYPE_TEXT + COMMA_SEP
-                + Teacher.FULL_NAME + TYPE_TEXT + COMMA_SEP + Teacher.ACADEMIC_EMAIL + TYPE_TEXT + COMMA_SEP
-                + Teacher.AVATAR_URL + TYPE_TEXT + COMMA_SEP + Teacher.LINKS + TYPE_TEXT + ")";
+        static final String CREATE_QUERY = "CREATE TABLE " + Teachers.TABLE_NAME + " ("
+                + Teachers._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP
+                + Teachers.NUMBER + TYPE_INTEGER + COMMA_SEP + Teachers.SHORT_NAME + TYPE_TEXT + COMMA_SEP
+                + Teachers.FULL_NAME + TYPE_TEXT + COMMA_SEP + Teachers.ACADEMIC_EMAIL + TYPE_TEXT + COMMA_SEP
+                + Teachers.AVATAR_URL + TYPE_TEXT + COMMA_SEP + Teachers.LINKS + TYPE_TEXT + ")";
     }
+
+    public static class Classes_Students implements BaseColumns {
+        public static final String
+                KEY_CLASS_ID = "class_id",
+                KEY_STUDENT_ID = "student_id",
+                GROUP = "currentGroup";
+
+        public static final String TABLE_NAME = "classes_students";
+
+        /* MIME type for lists of news.
+        */
+        public static final String CONTENT_DIR_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.thothprovider.classesStudents";
+        /**
+         * MIME type for individual news
+         */
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.classesStudents";
+        /**
+         * Fully qualified URI for "Participants" resources.
+         */
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLASSES_STUDENTS).build();
+
+        static final String CREATE_QUERY = "CREATE TABLE " + Classes_Students.TABLE_NAME + " ("
+                + Classes_Students._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP
+                + Classes_Students.KEY_CLASS_ID + TYPE_INTEGER + COMMA_SEP + Classes_Students.KEY_STUDENT_ID + COMMA_SEP
+                + Classes_Students.GROUP + TYPE_INTEGER + ")";
+
+    }
+
 }

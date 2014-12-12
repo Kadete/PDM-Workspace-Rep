@@ -43,7 +43,7 @@ public class ClassesAdapter extends CursorAdapter {
 
 //    public void clearList() {
 //        mClasses.clear();
-//        mContext.getContentResolver().delete(ThothContract.Clazz.CONTENT_URI, null, null);
+//        mContext.getContentResolver().delete(ThothContract.Classes.CONTENT_URI, null, null);
 //        notifyDataSetChanged();
 //    }
 
@@ -60,8 +60,8 @@ public class ClassesAdapter extends CursorAdapter {
         if (newCursor !=null) {
             newCursor.moveToFirst();
             while(!newCursor.isAfterLast()) {
-                ThothClass clazz = ThothClass.fromCursor(newCursor);
-                mClasses.add(clazz);
+                ThothClass thothClass = ThothClass.fromCursor(newCursor);
+                mClasses.add(thothClass);
                 newCursor.moveToNext();
             }
         }
@@ -87,17 +87,17 @@ public class ClassesAdapter extends CursorAdapter {
     public void bindView(View view, final Context context, Cursor cursor) {
         ClassViewHolder holder = (ClassViewHolder)view.getTag();
 
-        Long classeID = cursor.getLong(cursor.getColumnIndex(ThothContract.Clazz._ID));
+        Long classeID = cursor.getLong(cursor.getColumnIndex(ThothContract.Classes._ID));
 
         holder.id.setText(String.valueOf(classeID));
-        holder.full_name.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.FULL_NAME)));
-        holder.teacher.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Clazz.TEACHER_NAME)));
+        holder.full_name.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Classes.FULL_NAME)));
+        holder.teacher.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Classes.TEACHER_NAME)));
 
         String selection = ThothContract.News.READ + " =  ? ";
         String [] selectionArgs =  new String[] { FALSE };
         String orderBy = ThothContract.News.READ;
         Uri classNewsUri = UriUtils.Classes.parseNewsFromClassID(classeID);
-        Cursor cursorNewsRead = mContext.getContentResolver().query(classNewsUri, new String[] {ThothContract.Clazz._ID}, selection, selectionArgs, orderBy);
+        Cursor cursorNewsRead = mContext.getContentResolver().query(classNewsUri, new String[] {ThothContract.Classes._ID}, selection, selectionArgs, orderBy);
 
         Boolean newsToRead = cursorNewsRead.moveToNext();
         holder.new_news.setVisibility((newsToRead)? View.VISIBLE : View.GONE);

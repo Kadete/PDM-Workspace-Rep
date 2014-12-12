@@ -33,8 +33,8 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     }
 
     static final int PARTICIPANTS_CURSOR_LOADER_ID = 3;
-    static final String[] CURSOR_COLUMNS = {ThothContract.Student._ID, ThothContract.Student.FULL_NAME, ThothContract.Student.AVATAR_URL,
-            ThothContract.Student.ACADEMIC_EMAIL, ThothContract.Student.ENROLLED_DATE, ThothContract.Student.GROUP};
+    static final String[] CURSOR_COLUMNS = {ThothContract.Students._ID, ThothContract.Students.FULL_NAME, ThothContract.Students.AVATAR_URL,
+            ThothContract.Students.ACADEMIC_EMAIL, ThothContract.Students.ENROLLED_DATE, ThothContract.Classes_Students.GROUP};
             //ThothContract.Participants.AVATAR_URL
 
     private MultiSwipeRefreshLayout mSwipeRefreshLayout;
@@ -95,7 +95,7 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         if(isFragmentUIActive()){
-            String OrderBy = ThothContract.Student.GROUP + " DESC, " + ThothContract.Student._ID + " ASC";
+            String OrderBy = ThothContract.Students._ID + " ASC";
             return new CursorLoader(getActivity(), UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()),
                     CURSOR_COLUMNS, null, null, OrderBy);
         }

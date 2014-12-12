@@ -26,8 +26,8 @@ import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 public class ClassesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     static final int CLASSES_CURSOR_LOADER_ID = 0;
-    static final String[] CURSOR_COLUMNS = {ThothContract.Clazz._ID, ThothContract.Clazz.FULL_NAME, ThothContract.Clazz.TEACHER_NAME, ThothContract.Clazz.SHORT_NAME,
-            ThothContract.Clazz.SEMESTER, ThothContract.Clazz.COURSE, ThothContract.Clazz.TEACHER_ID, ThothContract.Clazz.UNREAD_NEWS};
+    static final String[] CURSOR_COLUMNS = {ThothContract.Classes._ID, ThothContract.Classes.FULL_NAME, ThothContract.Classes.TEACHER_NAME, ThothContract.Classes.SHORT_NAME,
+            ThothContract.Classes.SEMESTER, ThothContract.Classes.COURSE, ThothContract.Classes.TEACHER_ID, ThothContract.Classes.UNREAD_NEWS};
 
     private MultiSwipeRefreshLayout mSwipeRefreshLayout;
     private GridView mGridView;
@@ -63,10 +63,10 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ThothClass clazz = (ThothClass) mListAdapter.getItem(position);
+                ThothClass thothClass = (ThothClass) mListAdapter.getItem(position);
                 Intent i = new Intent(getActivity(), ClassSectionsActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.putExtra(TagUtils.TAG_SERIALIZABLE_CLASS, clazz);
+                i.putExtra(TagUtils.TAG_SERIALIZABLE_CLASS, thothClass);
                 startActivity(i);
             }
         });
@@ -91,8 +91,8 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String OrderBy = ThothContract.Clazz.SEMESTER + " DESC, "+ ThothContract.Clazz.FULL_NAME + " ASC";
-        return new CursorLoader(getActivity(), ThothContract.Clazz.ENROLLED_URI, CURSOR_COLUMNS , null, null, OrderBy);
+        String OrderBy = ThothContract.Classes.SEMESTER + " DESC, "+ ThothContract.Classes.FULL_NAME + " ASC";
+        return new CursorLoader(getActivity(), ThothContract.Classes.ENROLLED_URI, CURSOR_COLUMNS , null, null, OrderBy);
     }
 
     @Override

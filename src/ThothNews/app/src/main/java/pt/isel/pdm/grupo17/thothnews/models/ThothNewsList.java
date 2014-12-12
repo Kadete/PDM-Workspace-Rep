@@ -26,8 +26,4 @@ public class ThothNewsList implements Serializable {
     public Object get(int position) {
         return mNews.get(position);
     }
-
-    public int getPosition(ThothNew thothNew) {
-        return mNews.indexOf(thothNew);
-    }
 }

@@ -61,7 +61,7 @@ public class ClassesSelectionActivity extends FragmentActivity{
         super.onBackPressed();
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
         if(fragment != null)
-            ((ClassesSelectionFragment) fragment).updateClassesSelection(ClassesSelectionActivity.this, false);
+            ((ClassesSelectionFragment) fragment).updateClassesSelection(ClassesSelectionActivity.this, true);
     }
 
 }

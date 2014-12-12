@@ -52,10 +52,6 @@ public class ParticipantsAdapter extends CursorAdapter {
         return mParticipants.get(position);
     }
 
-//    public ThothParticipantsList getParticipantsList() {
-//        return mParticipants;
-//    }
-
     @Override
     public Cursor swapCursor(Cursor newCursor) {
         Cursor oldCursor = super.swapCursor(newCursor);
@@ -91,10 +87,10 @@ public class ParticipantsAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         NewViewHolder holder = (NewViewHolder)view.getTag();
 
-        String mainInfo = "Nº" + String.valueOf(cursor.getLong(cursor.getColumnIndex(ThothContract.Student._ID))); // _ID == NUMBER
-        int nGroup = cursor.getInt(cursor.getColumnIndex(ThothContract.Student.GROUP));
-        final String studentEmail = cursor.getString(cursor.getColumnIndex(ThothContract.Student.ACADEMIC_EMAIL));
-        final String studentName = cursor.getString(cursor.getColumnIndex(ThothContract.Student.FULL_NAME));
+        String mainInfo = "Nº" + String.valueOf(cursor.getLong(cursor.getColumnIndex(ThothContract.Classes_Students.KEY_STUDENT_ID))); // _ID == NUMBER
+        int nGroup = cursor.getInt(cursor.getColumnIndex(ThothContract.Classes_Students.GROUP));
+        final String studentEmail = cursor.getString(cursor.getColumnIndex(ThothContract.Students.ACADEMIC_EMAIL));
+        final String studentName = cursor.getString(cursor.getColumnIndex(ThothContract.Students.FULL_NAME));
 
         mainInfo += mContext.getString(R.string.participant_main_info_tv) + ((nGroup == WITHOUT_GROUP) ? "-" : String.valueOf(nGroup));
         holder.number_and_group.setText(mainInfo);
@@ -122,7 +118,7 @@ public class ParticipantsAdapter extends CursorAdapter {
         ImageHandlerThread th = new ImageHandlerThread();
         th.start();
         ImageHandler ih = new ImageHandler(svh, th.getLooper());
-        String avatarUrl = cursor.getString(cursor.getColumnIndex(ThothContract.Student.AVATAR_URL));
+        String avatarUrl = cursor.getString(cursor.getColumnIndex(ThothContract.Students.AVATAR_URL));
         ih.fetchImage(holder.avatar ,avatarUrl);
     }
 }

@@ -8,17 +8,17 @@ public class UriUtils {
 
     public static class Classes {
         public static Uri parseNewsFromClassID(long classID){
-            Uri uri = Uri.parse(String.format("%s/%d/newsitems", ThothContract.Clazz.CONTENT_URI, classID));
+            Uri uri = Uri.parse(String.format("%s/%d/news", ThothContract.Classes.CONTENT_URI, classID));
             return uri;
         }
 
         public static Uri parseParticipantsFromClassID(long classID){
-            Uri uri = Uri.parse(String.format("%s/%d/participants", ThothContract.Clazz.CONTENT_URI, classID));
+            Uri uri = Uri.parse(String.format("%s/%d/participants", ThothContract.Classes.CONTENT_URI, classID));
             return uri;
         }
 
         public static Uri parseClass(long classID){
-            Uri uri = Uri.parse(String.format("%s/%d", ThothContract.Clazz.CONTENT_URI, classID));
+            Uri uri = Uri.parse(String.format("%s/%d", ThothContract.Classes.CONTENT_URI, classID));
             return uri;
         }
     }
@@ -32,7 +32,7 @@ public class UriUtils {
 
     public static class Teachers {
         public static Uri parseFromTeacherID(long teacherID){
-            Uri uri = Uri.parse(String.format("%s/%d", ThothContract.Teacher.CONTENT_URI, teacherID));
+            Uri uri = Uri.parse(String.format("%s/%d", ThothContract.Teachers.CONTENT_URI, teacherID));
             return uri;
         }
     }

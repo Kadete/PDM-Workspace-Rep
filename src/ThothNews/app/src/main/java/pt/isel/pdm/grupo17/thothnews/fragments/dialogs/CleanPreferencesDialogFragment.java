@@ -32,8 +32,8 @@ public class CleanPreferencesDialogFragment extends DialogFragment {
             .setPositiveButton(ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     ContentValues values = new ContentValues();
-                    values.put(ThothContract.Clazz.ENROLLED, FALSE);
-                    getActivity().getContentResolver().update(ThothContract.Clazz.CONTENT_URI, values, null, null);
+                    values.put(ThothContract.Classes.ENROLLED, FALSE);
+                    getActivity().getContentResolver().update(ThothContract.Classes.CONTENT_URI, values, null, null);
 
                     Toast.makeText(getActivity(), toastSuccessMessage, Toast.LENGTH_LONG).show();
                     getFragmentManager().beginTransaction()
