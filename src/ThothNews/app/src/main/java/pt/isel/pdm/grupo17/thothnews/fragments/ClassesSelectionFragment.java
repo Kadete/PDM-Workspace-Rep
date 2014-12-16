@@ -1,8 +1,11 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -160,7 +163,18 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
         mListAdapter.swapCursor(null);
     }
 
+    public boolean isConnected(){
+        ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
     public void refreshLoader() {
+        if(!isConnected()){
+            Toast.makeText(getActivity(),getString(R.string.toast_no_connectivity),Toast.LENGTH_LONG).show();
+            return;
+        }
+
         if(mListAdapter.isEmpty())
             Toast.makeText(getActivity(),getString(R.string.toast_wait_message),Toast.LENGTH_LONG).show();
         mSwipeRefreshLayout.setRefreshing(true);

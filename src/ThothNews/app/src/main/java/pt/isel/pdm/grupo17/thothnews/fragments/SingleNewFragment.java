@@ -61,7 +61,6 @@ public class SingleNewFragment extends Fragment {
             getActivity().getContentResolver().update(UriUtils.News.parseNewID(mThothNew.getID()), values, null, null );
     }
 
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);

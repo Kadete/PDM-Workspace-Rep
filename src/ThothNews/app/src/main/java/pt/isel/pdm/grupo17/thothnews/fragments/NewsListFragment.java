@@ -1,8 +1,11 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -12,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
@@ -173,7 +177,17 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
         mListAdapter.swapCursor(null);
     }
 
+    public boolean isConnected(){
+        ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
     public void refreshLoader() {
+        if(!isConnected()){
+            Toast.makeText(getActivity(), getString(R.string.toast_no_connectivity), Toast.LENGTH_LONG).show();
+            return;
+        }
         mSwipeRefreshLayout.setRefreshing(true);
         ThothUpdateService.startActionClassNewsUpdate(getActivity(), sThothClass.getID());
         getLoaderManager().restartLoader(NEWS_CURSOR_LOADER_ID, null, this);
