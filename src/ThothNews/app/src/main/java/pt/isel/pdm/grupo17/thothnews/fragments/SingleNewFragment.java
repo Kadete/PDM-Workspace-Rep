@@ -18,8 +18,7 @@ public class SingleNewFragment extends Fragment {
 
     private ThothNew mThothNew;
 
-    public SingleNewFragment() {
-    }
+    public SingleNewFragment() { }
 
     public static SingleNewFragment newInstance(ThothNew thothNew){
         SingleNewFragment f = new SingleNewFragment();
@@ -59,7 +58,7 @@ public class SingleNewFragment extends Fragment {
         ContentValues values = new ContentValues();
         values.put(ThothContract.News.READ, 1);
         if(mThothNew != null)
-            getActivity().getContentResolver().update(UriUtils.News.parseFromNewID(mThothNew.getID()), values, null, null );
+            getActivity().getContentResolver().update(UriUtils.News.parseNewID(mThothNew.getID()), values, null, null );
     }
 
 

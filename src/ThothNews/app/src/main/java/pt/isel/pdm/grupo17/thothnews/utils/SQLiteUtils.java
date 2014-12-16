@@ -1,5 +1,14 @@
 package pt.isel.pdm.grupo17.thothnews.utils;
 
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.widget.Toast;
+
+import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.activities.PreferencesActivity;
+import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
+
 public class SQLiteUtils {
 
     public static final String TRUE = "1", FALSE = "0";
@@ -57,6 +66,18 @@ public class SQLiteUtils {
         System.arraycopy(src,0,retArr,0,srcSize);
         System.arraycopy(args,0,retArr,srcSize,argsSize);
         return retArr;
+    }
+
+    public static void startPrefsIfNoClassesEnrolled(Context context){
+        Cursor cClassesEnrolled = context.getContentResolver().query(ThothContract.Classes.ENROLLED_URI, null, null, null, null);
+        if(!cClassesEnrolled.moveToNext()){
+            Toast.makeText(context, context.getString(R.string.setup_classes_request), Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(context, PreferencesActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            cClassesEnrolled.close();
+            context.startActivity(intent);
+        }
+        cClassesEnrolled.close();
     }
 
 }

@@ -33,9 +33,9 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     }
 
     static final int PARTICIPANTS_CURSOR_LOADER_ID = 3;
-    static final String[] CURSOR_COLUMNS = {ThothContract.Students._ID, ThothContract.Students.FULL_NAME, ThothContract.Students.AVATAR_URL,
+    static final String[] CURSOR_COLUMNS = {ThothContract.Students._ID, ThothContract.Students.FULL_NAME, ThothContract.Students.AVATAR_URL, ThothContract.Path_Auxiliar.AVATAR_PATH,
             ThothContract.Students.ACADEMIC_EMAIL, ThothContract.Students.ENROLLED_DATE, ThothContract.Classes_Students.GROUP};
-            //ThothContract.Participants.AVATAR_URL
+    static final String ORDER_BY = ThothContract.Students._ID + " ASC";
 
     private MultiSwipeRefreshLayout mSwipeRefreshLayout;
     private GridView mGridView;
@@ -88,16 +88,14 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
             refreshLoader();
     }
 
-    public boolean isFragmentUIActive() {
+    private boolean isFragmentUIActive() {
         return isVisible() && isAdded() && !isDetached() && !isRemoving();
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         if(isFragmentUIActive()){
-            String OrderBy = ThothContract.Students._ID + " ASC";
-            return new CursorLoader(getActivity(), UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()),
-                    CURSOR_COLUMNS, null, null, OrderBy);
+            return new CursorLoader(getActivity(), UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), CURSOR_COLUMNS, null, null, ORDER_BY);
         }
         return null;
     }
@@ -121,11 +119,4 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-           // TODO: request participants photos
-        }
-    }
 }

@@ -9,13 +9,20 @@ import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.fragments.SlidingTabsColorsFragment;
+import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
 public class ReadAllDialogFragment extends DialogFragment {
 
-    private long classID;
+    static long sClassID;
 
-    public ReadAllDialogFragment(long classID){
-        this.classID = classID;
+    public ReadAllDialogFragment(){ }
+
+    public static  ReadAllDialogFragment newInstance(long classID){
+        ReadAllDialogFragment f = new ReadAllDialogFragment();
+        Bundle b = new Bundle();
+        b.putLong(TagUtils.TAG_SELECT_CLASS_ID, classID);
+        f.setArguments(b);
+        return f;
     }
 
     @Override
@@ -28,6 +35,8 @@ public class ReadAllDialogFragment extends DialogFragment {
         final String toastSuccessMessage = getString(R.string.news_read_all_toast_success);
         final String toastFailMessage = getString(R.string.news_read_all_toast_fail);
 
+        sClassID = getArguments().getLong(TagUtils.TAG_SELECT_CLASS_ID);
+
         return new AlertDialog.Builder(getActivity())
             .setIcon(R.drawable.ic_thoth)
             .setTitle(clean)
@@ -36,7 +45,7 @@ public class ReadAllDialogFragment extends DialogFragment {
                 public void onClick(DialogInterface dialog, int which) {
                     SlidingTabsColorsFragment fragment = (SlidingTabsColorsFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container_class_sections);
                     if (fragment != null) {
-                        fragment.updateReadAll(classID);
+                        fragment.updateReadAll(sClassID);
                         Toast.makeText(getActivity(), toastSuccessMessage, Toast.LENGTH_LONG).show();
                         return;
                     }

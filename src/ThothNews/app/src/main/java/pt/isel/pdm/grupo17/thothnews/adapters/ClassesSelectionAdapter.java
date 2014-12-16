@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -137,7 +138,6 @@ public class ClassesSelectionAdapter extends CursorAdapter {
                     sMapSelection.put(id, new SelectionState(!toggleChecked));
             }
         });
-
     }
 }
 

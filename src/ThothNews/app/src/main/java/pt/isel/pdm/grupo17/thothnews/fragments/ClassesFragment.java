@@ -28,6 +28,7 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
     static final int CLASSES_CURSOR_LOADER_ID = 0;
     static final String[] CURSOR_COLUMNS = {ThothContract.Classes._ID, ThothContract.Classes.FULL_NAME, ThothContract.Classes.TEACHER_NAME, ThothContract.Classes.SHORT_NAME,
             ThothContract.Classes.SEMESTER, ThothContract.Classes.COURSE, ThothContract.Classes.TEACHER_ID, ThothContract.Classes.UNREAD_NEWS};
+    static final String ORDER_BY = ThothContract.Classes.SEMESTER + " DESC, "+ ThothContract.Classes.FULL_NAME + " ASC";
 
     private MultiSwipeRefreshLayout mSwipeRefreshLayout;
     private GridView mGridView;
@@ -50,6 +51,12 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
         mEmptyView = view.findViewById(android.R.id.empty);
 
         return view;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        refreshLoader();
     }
 
     @Override
@@ -84,15 +91,8 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @Override
-    public void onResume(){
-        super.onResume();
-        refreshLoader();
-    }
-
-    @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String OrderBy = ThothContract.Classes.SEMESTER + " DESC, "+ ThothContract.Classes.FULL_NAME + " ASC";
-        return new CursorLoader(getActivity(), ThothContract.Classes.ENROLLED_URI, CURSOR_COLUMNS , null, null, OrderBy);
+        return new CursorLoader(getActivity(), ThothContract.Classes.ENROLLED_URI, CURSOR_COLUMNS , null, null, ORDER_BY);
     }
 
     @Override

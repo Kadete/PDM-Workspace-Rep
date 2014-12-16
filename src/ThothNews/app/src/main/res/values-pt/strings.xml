@@ -66,5 +66,9 @@
     <string name="news_read_all_warning">Cuidado!!\nTodas as notícias referente á turma presente, serão marcadas como lidas.</string>
     <string name="service_update_classes_error">Ocorreu um erro inesperado.\nAs tuas turmas não foram actualizadas!</string>
     <string name="service_update_classes_success">As</string>
+    <string name="send_mail_to">"Envie email para "</string>
+    <string name="send_mail_fail_no_app">Infelizmente não tem nenhuma aplicação capaz de resolver este tipo de pedido!</string>
+    <string name="send_email_subject">Assunto</string>
+    <string name="setup_classes_request">Selecciona as tuas turmas antes de continuar.</string>
 
 </resources>

@@ -7,11 +7,16 @@
     android:gravity="center"
     android:background="#fff"
     android:padding="5dp">
+    <TextView
+        android:id="@+id/participant_item_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
     <FrameLayout
         android:layout_width="80dp"
         android:layout_height="80dp">
         <ImageView
-            android:id="@+id/iv_student_avatar"
+            android:id="@+id/student_item_avatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="12dp"

@@ -12,10 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
@@ -39,7 +36,8 @@
 
         <activity android:name=".activities.ClassesSelectionActivity" android:label="@string/title_activity_class_selection"/>
 
-        <activity android:name=".activities.ClassSectionsActivity" android:label="@string/label_class_section_view"/>
+        <activity android:name=".activities.ClassSectionsActivity" android:label="@string/label_class_section_view"
+                  android:configChanges="orientation|screenSize|keyboardHidden"/>
 
         <activity android:name=".activities.SingeNewActivity" android:label="@string/label_activity_new_view"/>
 

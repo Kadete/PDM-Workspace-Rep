@@ -123,7 +123,7 @@ public class ThothUpdateService extends IntentService {
         public static final String FULL_NAME = "fullName";
         public static final String ACADEMIC_EMAIL = "academicEmail";
         /** Object JsonThothAvatar **/
-        public static final String AVATAR_URL = "avatarUrl";
+//        public static final String AVATAR_URL = "avatarUrl";
         public static final String ENROLL_DATE = "enrollmentDate";
         public static final String GROUP = "currentGroup";
     }
@@ -230,7 +230,7 @@ public class ThothUpdateService extends IntentService {
                 String data = readAllFrom(is);
                 final JSONArray thothClasses = ParseUtils.parseClasses(data);
                 ContentResolver resolver = getContentResolver();
-                ContentValues currValuesClass = new ContentValues(), currValuesTeacher = new ContentValues();
+                ContentValues currValuesClass = new ContentValues();
                 // TODO: Insert in batch instead of one by one
 
                 for(int idx = 0; idx < thothClasses.length();++idx){
@@ -254,30 +254,13 @@ public class ThothUpdateService extends IntentService {
                     JSONObject jFullClass = getClassObject(classID);
                     long teacherID = jFullClass.getLong(JsonThothFullClass.TEACHER_ID);
 
-                    Uri classTeacherUri = UriUtils.Teachers.parseFromTeacherID(teacherID);
+                    Uri classTeacherUri = UriUtils.Teachers.parseTeacherID(teacherID);
 
+                    /*check if is already the teacher on the db, if not extract that info from Thoth JSONObject teacher */
                     classTeacherIDCursor = resolver.query(classTeacherUri, new String[]{ThothContract.Teachers._ID},null,null,null);
                     if(!classTeacherIDCursor.moveToNext()){
-                        currValuesTeacher.clear();
                         JSONObject jFullTeacher = getTeacherObject(teacherID);
-                        currValuesTeacher.put(ThothContract.Teachers._ID, jFullTeacher.getLong(JsonThothTeacher.ID));
-                        currValuesTeacher.put(ThothContract.Teachers.NUMBER, jFullTeacher.getLong(JsonThothTeacher.NUMBER));
-                        currValuesTeacher.put(ThothContract.Teachers.SHORT_NAME, jFullTeacher.getString(JsonThothTeacher.SHORT_NAME));
-                        currValuesTeacher.put(ThothContract.Teachers.FULL_NAME, jFullTeacher.getString(JsonThothTeacher.FULL_NAME));
-                        currValuesTeacher.put(ThothContract.Teachers.ACADEMIC_EMAIL, jFullTeacher.getString(JsonThothTeacher.ACADEMIC_EMAIL));
-
-//                        ImageView img = (ImageView)findViewById(R.id.imageView1);
-//                        SetViewHandler svh = new SetViewHandler(Looper.getMainLooper());
-//                        ImageHandlerThread th = new ImageHandlerThread();
-//                        th.start();
-//                        ImageHandler ih = new ImageHandler(svh, th.getLooper());
-//                        ih.fetchImage(img, "http://www.gravatar.com/avatar/e3a7f4454cf8bc6781c3bf7adcae366a?s=24&r=g&d=mm");
-                        /* TODO save on rom db_rom_photo_location_url instead always request db_avatar_url*/
-                        JSONObject avatarsObj = jFullTeacher.getJSONObject(JsonThothTeacher.AVATAR);
-                        currValuesTeacher.put(ThothContract.Teachers.AVATAR_URL, avatarsObj.getString(JsonThothAvatar.SIZE128));
-
-                        currValuesTeacher.put(ThothContract.Teachers.LINKS, jFullTeacher.getString(JsonThothTeacher.LINKS));
-                        resolver.insert(ThothContract.Teachers.CONTENT_URI, currValuesTeacher); /** INSERT TEACHER_NAME **/
+                        insertTeacher(jFullTeacher);
                     }
 
                     currValuesClass.put(ThothContract.Classes.TEACHER_ID, jFullClass.getLong(JsonThothFullClass.TEACHER_ID));
@@ -395,6 +378,9 @@ public class ThothUpdateService extends IntentService {
         }
     }
 
+    static final String[] CURSOR_COLUMNS = {ThothContract.Students._ID};
+    static final String ORDER_BY = ThothContract.Students._ID + " ASC";
+
     /**
      * Handle action ClassParticipantsUpdate in the provided background thread with the provided
      * parameters.
@@ -412,20 +398,25 @@ public class ThothUpdateService extends IntentService {
                 InputStream is = c.getInputStream();
                 String data = readAllFrom(is);
                 is.close();
-                final JSONArray thothParticipants = ParseUtils.parseElement(data, JsonThothParticipant.ARRAY_STUDENTS);
-                ContentResolver resolver = getContentResolver();
 
-                Uri classNewsUri = UriUtils.Classes.parseParticipantsFromClassID(classID);
-                Cursor classParticipantsIDsCursor = resolver.query(classNewsUri, new String[]{ThothContract.Students._ID},null,null,null);
-                List<Long>classParticipantsIDs = getListFromCursor(classParticipantsIDsCursor);
-                classParticipantsIDsCursor.close();
+                final JSONArray thothParticipants = ParseUtils.parseElement(data, JsonThothParticipant.ARRAY_STUDENTS);
+                Cursor participantsIDsCursor = getContentResolver().query((UriUtils.Classes.parseParticipantsFromClassID(classID)), CURSOR_COLUMNS, null, null, ORDER_BY);
+                Cursor studentsIDsCursor = getContentResolver().query(ThothContract.Students.CONTENT_URI, CURSOR_COLUMNS, null, null, ORDER_BY);
+                List<Long>participantsIDs = getListFromCursor(participantsIDsCursor);
+                List<Long>studentsIDs = getListFromCursor(studentsIDsCursor);
+                participantsIDsCursor.close();
+                studentsIDsCursor.close();
+
                 long currParticipantID;
 
                 for (int idx = 0; idx < thothParticipants.length(); ++idx) {
                     JSONObject jParticipant = thothParticipants.getJSONObject(idx);
                     currParticipantID = jParticipant.getLong(JsonThothParticipant.ID);
 
-                    if(!classParticipantsIDs.contains(currParticipantID))
+                    if(participantsIDs.contains(currParticipantID))
+                        continue;
+
+                    if(!studentsIDs.contains(currParticipantID))
                         insertStudent(jParticipant, classID);
 
                     String group = jParticipant.getString(JsonThothParticipant.GROUP);
@@ -445,15 +436,29 @@ public class ThothUpdateService extends IntentService {
         }
     }
 
+    private void insertTeacher(JSONObject jFullTeacher) throws JSONException, IOException {
+        ContentValues currValuesTeacher = new ContentValues();
+        currValuesTeacher.put(ThothContract.Teachers._ID, jFullTeacher.getLong(JsonThothTeacher.ID));
+        currValuesTeacher.put(ThothContract.Teachers.NUMBER, jFullTeacher.getLong(JsonThothTeacher.NUMBER));
+        currValuesTeacher.put(ThothContract.Teachers.SHORT_NAME, jFullTeacher.getString(JsonThothTeacher.SHORT_NAME));
+        currValuesTeacher.put(ThothContract.Teachers.FULL_NAME, jFullTeacher.getString(JsonThothTeacher.FULL_NAME));
+        currValuesTeacher.put(ThothContract.Teachers.ACADEMIC_EMAIL, jFullTeacher.getString(JsonThothTeacher.ACADEMIC_EMAIL));
+
+        JSONObject avatarsObj = jFullTeacher.getJSONObject(JsonThothTeacher.AVATAR);
+        String avatarUrl = avatarsObj.getString(JsonThothAvatar.SIZE128);
+        currValuesTeacher.put(ThothContract.Teachers.AVATAR_URL, avatarUrl);
+        currValuesTeacher.put(ThothContract.Teachers.LINKS, jFullTeacher.getString(JsonThothTeacher.LINKS));
+        getContentResolver().insert(ThothContract.Teachers.CONTENT_URI, currValuesTeacher);
+    }
+
     public void insertStudent(JSONObject jsonStudent, long classID) throws JSONException {
         ContentValues currValuesParticipants = new ContentValues();
-
         currValuesParticipants.put(ThothContract.Students._ID, jsonStudent.getLong(JsonThothParticipant.ID));
         currValuesParticipants.put(ThothContract.Students.FULL_NAME, jsonStudent.getString(JsonThothParticipant.FULL_NAME));
         currValuesParticipants.put(ThothContract.Students.ACADEMIC_EMAIL, jsonStudent.getString(JsonThothParticipant.ACADEMIC_EMAIL));
 
         JSONObject avatarsObj = jsonStudent.getJSONObject(JsonThothTeacher.AVATAR);
-        currValuesParticipants.put(ThothContract.Teachers.AVATAR_URL, avatarsObj.getString(JsonThothAvatar.SIZE128));/* TODO */
+        currValuesParticipants.put(ThothContract.Students.AVATAR_URL, avatarsObj.getString(JsonThothAvatar.SIZE128));
         currValuesParticipants.put(ThothContract.Students.ENROLLED_DATE, jsonStudent.getString(JsonThothParticipant.ENROLL_DATE));
         currValuesParticipants.put(ThothContract.Students.CLASS_ID, classID);
         getContentResolver().insert(ThothContract.Students.CONTENT_URI, currValuesParticipants);
@@ -467,9 +472,7 @@ public class ThothUpdateService extends IntentService {
         getContentResolver().insert(ThothContract.Classes_Students.CONTENT_URI, values);
     }
 
-
-    public static boolean isNumeric(String str)
-    {
+    public static boolean isNumeric(String str) {
         NumberFormat formatter = NumberFormat.getInstance();
         ParsePosition pos = new ParsePosition(0);
         formatter.parse(str, pos);

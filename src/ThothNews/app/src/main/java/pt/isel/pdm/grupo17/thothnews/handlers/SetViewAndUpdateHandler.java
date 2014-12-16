@@ -1,16 +1,22 @@
 package pt.isel.pdm.grupo17.thothnews.handlers;
 
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.widget.ImageView;
 
-public class SetViewHandler extends Handler {
+public class SetViewAndUpdateHandler extends Handler {
 
-    public SetViewHandler(Looper l){
-        super(l);
+    ContentResolver resolver;
+
+    public SetViewAndUpdateHandler(Looper mainLooper, ContentResolver resolver) {
+        super(mainLooper);
+        this.resolver = resolver;
     }
 
     public void handleMessage (Message msg){
@@ -24,7 +30,11 @@ public class SetViewHandler extends Handler {
         sendMessage(m);
     }
 
-    public final class Data {
+    public void update(Uri uri, ContentValues values, String where, String []whereArgs) {
+        resolver.update(uri,values, where, whereArgs);
+    }
+
+    final class Data {
         public final ImageView im;
         public final Bitmap bm;
         public Data(ImageView im, Bitmap bm) {

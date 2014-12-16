@@ -37,6 +37,9 @@ public class ClassesSelectionActivity extends FragmentActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_classes_selection, menu);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
+        if(fragment != null)
+            ((ClassesSelectionFragment) fragment).myCreateOptionsMenu(menu);
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -9,16 +9,15 @@ public final class ThothContract {
      * Content provider authority.
      */
     public static final String CONTENT_AUTHORITY = "pt.isel.pdm.grupo17.thothnews";
-    /**
-     * Base URI. (content://com.example.android.basicsyncadapter)
-     */
+
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final String PATH_CLASSES = "classes";
+    public static final String PATH_CLASSES_SEARCH = "classesSearch";
     public static final String PATH_NEWS = "news";
     public static final String PATH_TEACHERS = "teachers";
     public static final String PATH_STUDENTS = "students";
-    public static final String PATH_CLASSES_STUDENTS = "classesStudents"; /* TODO N->Classes_Students<-N*/
+    public static final String PATH_CLASSES_STUDENTS = "classesStudents";
     public static final String PATH_CLASSES_ENROLLED = "enrolled";
 
     private static final String TYPE_TEXT = " TEXT";
@@ -43,7 +42,11 @@ public final class ThothContract {
          * Fully qualified URI for "classes" resources.
          */
         public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLASSES).build();
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLASSES).build(); /**
+         * Fully qualified URI for search "classes" resources.
+         */
+        public static final Uri SEARCH_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLASSES_SEARCH).build();
 /**
          * Fully qualified URI for enrolled "classes" resources.
          */
@@ -78,7 +81,7 @@ public final class ThothContract {
         public static final String CONTENT_DIR_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.thothprovider.news";
         /**
-         * MIME type for individual news
+         * MIME type for individual new
          */
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.news";
@@ -103,50 +106,51 @@ public final class ThothContract {
 
     public static class Students implements BaseColumns {
         /**
-         * MIME type for lists of news.
+         * MIME type for lists of students.
          */
         public static final String CONTENT_DIR_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.thothprovider.students";
         /**
-         * MIME type for individual news
+         * MIME type for individual student
          */
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.students";
         /**
-         * Fully qualified URI for "Participants" resources.
+         * Fully qualified URI for "Students" resources.
          */
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_STUDENTS).build();
 
         public static final String TABLE_NAME = "students",
-//                NUMBER = "number",
+//                NUMBER = "number", // id == number
                 FULL_NAME = "studentFullName",
                 ACADEMIC_EMAIL = "academicEmail",
-                AVATAR_URL = "avatarUrl",
+//                AVATAR_PATH = "avatarPath", //inside location
+                AVATAR_URL = "avatarUrl", //external location
                 ENROLLED_DATE = "enrollmentDate",
-//                GROUP = "currentGroup",
                 CLASS_ID = "classId";
 
         static final String CREATE_QUERY = "CREATE TABLE " + Students.TABLE_NAME + " ("
                 + Students._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP
                 + Students.FULL_NAME + TYPE_TEXT + COMMA_SEP + Students.ACADEMIC_EMAIL + TYPE_TEXT + COMMA_SEP
-                + Students.AVATAR_URL + TYPE_TEXT + COMMA_SEP + Students.ENROLLED_DATE + TYPE_TEXT + COMMA_SEP
+                + Students.AVATAR_URL + TYPE_TEXT + COMMA_SEP + Path_Auxiliar.AVATAR_PATH + TYPE_TEXT + COMMA_SEP
+                + Students.ENROLLED_DATE + TYPE_TEXT + COMMA_SEP
                 + Students.CLASS_ID + TYPE_INTEGER + ")";
     }
 
     public static class Teachers implements BaseColumns {
         /**
-         * MIME type for lists of news.
+         * MIME type for lists of teachers.
          */
         public static final String CONTENT_DIR_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.thothprovider.teachers";
         /**
-         * MIME type for individual news
+         * MIME type for individual teacher
          */
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.teachers";
         /**
-         * Fully qualified URI for "Participants" resources.
+         * Fully qualified URI for "Teachers" resources.
          */
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_TEACHERS).build();
@@ -156,14 +160,16 @@ public final class ThothContract {
                 SHORT_NAME = "shortName",
                 FULL_NAME = "fullName",
                 ACADEMIC_EMAIL = "academicEmail",
-                AVATAR_URL = "avatarUrl",
+//                AVATAR_PATH = "avatarPath", //inside location
+                AVATAR_URL = "avatarUrl", //external location
                 LINKS = "_linsk";
 
         static final String CREATE_QUERY = "CREATE TABLE " + Teachers.TABLE_NAME + " ("
                 + Teachers._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP
                 + Teachers.NUMBER + TYPE_INTEGER + COMMA_SEP + Teachers.SHORT_NAME + TYPE_TEXT + COMMA_SEP
                 + Teachers.FULL_NAME + TYPE_TEXT + COMMA_SEP + Teachers.ACADEMIC_EMAIL + TYPE_TEXT + COMMA_SEP
-                + Teachers.AVATAR_URL + TYPE_TEXT + COMMA_SEP + Teachers.LINKS + TYPE_TEXT + ")";
+                + Teachers.AVATAR_URL + TYPE_TEXT + COMMA_SEP + Path_Auxiliar.AVATAR_PATH + TYPE_TEXT + COMMA_SEP
+                + Teachers.LINKS + TYPE_TEXT + ")";
     }
 
     public static class Classes_Students implements BaseColumns {
@@ -174,17 +180,8 @@ public final class ThothContract {
 
         public static final String TABLE_NAME = "classes_students";
 
-        /* MIME type for lists of news.
-        */
-        public static final String CONTENT_DIR_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.thothprovider.classesStudents";
         /**
-         * MIME type for individual news
-         */
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.classesStudents";
-        /**
-         * Fully qualified URI for "Participants" resources.
+         * Fully qualified URI for combining "Classes" and "Students" resources.
          */
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLASSES_STUDENTS).build();
@@ -194,6 +191,10 @@ public final class ThothContract {
                 + Classes_Students.KEY_CLASS_ID + TYPE_INTEGER + COMMA_SEP + Classes_Students.KEY_STUDENT_ID + COMMA_SEP
                 + Classes_Students.GROUP + TYPE_INTEGER + ")";
 
+    }
+
+    public static class Path_Auxiliar {
+        public static final String AVATAR_PATH = "avatarPath"; //inside location
     }
 
 }

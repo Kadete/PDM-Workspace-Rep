@@ -2,6 +2,7 @@ package pt.isel.pdm.grupo17.thothnews.activities;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,11 +28,14 @@ import pt.isel.pdm.grupo17.thothnews.fragments.SlidingTabsColorsFragment;
 import pt.isel.pdm.grupo17.thothnews.fragments.dialogs.ReadAllDialogFragment;
 import pt.isel.pdm.grupo17.thothnews.handlers.ImageHandler;
 import pt.isel.pdm.grupo17.thothnews.handlers.ImageHandlerThread;
-import pt.isel.pdm.grupo17.thothnews.handlers.SetViewHandler;
+import pt.isel.pdm.grupo17.thothnews.handlers.SetViewAndUpdateHandler;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
+import pt.isel.pdm.grupo17.thothnews.utils.BitmapUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
+
+import static pt.isel.pdm.grupo17.thothnews.utils.BitmapUtils.EnumModel.DIR_PATH_TEACHER;
 
 public class ClassSectionsActivity extends FragmentActivity implements NewsListFragment.Callbacks{
 
@@ -63,18 +68,18 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
         tvTeacher.setText(sThothClass.getTeacherName());
 
         long teacherID = sThothClass.getTeacherID();
-        Uri teacherUri = UriUtils.Teachers.parseFromTeacherID(teacherID);
-        String [] cursorColumns = new String[] {ThothContract.Teachers._ID, ThothContract.Teachers.ACADEMIC_EMAIL, ThothContract.Teachers.AVATAR_URL};
+        Uri teacherUri = UriUtils.Teachers.parseTeacherID(teacherID);
+        String [] cursorColumns = new String[] {ThothContract.Teachers._ID, ThothContract.Teachers.ACADEMIC_EMAIL, ThothContract.Teachers.AVATAR_URL, ThothContract.Path_Auxiliar.AVATAR_PATH};
         Cursor teacherCursor = getApplication().getContentResolver().query(teacherUri,cursorColumns , null, null, null);
 
-        if(teacherCursor.moveToNext()){
+        if(teacherCursor.moveToNext()) {
             tvTeacherEmail.setMovementMethod(LinkMovementMethod.getInstance());
             final String teacherEmail = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teachers.ACADEMIC_EMAIL));
             tvTeacherEmail.setText(teacherEmail);
             tvTeacherEmail.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
             tvTeacherEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v) { /** send email to teacher **/
                     Intent i = new Intent(Intent.ACTION_SEND);
                     i.setType("message/rfc822");
                     i.putExtra(Intent.EXTRA_EMAIL, teacherEmail);
@@ -87,15 +92,29 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
                     }
                 }
             });
+            setTeacherAvatar(ivTeacherAvatar, teacherCursor, teacherID);
+        }
+        teacherCursor.close();
+    }
 
-            SetViewHandler svh = new SetViewHandler(Looper.getMainLooper());
+    private void setTeacherAvatar(ImageView ivTeacherAvatar, Cursor teacherCursor, long teacherID) {
+
+        String avatarPath = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Path_Auxiliar.AVATAR_PATH)); // saved path
+
+        if (avatarPath == null || avatarPath.isEmpty()) { /** photo not saved yet. Get avatar via req HTTP and then save the file on phone ROM **/
+
+            String storagePath = BitmapUtils.initStoragePath(getApplication(), DIR_PATH_TEACHER);
+            String avatarUrl = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teachers.AVATAR_URL));
+            SetViewAndUpdateHandler svh = new SetViewAndUpdateHandler(Looper.getMainLooper(), getContentResolver());
+
             ImageHandlerThread th = new ImageHandlerThread();
             th.start();
             ImageHandler ih = new ImageHandler(svh, th.getLooper());
-            ih.fetchImage(ivTeacherAvatar, teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teachers.AVATAR_URL)));
-        }else
-            tvTeacherEmail.setText("N/A");
-        teacherCursor.close();
+            ih.fetchImage(ivTeacherAvatar, avatarUrl, UriUtils.Teachers.parseTeacherID(teacherID), storagePath); // external url
+        }
+        else{ /** AsyncTask to get the photo and show when ready: getBitmapFromFile **/
+            new BitmapUtils.LoadBitmapTask(ivTeacherAvatar).execute(avatarPath);
+        }
     }
 
     @Override
@@ -105,6 +124,35 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
         assert actionbar != null;
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeButtonEnabled(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE)
+            return;
+        FrameLayout layout = (FrameLayout)findViewById(R.id.frame_teacher_info_id);
+        if(layout != null) {
+            layout.setVisibility(View.GONE);
+            getActionBar().setTitle(sThothClass.getFullName());
+        }
+
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            FrameLayout layout = (FrameLayout)findViewById(R.id.frame_teacher_info_id);
+            if(layout != null) {
+                layout.setVisibility(View.GONE);
+                getActionBar().setTitle(sThothClass.getFullName());
+            }
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            FrameLayout layout = (FrameLayout)findViewById(R.id.frame_teacher_info_id);
+            if(layout != null)
+                layout.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -118,7 +166,6 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
                     .replace(R.id.fragment_container_detail_new, fragment)
                     .commit();
         }
-
     }
 
     @Override
@@ -141,7 +188,7 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
                 onBackPressed();
                 return true;
             case R.id.action_read_all:
-                ReadAllDialogFragment readAllDialogFragment = new ReadAllDialogFragment(sThothClass.getID());
+                ReadAllDialogFragment readAllDialogFragment = ReadAllDialogFragment.newInstance(sThothClass.getID());
                 readAllDialogFragment.show(getSupportFragmentManager(), "Read All News Dialog Fragment");
                 return true;
             case R.id.action_refresh:

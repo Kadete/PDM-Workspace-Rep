@@ -24,15 +24,21 @@ public class UriUtils {
     }
 
     public static class News {
-        public static Uri parseFromNewID(long newID){
+        public static Uri parseNewID(long newID){
             Uri uri = Uri.parse(String.format("%s/%d", ThothContract.News.CONTENT_URI, newID));
             return uri;
         }
     }
 
     public static class Teachers {
-        public static Uri parseFromTeacherID(long teacherID){
+        public static Uri parseTeacherID(long teacherID){
             Uri uri = Uri.parse(String.format("%s/%d", ThothContract.Teachers.CONTENT_URI, teacherID));
+            return uri;
+        }
+    }
+    public static class Students {
+        public static Uri parseStudentID(long studentID){
+            Uri uri = Uri.parse(String.format("%s/%d", ThothContract.Students.CONTENT_URI, studentID));
             return uri;
         }
     }

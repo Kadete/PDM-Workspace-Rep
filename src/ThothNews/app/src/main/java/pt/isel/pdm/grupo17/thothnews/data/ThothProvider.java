@@ -21,24 +21,24 @@ public class ThothProvider extends ContentProvider {
     public static final int ROUTE_CLASSES_ENROLLED = 2;
     public static final int ROUTE_CLASSES_ID_NEWS = 3;
     public static final int ROUTE_CLASSES_ID_PARTICIPANTS = 4;
-    public static final int ROUTE_NEWS = 5;
-    public static final int ROUTE_NEWS_ID = 6;
-    public static final int ROUTE_STUDENTS = 7;
-    public static final int ROUTE_STUDENTS_ID = 8;
-    public static final int ROUTE_TEACHERS = 9;
-    public static final int ROUTE_TEACHERS_ID = 10;
-    public static final int ROUTE_CLASSES_STUDENTS = 11;
+    public static final int ROUTE_CLASSES_ID_PARTICIPANTS_ID = 5;
+    public static final int ROUTE_NEWS = 6;
+    public static final int ROUTE_NEWS_ID = 7;
+    public static final int ROUTE_STUDENTS = 8;
+    public static final int ROUTE_STUDENTS_ID = 9;
+    public static final int ROUTE_TEACHERS = 10;
+    public static final int ROUTE_TEACHERS_ID = 11;
+    public static final int ROUTE_CLASSES_STUDENTS = 12;
+    public static final int ROUTE_CLASSES_SEARCH= 13;
     /**
      * Position of the class _id on URI path segments such as "classes/#", "classes/#/news"
      */
     private static final int CLASS_ID_POSITION = 1;
-    private static final int TEACHER_ID_POSITION = 1;
-
-    /**
-     * Position of the news _id on the "news/#" URI path segment
-     */
+    private static final int CLASS_NAME_POSITION = 1;
     private static final int NEWS_ID_POSITION =  1;
+    private static final int TEACHER_ID_POSITION = 1;
     private static final int STUDENTS_ID_POSITION = 1;
+//    private static final int PARTICIPANTS_ID_POSITION = 3;
 
     static {
         _matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -47,15 +47,15 @@ public class ThothProvider extends ContentProvider {
         _matcher.addURI(CONTENT_AUTHORITY, "classes/enrolled", ROUTE_CLASSES_ENROLLED);
         _matcher.addURI(CONTENT_AUTHORITY, "classes/#/news", ROUTE_CLASSES_ID_NEWS);
         _matcher.addURI(CONTENT_AUTHORITY, "classes/#/participants", ROUTE_CLASSES_ID_PARTICIPANTS);
-        _matcher.addURI(CONTENT_AUTHORITY, "classes/#/participants/#", ROUTE_CLASSES_ID_PARTICIPANTS);
+        _matcher.addURI(CONTENT_AUTHORITY, "classes/#/participants/#", ROUTE_CLASSES_ID_PARTICIPANTS_ID);
         _matcher.addURI(CONTENT_AUTHORITY, "news", ROUTE_NEWS);
         _matcher.addURI(CONTENT_AUTHORITY, "news/#", ROUTE_NEWS_ID);
         _matcher.addURI(CONTENT_AUTHORITY, "students", ROUTE_STUDENTS);
         _matcher.addURI(CONTENT_AUTHORITY, "students/#", ROUTE_STUDENTS_ID);
         _matcher.addURI(CONTENT_AUTHORITY, "teachers", ROUTE_TEACHERS);
         _matcher.addURI(CONTENT_AUTHORITY, "teachers/#", ROUTE_TEACHERS_ID);
-
         _matcher.addURI(CONTENT_AUTHORITY, "classesStudents", ROUTE_CLASSES_STUDENTS);
+        _matcher.addURI(CONTENT_AUTHORITY, "classesSearch/*", ROUTE_CLASSES_SEARCH);
     }
 
     @Override
@@ -108,6 +108,7 @@ public class ThothProvider extends ContentProvider {
             case ROUTE_CLASSES_ENROLLED:
             case ROUTE_NEWS_ID:
             case ROUTE_STUDENTS_ID:
+            case ROUTE_CLASSES_SEARCH:
                 throw new UnsupportedOperationException("Insert not supported on URI: "+uri);
             default:
                 d("Uri = %s, Unmatched URI", uri.toString());
@@ -158,10 +159,7 @@ public class ThothProvider extends ContentProvider {
             case ROUTE_CLASSES_ID_PARTICIPANTS: {
                 d("Uri = %s, ROUTE_CLASSES_ID_PARTICIPANTS", uri.toString());
                 long classID = getID(uri, CLASS_ID_POSITION);
-//                selection = SQLiteUtils.appendWhereCondition(selection, ThothContract.Students.CLASS_ID);
-//                selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(classID));
                 cursor = getCursorAllStudentsByClass(classID);
-//                cursor = db.query(ThothContract.Students.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             }
             case ROUTE_NEWS:
@@ -190,7 +188,7 @@ public class ThothProvider extends ContentProvider {
                 d("Uri = %s, ROUTE_TEACHERS", uri.toString());
                 cursor = db.query(ThothContract.Teachers.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
-            case ROUTE_TEACHERS_ID:{
+            case ROUTE_TEACHERS_ID:
                 d("Uri = %s, ROUTE_TEACHERS_ID", uri.toString());
                 long teacherID = getID(uri,TEACHER_ID_POSITION);
                 selection = SQLiteUtils.appendWhereCondition(selection, ThothContract.Teachers._ID);
@@ -198,7 +196,14 @@ public class ThothProvider extends ContentProvider {
                 cursor = db.query(ThothContract.Teachers.TABLE_NAME, projection
                         , selection, selectionArgs ,null,null, sortOrder);
                 break;
-            }
+            case ROUTE_CLASSES_SEARCH:
+                d("Uri = %s, ROUTE_CLASSES_SEARCH", uri.toString());
+                String classeName = getName(uri,CLASS_NAME_POSITION);
+                selection = ThothContract.Classes.COURSE + " LIKE ?";
+                selectionArgs = new String [] { String.valueOf(classeName)+"%"};
+                cursor = db.query(ThothContract.Classes.TABLE_NAME, projection
+                        , selection, selectionArgs ,null,null, sortOrder);
+                break;
             default:
                 d("Uri = %s, Unmatched URI", uri.toString());
                 // The URI given doesn't match any table of the database
@@ -222,23 +227,20 @@ public class ThothProvider extends ContentProvider {
                 selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(classID));
                 updateResult =  db.update(ThothContract.Classes.TABLE_NAME,values,selection,selectionArgs);
                 break;
-            case ROUTE_NEWS_ID:
-                long newsID = getID(uri,NEWS_ID_POSITION);
-                selection = SQLiteUtils.appendWhereCondition(selection, ThothContract.News._ID);
-                selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(newsID));
-                updateResult =  db.update(ThothContract.News.TABLE_NAME,values,selection,selectionArgs);
-                break;
             case ROUTE_CLASSES_ID_NEWS:
                 classID = getID(uri,CLASS_ID_POSITION);
                 selection = SQLiteUtils.appendWhereCondition(selection, ThothContract.News.CLASS_ID);
                 selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(classID));
                 updateResult =  db.update(ThothContract.News.TABLE_NAME,values,selection,selectionArgs);
                 break;
-            case ROUTE_STUDENTS_ID:
-                long studentID = getID(uri,STUDENTS_ID_POSITION);
-                selection = SQLiteUtils.appendWhereCondition(selection, ThothContract.Students._ID);
-                selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(studentID));
-                updateResult =  db.update(ThothContract.Students.TABLE_NAME,values,selection,selectionArgs);
+            case ROUTE_NEWS:
+                updateResult = db.update(ThothContract.News.TABLE_NAME,values,selection,selectionArgs);
+                break;
+            case ROUTE_NEWS_ID:
+                long newsID = getID(uri,NEWS_ID_POSITION);
+                selection = SQLiteUtils.appendWhereCondition(selection, ThothContract.News._ID);
+                selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(newsID));
+                updateResult =  db.update(ThothContract.News.TABLE_NAME,values,selection,selectionArgs);
                 break;
             case ROUTE_TEACHERS:
                 updateResult = db.update(ThothContract.Teachers.TABLE_NAME,values,selection,selectionArgs);
@@ -249,10 +251,18 @@ public class ThothProvider extends ContentProvider {
                 selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(teacherID));
                 updateResult =  db.update(ThothContract.Teachers.TABLE_NAME,values,selection,selectionArgs);
                 break;
+            case ROUTE_STUDENTS:
+                updateResult = db.update(ThothContract.Students.TABLE_NAME,values,selection,selectionArgs);
+                break;
+            case ROUTE_STUDENTS_ID:
+                long studentID = getID(uri,STUDENTS_ID_POSITION);
+                selection = SQLiteUtils.appendWhereCondition(selection, ThothContract.Students._ID);
+                selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(studentID));
+                updateResult =  db.update(ThothContract.Students.TABLE_NAME,values,selection,selectionArgs);
+                break;
             case ROUTE_CLASSES_ENROLLED:
             case ROUTE_CLASSES_ID_PARTICIPANTS:
-            case ROUTE_NEWS:
-            case ROUTE_STUDENTS:
+            case ROUTE_CLASSES_SEARCH:
                 throw new UnsupportedOperationException("Update not supported on URI: "+uri);
             default:
                 d("Uri = %s, Unmatched URI", uri.toString());
@@ -311,6 +321,7 @@ public class ThothProvider extends ContentProvider {
             case ROUTE_CLASSES_ENROLLED:
             case ROUTE_CLASSES_ID_NEWS:
             case ROUTE_CLASSES_ID_PARTICIPANTS:
+            case ROUTE_CLASSES_SEARCH:
                 throw new UnsupportedOperationException("Delete not supported on URI: "+uri);
             default:
                 d("Uri = %s, Unmatched URI", uri.toString());
@@ -363,6 +374,10 @@ public class ThothProvider extends ContentProvider {
         return number;
     }
 
+    private static String getName(Uri uri, int position){
+       return ParseUtils.getUriSegment(uri,position);
+    }
+
     /**
      * getting all students assigned to a single classe
      */
@@ -376,7 +391,6 @@ public class ThothProvider extends ContentProvider {
         SQLiteDatabase db = _helper.getReadableDatabase();
         return db.rawQuery(selectQuery, null);
     }
-
 
     private Uri insertNew(SQLiteDatabase db, ContentValues values){
         long insertResult;
@@ -392,47 +406,21 @@ public class ThothProvider extends ContentProvider {
         return Uri.parse(ThothContract.News.CONTENT_URI + "/"+insertResult);
     }
 
-    /* TODO: insert on table N-M */
     private Uri insertStudent(SQLiteDatabase db, ContentValues values){
         long insertResult;
-//        Long classID = values.getAsLong(ThothContract.Student.CLASS_ID);
-//        if(classID == null){
-//            throw new IllegalArgumentException("Missing class ID associated with this participant");
-//        }
         insertResult = db.insert(ThothContract.Students.TABLE_NAME,null,values);
-//        ContentValues updateInfo = new ContentValues();
-//        updateInfo.put(ThothContract.Classes.UNREAD_NEWS,true);
-//        update(Uri.parse(ThothContract.Classes.CONTENT_URI+"/"+classID),updateInfo,null,null);
         return Uri.parse(ThothContract.Students.CONTENT_URI + "/"+insertResult);
     }
 
-    /* TODO: passar informação da classe a fazer update, invés de inserir o Docente antes da Turma */
     private Uri insertTeacher(SQLiteDatabase db, ContentValues values){
         long insertResult;
-//        Long teacherID = values.getAsLong(ThothContract.Teacher._ID);
-//        if(teacherID == null){
-//            throw new IllegalArgumentException("Missing class ID associated with this participant");
-//        }
         insertResult = db.insert(ThothContract.Teachers.TABLE_NAME, null, values);
-//        ContentValues updateInfo = new ContentValues();
-//        updateInfo.put(ThothContract.Classes.TEACHER_ID, teacherID);
-//
-//        update(Uri.parse(ThothContract.Classes.CONTENT_URI+"/"+ classID),updateInfo,null,null);
         return Uri.parse(ThothContract.Students.CONTENT_URI + "/"+insertResult);
     }
-
 
     private Uri insertClassesStudent(SQLiteDatabase db, ContentValues values) {
         long insertResult;
-//        Long teacherID = values.getAsLong(ThothContract.Teacher._ID);
-//        if(teacherID == null){
-//            throw new IllegalArgumentException("Missing class ID associated with this participant");
-//        }
         insertResult = db.insert(ThothContract.Classes_Students.TABLE_NAME, null, values);
-//        ContentValues updateInfo = new ContentValues();
-//        updateInfo.put(ThothContract.Classes.TEACHER_ID, teacherID);
-//
-//        update(Uri.parse(ThothContract.Classes.CONTENT_URI+"/"+ classID),updateInfo,null,null);
         return Uri.parse(ThothContract.Classes_Students.CONTENT_URI + "/"+insertResult);
 
     }

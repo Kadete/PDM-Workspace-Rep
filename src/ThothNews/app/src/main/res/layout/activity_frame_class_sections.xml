@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/class_sections_layout">
     <FrameLayout
+        android:id="@+id/frame_teacher_info_id"
         style="@style/Widget.SampleMessageTile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.fragments.ClassesFragment;
+import pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils;
 
 public class ClassesActivity extends FragmentActivity{
 
@@ -17,6 +18,8 @@ public class ClassesActivity extends FragmentActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_frame_classes);
+
+        SQLiteUtils.startPrefsIfNoClassesEnrolled(this);
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
