@@ -70,5 +70,6 @@
     <string name="send_mail_fail_no_app">Infelizmente não tem nenhuma aplicação capaz de resolver este tipo de pedido!</string>
     <string name="send_email_subject">Assunto</string>
     <string name="setup_classes_request">Selecciona as tuas turmas antes de continuar.</string>
+    <string name="toast_no_connectivity">Erro! Verifica a tua ligação!</string>
 
 </resources>
