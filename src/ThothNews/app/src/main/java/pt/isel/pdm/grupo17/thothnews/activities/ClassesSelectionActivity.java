@@ -52,7 +52,7 @@ public class ClassesSelectionActivity extends FragmentActivity{
             case R.id.action_refresh:
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
                 if(fragment != null)
-                    ((ClassesSelectionFragment) fragment).refreshLoader();
+                    ((ClassesSelectionFragment) fragment).refreshAndUpdate();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -169,7 +169,7 @@ public class ThothProvider extends ContentProvider {
             case ROUTE_NEWS_ID:
                 d("Uri = %s, ROUTE_NEWS_ID", uri.toString());
                 long newsID = getID(uri,NEWS_ID_POSITION);
-                selection = SQLiteUtils.appendWhereCondition(ThothContract.News._ID);
+                selection = SQLiteUtils.appendWhereCondition(selection, ThothContract.News._ID);
                 selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(newsID));
                 cursor = db.query(ThothContract.News.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
@@ -178,9 +178,9 @@ public class ThothProvider extends ContentProvider {
                 cursor = db.query(ThothContract.Students.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
             case ROUTE_STUDENTS_ID:
-                d("Uri = %s, ROUTE_NEWS_ID", uri.toString());
+                d("Uri = %s, ROUTE_STUDENTS_ID", uri.toString());
                 long studentID = getID(uri,STUDENTS_ID_POSITION);
-                selection = SQLiteUtils.appendWhereCondition(ThothContract.Students._ID);
+                selection = SQLiteUtils.appendWhereCondition(selection, ThothContract.Students._ID);
                 selectionArgs = SQLiteUtils.appendArgs(selectionArgs, String.valueOf(studentID));
                 cursor = db.query(ThothContract.Students.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;

@@ -133,7 +133,7 @@ public final class ThothContract {
         static final String CREATE_QUERY = "CREATE TABLE " + Students.TABLE_NAME + " ("
                 + Students._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP
                 + Students.FULL_NAME + TYPE_TEXT + COMMA_SEP + Students.ACADEMIC_EMAIL + TYPE_TEXT + COMMA_SEP
-                + Students.AVATAR_URL + TYPE_TEXT + COMMA_SEP + Path_Auxiliar.AVATAR_PATH + TYPE_TEXT + COMMA_SEP
+                + Students.AVATAR_URL + TYPE_TEXT + COMMA_SEP + Paths.AVATAR_PATH + TYPE_TEXT + COMMA_SEP
                 + Students.ENROLLED_DATE + TYPE_TEXT + COMMA_SEP
                 + Students.CLASS_ID + TYPE_INTEGER + ")";
     }
@@ -168,7 +168,7 @@ public final class ThothContract {
                 + Teachers._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP
                 + Teachers.NUMBER + TYPE_INTEGER + COMMA_SEP + Teachers.SHORT_NAME + TYPE_TEXT + COMMA_SEP
                 + Teachers.FULL_NAME + TYPE_TEXT + COMMA_SEP + Teachers.ACADEMIC_EMAIL + TYPE_TEXT + COMMA_SEP
-                + Teachers.AVATAR_URL + TYPE_TEXT + COMMA_SEP + Path_Auxiliar.AVATAR_PATH + TYPE_TEXT + COMMA_SEP
+                + Teachers.AVATAR_URL + TYPE_TEXT + COMMA_SEP + Paths.AVATAR_PATH + TYPE_TEXT + COMMA_SEP
                 + Teachers.LINKS + TYPE_TEXT + ")";
     }
 
@@ -193,7 +193,7 @@ public final class ThothContract {
 
     }
 
-    public static class Path_Auxiliar {
+    public static class Paths {
         public static final String AVATAR_PATH = "avatarPath"; //inside location
     }
 

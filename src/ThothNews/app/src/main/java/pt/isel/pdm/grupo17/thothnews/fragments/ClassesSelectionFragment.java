@@ -1,11 +1,8 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -34,6 +31,7 @@ import pt.isel.pdm.grupo17.thothnews.adapters.ClassesSelectionAdapter;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
+import pt.isel.pdm.grupo17.thothnews.utils.ConnectionUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
@@ -90,8 +88,10 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
     }
 
     public void updateClassesSelection(FragmentActivity activity, boolean toSave){
-        if(mListAdapter.getMapSelection().isEmpty())
+        if(mListAdapter.getMapSelection().isEmpty()) {
             activity.finish();
+            return;
+        }
 
         for(Map.Entry<Long, ClassesSelectionAdapter.SelectionState> entryClass : mListAdapter.getMapSelection().entrySet()) {
             ContentValues values = new ContentValues();
@@ -129,16 +129,23 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshLoader();
+                refreshAndUpdate();
             }
         });
-    }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        if(mListAdapter.isEmpty())
-            refreshLoader();
+        Cursor classesCursor = getActivity().getContentResolver()
+                .query(ThothContract.Classes.CONTENT_URI, null, null, null, null);
+
+        if(classesCursor.moveToNext()){
+            classesCursor.close();
+            getLoaderManager().initLoader(CLASSES_SELECTION_CURSOR_LOADER_ID, null, this);
+        }
+        else {
+            classesCursor.close();
+            Toast.makeText(getActivity(),getString(R.string.toast_wait_message),Toast.LENGTH_LONG).show();
+            refreshAndUpdate();
+        }
+
     }
 
     @Override
@@ -163,20 +170,10 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
         mListAdapter.swapCursor(null);
     }
 
-    public boolean isConnected(){
-        ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
-    }
-
-    public void refreshLoader() {
-        if(!isConnected()){
-            Toast.makeText(getActivity(),getString(R.string.toast_no_connectivity),Toast.LENGTH_LONG).show();
+    public void refreshAndUpdate() {
+        if(!ConnectionUtils.isConnected(getActivity()))
             return;
-        }
 
-        if(mListAdapter.isEmpty())
-            Toast.makeText(getActivity(),getString(R.string.toast_wait_message),Toast.LENGTH_LONG).show();
         mSwipeRefreshLayout.setRefreshing(true);
         ThothUpdateService.startActionClassesUpdate(getActivity());
         getLoaderManager().restartLoader(CLASSES_SELECTION_CURSOR_LOADER_ID, null, this);

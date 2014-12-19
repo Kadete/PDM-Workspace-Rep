@@ -69,7 +69,7 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
 
         long teacherID = sThothClass.getTeacherID();
         Uri teacherUri = UriUtils.Teachers.parseTeacherID(teacherID);
-        String [] cursorColumns = new String[] {ThothContract.Teachers._ID, ThothContract.Teachers.ACADEMIC_EMAIL, ThothContract.Teachers.AVATAR_URL, ThothContract.Path_Auxiliar.AVATAR_PATH};
+        String [] cursorColumns = new String[] {ThothContract.Teachers._ID, ThothContract.Teachers.ACADEMIC_EMAIL, ThothContract.Teachers.AVATAR_URL, ThothContract.Paths.AVATAR_PATH};
         Cursor teacherCursor = getApplication().getContentResolver().query(teacherUri,cursorColumns , null, null, null);
 
         if(teacherCursor.moveToNext()) {
@@ -99,7 +99,7 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
 
     private void setTeacherAvatar(ImageView ivTeacherAvatar, Cursor teacherCursor, long teacherID) {
 
-        String avatarPath = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Path_Auxiliar.AVATAR_PATH)); // saved path
+        String avatarPath = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Paths.AVATAR_PATH)); // saved path
 
         if (avatarPath == null || avatarPath.isEmpty()) { /** photo not saved yet. Get avatar via req HTTP and then save the file on phone ROM **/
 

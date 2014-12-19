@@ -43,7 +43,7 @@ public class ClassesActivity extends FragmentActivity{
             case R.id.action_refresh:
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
                 if(fragment != null)
-                    ((ClassesFragment) fragment).refreshLoader();
+                    ((ClassesFragment) fragment).refreshAndUpdate();
                 return true;
             case R.id.action_settings:
                 startActivity(new Intent(new Intent(ClassesActivity.this, PreferencesActivity.class)));

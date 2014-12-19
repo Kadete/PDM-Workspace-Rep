@@ -1,10 +1,7 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -16,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
@@ -24,6 +20,7 @@ import pt.isel.pdm.grupo17.thothnews.adapters.ClassesAdapter;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
+import pt.isel.pdm.grupo17.thothnews.utils.ConnectionUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
@@ -60,7 +57,7 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onResume(){
         super.onResume();
-        refreshLoader();
+        getLoaderManager().restartLoader(CLASSES_CURSOR_LOADER_ID, null, this);
     }
 
     @Override
@@ -86,7 +83,7 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshLoader();
+                refreshAndUpdate();
             }
         });
 
@@ -96,7 +93,8 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(getActivity(), ThothContract.Classes.ENROLLED_URI, CURSOR_COLUMNS , null, null, ORDER_BY);
+        return new CursorLoader(getActivity(),
+                ThothContract.Classes.ENROLLED_URI, CURSOR_COLUMNS , null, null, ORDER_BY);
     }
 
     @Override
@@ -109,17 +107,10 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
         mListAdapter.swapCursor(null);
     }
 
-    public boolean isConnected(){
-        ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
-    }
-
-    public void refreshLoader() {
-        if(!isConnected()){
-            Toast.makeText(getActivity(), getString(R.string.toast_no_connectivity), Toast.LENGTH_LONG).show();
+    public void refreshAndUpdate() {
+        if(!ConnectionUtils.isConnected(getActivity()))
             return;
-        }
+
         mSwipeRefreshLayout.setRefreshing(true);
         ThothUpdateService.startActionNewsUpdate(getActivity());
         getLoaderManager().restartLoader(CLASSES_CURSOR_LOADER_ID, null, this);

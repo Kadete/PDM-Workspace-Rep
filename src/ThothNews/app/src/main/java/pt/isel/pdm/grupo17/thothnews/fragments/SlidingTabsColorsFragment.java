@@ -123,12 +123,12 @@ public class SlidingTabsColorsFragment extends Fragment {
 
     private void refreshNewsLoader(){
         if(sampleFragmentPagerAdapter.newsListFragment != null)
-            sampleFragmentPagerAdapter.newsListFragment.refreshLoader();
+            sampleFragmentPagerAdapter.newsListFragment.refreshAndUpdate();
     }
 
     private void refreshParticipantsLoader(){
         if(sampleFragmentPagerAdapter.participantsFragment != null)
-            sampleFragmentPagerAdapter.participantsFragment.refreshLoader();
+            sampleFragmentPagerAdapter.participantsFragment.refreshAndUpdate();
     }
 
     public void updateReadAll(long classID) {

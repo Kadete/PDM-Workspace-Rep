@@ -1,9 +1,6 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
-import android.content.Context;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -22,6 +19,7 @@ import pt.isel.pdm.grupo17.thothnews.adapters.ParticipantsAdapter;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
+import pt.isel.pdm.grupo17.thothnews.utils.ConnectionUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
@@ -37,7 +35,7 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     }
 
     static final int PARTICIPANTS_CURSOR_LOADER_ID = 3;
-    static final String[] CURSOR_COLUMNS = {ThothContract.Students._ID, ThothContract.Students.FULL_NAME, ThothContract.Students.AVATAR_URL, ThothContract.Path_Auxiliar.AVATAR_PATH,
+    static final String[] CURSOR_COLUMNS = {ThothContract.Students._ID, ThothContract.Students.FULL_NAME, ThothContract.Students.AVATAR_URL, ThothContract.Paths.AVATAR_PATH,
             ThothContract.Students.ACADEMIC_EMAIL, ThothContract.Students.ENROLLED_DATE, ThothContract.Classes_Students.GROUP};
     static final String ORDER_BY = ThothContract.Students._ID + " ASC";
 
@@ -69,8 +67,6 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
         sThothClass = ClassSectionsActivity.getThothClass();
 
         mListAdapter = new ParticipantsAdapter(getActivity());
-
-
         mGridView.setAdapter(mListAdapter);
         mGridView.setEmptyView(mEmptyView);
 
@@ -78,18 +74,21 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshLoader();
+                refreshAndUpdate();
             }
         });
 
-        getLoaderManager().initLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
-    }
+        Cursor studentsCursor = getActivity().getContentResolver()
+                .query(UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), null, null, null, null);
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        if(mListAdapter.isEmpty())
-            refreshLoader();
+        if(studentsCursor.moveToNext()){
+            studentsCursor.close();
+            getLoaderManager().initLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
+        }
+        else {
+            studentsCursor.close();
+            refreshAndUpdate();
+        }
     }
 
     private boolean isFragmentUIActive() {
@@ -99,7 +98,8 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         if(isFragmentUIActive()){
-            return new CursorLoader(getActivity(), UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), CURSOR_COLUMNS, null, null, ORDER_BY);
+            return new CursorLoader(getActivity(),
+                    UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), CURSOR_COLUMNS, null, null, ORDER_BY);
         }
         return null;
     }
@@ -114,24 +114,20 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
         mListAdapter.swapCursor(null);
     }
 
-    public boolean isConnected(){
-        ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
-    }
-
-    public void refreshLoader() {
-        if(!isFragmentUIActive())
+    public void refreshAndUpdate() {
+        if(!isFragmentUIActive() || !(ConnectionUtils.isConnected(getActivity())))
             return;
-        if(!isConnected()){
-            Toast.makeText(getActivity(), getString(R.string.toast_no_connectivity), Toast.LENGTH_LONG).show();
-            return;
-        }
 
         mSwipeRefreshLayout.setRefreshing(true);
         ThothUpdateService.startActionClassParticipantsUpdate(getActivity(), sThothClass.getID());
         getLoaderManager().restartLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
         mSwipeRefreshLayout.setRefreshing(false);
+
+        Cursor studentsCursor = getActivity().getContentResolver()
+                .query(UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), null, null, null, null);
+        if(!studentsCursor.moveToNext())
+            Toast.makeText(getActivity(),"This Class doesn't have students assign!", Toast.LENGTH_LONG).show();
+        studentsCursor.close();
     }
 
 }

@@ -96,11 +96,11 @@ public class ParticipantsAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         NewViewHolder holder = (NewViewHolder)view.getTag();
 
-        final long number = cursor.getLong(cursor.getColumnIndex(ThothContract.Classes_Students.KEY_STUDENT_ID));
-        holder.id.setText(String.valueOf(number));// _ID == NUMBER
+        final long id = cursor.getLong(cursor.getColumnIndex(ThothContract.Classes_Students.KEY_STUDENT_ID));
+        holder.id.setText(String.valueOf(id));// _ID == NUMBER
 
         final int nGroup = cursor.getInt(cursor.getColumnIndex(ThothContract.Classes_Students.GROUP));
-        String mainInfo = "Nº" + number + mContext.getString(R.string.participant_main_info_tv) + " " + ((nGroup == WITHOUT_GROUP) ? "-" : String.valueOf(nGroup));
+        String mainInfo = "Nº" + id + mContext.getString(R.string.participant_main_info_tv) + " " + ((nGroup == WITHOUT_GROUP) ? "-" : String.valueOf(nGroup));
         holder.number_and_group.setText(mainInfo);
 
         final String studentEmail = cursor.getString(cursor.getColumnIndex(ThothContract.Students.ACADEMIC_EMAIL));
@@ -126,23 +126,27 @@ public class ParticipantsAdapter extends CursorAdapter {
             }
         });
 
-        setStudentAvatar(holder.avatar, cursor, number);
+        setStudentAvatar(holder.avatar, cursor,  id);
     }
 
-    private void setStudentAvatar(ImageView ivStudentAvatar, Cursor StudentCursor, long number) {
+    private void setStudentAvatar(ImageView ivStudentAvatar, Cursor cursor, long id) {
 
-        String avatarPath = StudentCursor.getString(StudentCursor.getColumnIndex(ThothContract.Path_Auxiliar.AVATAR_PATH)); // saved path
+        Cursor studentAvatarPath = mContext.getContentResolver().query(UriUtils.Students.parseStudentID(id),null, null, null, null);
+        String avatarPath = null;
+        if(studentAvatarPath.moveToNext())
+            avatarPath = studentAvatarPath.getString(studentAvatarPath.getColumnIndex(ThothContract.Paths.AVATAR_PATH));
+        studentAvatarPath.close();
 
         if (avatarPath == null || avatarPath.isEmpty()) { /** photo not saved yet. Get avatar via req HTTP and then save the file on phone ROM **/
 
             String storagePath = BitmapUtils.initStoragePath(mContext, DIR_PATH_STUDENT);
-            String avatarUrl = StudentCursor.getString(StudentCursor.getColumnIndex(ThothContract.Students.AVATAR_URL));
+            String avatarUrl = cursor.getString(cursor.getColumnIndex(ThothContract.Students.AVATAR_URL));
             SetViewAndUpdateHandler svh = new SetViewAndUpdateHandler(Looper.getMainLooper(), mContext.getContentResolver());
 
             ImageHandlerThread th = new ImageHandlerThread();
             th.start();
             ImageHandler ih = new ImageHandler(svh, th.getLooper());
-            ih.fetchImage(ivStudentAvatar, avatarUrl, UriUtils.Students.parseStudentID(number), storagePath); // external url
+            ih.fetchImage(ivStudentAvatar, avatarUrl, UriUtils.Students.parseStudentID(id), storagePath); // external url
 
         }
         else{ /** AsyncTask to get the photo and show when ready: getBitmapFromFile **/

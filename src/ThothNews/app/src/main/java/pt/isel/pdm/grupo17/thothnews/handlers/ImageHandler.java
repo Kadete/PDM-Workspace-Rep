@@ -44,13 +44,12 @@ public class ImageHandler extends Handler {
             BitmapUtils.storeBitmapToFile(bm, mCurrentPhotoPath);
 
             ContentValues values = new ContentValues();
-            /** WARNING: Teachers.AVATAR_PATH == Students.AVATAR_PATH **/
-            values.put(ThothContract.Path_Auxiliar.AVATAR_PATH, mCurrentPhotoPath);
+            values.put(ThothContract.Paths.AVATAR_PATH, mCurrentPhotoPath);
 
             if(data.routeUri !=null)
                 _h.update(data.routeUri, values, null, null);
-
-            _h.publishImage(data.im, bm);
+            if(data.im != null)
+                _h.publishImage(data.im, bm);
 
         } catch (IOException ignored) {
             Log.d("IMAGE_HANDLER", "handleMessage ignored: " + ignored.getMessage());
