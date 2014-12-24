@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 
 import pt.isel.pdm.grupo17.anniversaryreminder.R;
@@ -18,11 +16,10 @@ import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
 
 import static android.provider.ContactsContract.Contacts;
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.CursorUtils.getAnniversaryList;
-import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
 
 public class AlarmNotificationReceiver extends BroadcastReceiver {
 	// Notification ID to allow for future updates
-	private static int MY_NOTIFICATION_ID = 1;
+	private static int MY_NOTIFICATION_ID;
     private static final int TODAY = 0;
     private static final int NEXT_WEEK = 7;
 
@@ -39,12 +36,10 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
 			.parse("android.resource://pt.isel.pdm.grupo17.anniversaryreminder/"
                     + R.raw.birthday_horn_sound_effect);
 	private final long[] mVibratePattern = { 0, 200, 200, 300 };
-    private static final String TAG_RECEIVER_ALARM_NOTIFICATION = "TAG_RECEIVER_ALARM_NOTIFICATION";
 
     @Override
 	public void onReceive(Context context, Intent intent) {
 
-        String contentTitle;
         List<AnniversaryItem> list = getAnniversaryList(context);
 
         if(list.size() == 0) return;
@@ -61,25 +56,21 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                 .setAutoCancel(true)
                 .setVibrate(mVibratePattern);
 
+        String contentTitle;
+        MY_NOTIFICATION_ID = 1;
+
         for (AnniversaryItem item : list) {
             if(item.getDaysLeft() == TODAY){
                 contentTitle = "Today it's " + item.getName() + " birthday!";
                 notificationBuilder.setSound(soundURI).setLights(Color.GREEN, 500, 500);
                 displayNotification(context, contentTitle, item.getId());
-
-                // Log occurence of notify() call
-                d(TAG_RECEIVER_ALARM_NOTIFICATION, "Sending notification for TODAY at:" + DateFormat.getDateTimeInstance().format(new Date()));
             }
             else  if(item.getDaysLeft() == NEXT_WEEK){
                 contentTitle = item.getName() + " birthday it's next week!";
                 notificationBuilder.setSound(null).setLights(Color.BLUE, 500, 500);
                 displayNotification(context, contentTitle, item.getId());
-
-                // Log occurence of notify() call
-                d(TAG_RECEIVER_ALARM_NOTIFICATION, "Sending notification for NEXT WEEK at:" + DateFormat.getDateTimeInstance().format(new Date()));
             }
         }
-        MY_NOTIFICATION_ID = 1; //Reset ID of Notifications
     }
 
     // The Intent to be used when the user clicks on the Notification Area Bar

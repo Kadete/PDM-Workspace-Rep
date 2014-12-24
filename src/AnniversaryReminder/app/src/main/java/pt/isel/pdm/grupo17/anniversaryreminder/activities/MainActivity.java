@@ -109,8 +109,6 @@ public class MainActivity extends ListActivity {
         seq = getTimeFormat(this).format(new Date(notify_time_millis));
         d(TAG_ACTIVITY_MAIN, "$$ StartupBootReceiver # notify_time: " + seq);
 
-
-        d(TAG_ACTIVITY_MAIN,"MainActivity, onResume Called");
         loadItems();
     }
 

@@ -1,7 +1,10 @@
 package pt.isel.pdm.grupo17.anniversaryreminder.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,24 +85,27 @@ public class AnniversaryAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         /*-----------------------CHANGE_PROPS------------------------*/
         int daysLeft = anniversaryItem.getDaysLeft();
-        if (daysLeft >= 2){
-            itemLayout.setBackgroundResource(R.drawable.darkblue_grad);
-            holder.daysView.setText("(" + String.valueOf(daysLeft) + " days left)");
+        switch (daysLeft){
+            case 0:
+                itemLayout.setBackgroundResource(R.drawable.orange_grad);
+                holder.daysView.setText("TODAY!!!");
+                holder.daysView.setTextSize(16);
+                break;
+            case 1:
+                itemLayout.setBackgroundResource(R.drawable.green_grad);
+                holder.daysView.setText("Tomorrow!");
+                break;
+            default:
+                if(daysLeft < 0){
+                    holder.daysView.setText("Shouldn't appear!!");
+                    break;
+                }
+                itemLayout.setBackgroundResource(R.drawable.darkblue_grad);
+                holder.daysView.setText("(" + String.valueOf(daysLeft) + " days left)");
+                break;
         }
-        else if(daysLeft == 1) {
-            itemLayout.setBackgroundResource(R.drawable.green_grad);
-            holder.daysView.setText("Tomorrow!");
-        }
-        else if(daysLeft == 0) {
-            itemLayout.setBackgroundResource(R.drawable.orange_grad);
-            holder.daysView.setText("TODAY!!!");
-            holder.daysView.setTextSize(16);
-        }
-        else
-            holder.daysView.setText("Shouldn't appear!!");
 
         holder.nameView.setText(anniversaryItem.getName());
-
         holder.dateView.setText(DateUtils.SHOW_DATE_FORMATTER.format(anniversaryItem.getDate()));
 
         if(anniversaryItem.getThumbnailUri() != null)
@@ -108,6 +114,17 @@ public class AnniversaryAdapter extends BaseAdapter {
             Drawable myPhoto = mContext.getResources().getDrawable( R.drawable.ic_user_default);
             holder.imageView.setImageDrawable(myPhoto);
         }
+
+        itemLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, anniversaryItem.getId()));
+                mContext.startActivity(intent);
+                return true;
+            }
+        });
 
         return itemLayout;
     }
