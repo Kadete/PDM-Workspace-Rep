@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,13 +14,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
 import pt.isel.pdm.grupo17.anniversaryreminder.R;
+import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
 import pt.isel.pdm.grupo17.anniversaryreminder.utils.DateUtils;
 
 public class AnniversaryAdapter extends BaseAdapter {
 
-    private final List<AnniversaryItem> mItems = new ArrayList<AnniversaryItem>();
+    private final List<AnniversaryItem> mItems = new ArrayList<>();
     private final Context mContext;
 
     public AnniversaryAdapter(Context context) {
@@ -66,44 +65,58 @@ public class AnniversaryAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         final AnniversaryItem anniversaryItem = (AnniversaryItem)getItem(position);
-
-        LayoutInflater _layoutInflater = (LayoutInflater)mContext.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
-        RelativeLayout itemLayout = (RelativeLayout) _layoutInflater.inflate(R.layout.layout_anniversary_item, null);
-
-        final TextView daysView = (TextView) itemLayout.findViewById(R.id.daysView);
+        View itemLayout = convertView;
+        ViewHolder holder;
+         /*----------------------SETUP_HOLDER-------------------------*/
+        if (itemLayout == null) {
+            holder = new ViewHolder();
+            LayoutInflater _layoutInflater = (LayoutInflater)mContext.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+            itemLayout = _layoutInflater.inflate(R.layout.layout_anniversary_item, null);
+            holder.daysView = (TextView) itemLayout.findViewById(R.id.daysView);
+            holder.nameView = (TextView) itemLayout.findViewById(R.id.titleView);
+            holder.dateView = (TextView) itemLayout.findViewById(R.id.dateView);
+            holder.imageView = (ImageView) itemLayout.findViewById(R.id.photoImageView);
+            itemLayout.setTag(holder);
+        }
+        else
+            holder = (ViewHolder) convertView.getTag();
+        /*-----------------------CHANGE_PROPS------------------------*/
         int daysLeft = anniversaryItem.getDaysLeft();
         if (daysLeft >= 2){
             itemLayout.setBackgroundResource(R.drawable.darkblue_grad);
-            daysView.setText("("+ String.valueOf(daysLeft) + " days left)");
+            holder.daysView.setText("(" + String.valueOf(daysLeft) + " days left)");
         }
         else if(daysLeft == 1) {
             itemLayout.setBackgroundResource(R.drawable.green_grad);
-            daysView.setText("Tomorrow!");
+            holder.daysView.setText("Tomorrow!");
         }
         else if(daysLeft == 0) {
             itemLayout.setBackgroundResource(R.drawable.orange_grad);
-            daysView.setText("TODAY!!!");
-            daysView.setTextSize(16);
+            holder.daysView.setText("TODAY!!!");
+            holder.daysView.setTextSize(16);
         }
         else
-            daysView.setText("Shouldn't appear!!");
+            holder.daysView.setText("Shouldn't appear!!");
 
-        final TextView nameView = (TextView) itemLayout.findViewById(R.id.titleView);
-        nameView.setText(anniversaryItem.getName());
+        holder.nameView.setText(anniversaryItem.getName());
 
-        final TextView dateView = (TextView) itemLayout.findViewById(R.id.dateView);
-        dateView.setText(DateUtils.SHOW_DATE_FORMATTER.format(anniversaryItem.getDate()));
+        holder.dateView.setText(DateUtils.SHOW_DATE_FORMATTER.format(anniversaryItem.getDate()));
 
-        final ImageView imageView = (ImageView) itemLayout.findViewById(R.id.photoImageView);
         if(anniversaryItem.getThumbnailUri() != null)
-            imageView.setImageURI(anniversaryItem.getThumbnailUri());
+            holder.imageView.setImageURI(anniversaryItem.getThumbnailUri());
         else{
             Drawable myPhoto = mContext.getResources().getDrawable( R.drawable.ic_user_default);
-            imageView.setImageDrawable(myPhoto);
+            holder.imageView.setImageDrawable(myPhoto);
         }
 
-
         return itemLayout;
+    }
+
+    static class ViewHolder {
+        public TextView daysView;
+        public TextView nameView;
+        public ImageView imageView;
+        public TextView dateView;
     }
 
 }

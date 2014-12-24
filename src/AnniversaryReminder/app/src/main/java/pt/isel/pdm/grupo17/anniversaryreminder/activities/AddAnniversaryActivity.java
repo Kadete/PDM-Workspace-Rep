@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts.Data;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,15 +25,17 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import android.provider.ContactsContract.Contacts.Data;
-
 import pt.isel.pdm.grupo17.anniversaryreminder.R;
 import pt.isel.pdm.grupo17.anniversaryreminder.utils.DateUtils;
 
-import static android.provider.ContactsContract.Contacts.*;
-import static android.provider.ContactsContract.CommonDataKinds.*;
-import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
-
+import static android.provider.ContactsContract.CommonDataKinds.Event;
+import static android.provider.ContactsContract.CommonDataKinds.Phone;
+import static android.provider.ContactsContract.Contacts.CONTENT_URI;
+import static android.provider.ContactsContract.Contacts.DISPLAY_NAME;
+import static android.provider.ContactsContract.Contacts.PHOTO_THUMBNAIL_URI;
+import static android.provider.ContactsContract.Contacts._ID;
+import static android.provider.ContactsContract.Contacts.getLookupUri;
+import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
 
 public class AddAnniversaryActivity extends Activity {
 

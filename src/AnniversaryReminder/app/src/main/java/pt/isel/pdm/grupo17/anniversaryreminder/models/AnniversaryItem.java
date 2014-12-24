@@ -7,15 +7,15 @@ import java.util.Date;
 
 import pt.isel.pdm.grupo17.anniversaryreminder.utils.DateUtils;
 
-import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.*;
-
 
 public class AnniversaryItem {
 
     public static final String ITEM_SEP = System.getProperty("line.separator");
 
+    private static final int daysPerYear = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_YEAR);
+
     private String id;
-    private String mName = new String();
+    private String mName;
     private Date mDate = new Date();
     private Uri thumbnailUri;
     private int daysLeft;
@@ -26,11 +26,21 @@ public class AnniversaryItem {
         this.mDate = date;
         this.thumbnailUri = thumbnailUri;
         Calendar calCurr = Calendar.getInstance();
-        Calendar calNext = Calendar.getInstance();
-        calNext.setTime(mDate);
+        Calendar calAnniv = Calendar.getInstance();
+        calAnniv.setTime(mDate);
 
-        if(calNext.after(calCurr)){
-            daysLeft = (calNext.get(Calendar.DAY_OF_YEAR) -(calCurr.get(Calendar.DAY_OF_YEAR)));
+        if(calAnniv.after(calCurr)){
+            int currDayOfYear = calCurr.get(Calendar.DAY_OF_YEAR);
+            int annivDayOfYear = calAnniv.get(Calendar.DAY_OF_YEAR);
+
+            switch (calAnniv.get(Calendar.YEAR) - calCurr.get(Calendar.YEAR)){
+                case 0:
+                    daysLeft = annivDayOfYear - currDayOfYear;
+                    break;
+                case 1:
+                    daysLeft = daysPerYear - currDayOfYear + annivDayOfYear;
+                    break;
+            }
         }
     }
 

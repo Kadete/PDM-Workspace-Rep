@@ -3,12 +3,10 @@ package pt.isel.pdm.grupo17.anniversaryreminder.activities;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,18 +14,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import pt.isel.pdm.grupo17.anniversaryreminder.R;
 import pt.isel.pdm.grupo17.anniversaryreminder.adapters.AnniversaryAdapter;
+import pt.isel.pdm.grupo17.anniversaryreminder.broadcastreceivers.AlarmStartupReceiver;
 import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
-import pt.isel.pdm.grupo17.anniversaryreminder.utils.CursorUtils;
 
 import static android.text.format.DateFormat.getTimeFormat;
-import static pt.isel.pdm.grupo17.anniversaryreminder.utils.CursorUtils.*;
+import static pt.isel.pdm.grupo17.anniversaryreminder.utils.CursorUtils.getAnniversaryList;
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
-
 
 public class MainActivity extends ListActivity {
 
@@ -95,7 +91,6 @@ public class MainActivity extends ListActivity {
                     Toast.makeText(getApplicationContext(), "Preferences Saved With Success!", Toast.LENGTH_LONG).show();
                     return;
                 default:
-                    return;
             }
         }
         else if(resultCode == RESULT_CANCELED)
@@ -110,37 +105,13 @@ public class MainActivity extends ListActivity {
         d(TAG_ACTIVITY_MAIN, "$$ SystemClock.elapsedRealtime: " + seq);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Long notify_time_milis = sharedPreferences.getLong("schedule_notify_time", 0);
-        seq = getTimeFormat(this).format(new Date(notify_time_milis));
+        Long notify_time_millis = sharedPreferences.getLong(AlarmStartupReceiver.TAG_SCHEDULE_NOTIFY_TIME, 0);
+        seq = getTimeFormat(this).format(new Date(notify_time_millis));
         d(TAG_ACTIVITY_MAIN, "$$ StartupBootReceiver # notify_time: " + seq);
 
 
         d(TAG_ACTIVITY_MAIN,"MainActivity, onResume Called");
         loadItems();
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        Log.d("DEBUG", "MainActivity, onPause Called");
-    }
-
-    @Override
-    protected void onStop(){
-        super.onStop();
-        Log.d("DEBUG","MainActivity, onStop Called");
-    }
-
-    @Override
-    protected void onRestart(){
-        super.onRestart();
-        Log.d("DEBUG", "MainActivity, onRestart Called");
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        Log.d("DEBUG", "MainActivity, onDestroy Called");
     }
 
     @Override
@@ -168,9 +139,8 @@ public class MainActivity extends ListActivity {
     private void loadItems() {
         bAdapter.clear();
         for (AnniversaryItem item : getAnniversaryList(getApplicationContext())) {
-            if (isToFilter(item.getDate(), daysToFilter)){
+            if(item.getDaysLeft() < daysToFilter)
                 bAdapter.add(item);
-            }
         }
         bAdapter.orderList();
     }

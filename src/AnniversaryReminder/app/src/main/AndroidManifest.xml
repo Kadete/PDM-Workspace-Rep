@@ -36,7 +36,7 @@
             android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".activities.MainActivity"/>
 
             <intent-filter>
                 <action android:name=".PreferencesActivity" />
@@ -58,7 +58,6 @@
         <receiver android:name=".broadcastreceivers.AlarmNotificationReceiver"
             android:enabled="true">
             <intent-filter>
-                <!--<action android:name="android.intent.action.SCREEN_OFF"/>-->
                 <action android:name="android.intent.action.SCREEN_ON"/>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>

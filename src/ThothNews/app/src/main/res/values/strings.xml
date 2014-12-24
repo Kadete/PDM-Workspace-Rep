@@ -86,11 +86,11 @@
     <string name="news_read_all_title">Mark all news as read</string>
     <string name="news_read_all_warning">You really want to mark all news from this class as read??</string>
     <string name="news_read_all_toast_success">Your news was been marked as read with success!</string>
-    <string name="news_read_all_toast_fail">Some unexpected error.\nYour news couldn\'t been update!</string>
+    <string name="news_read_all_toast_fail">Some unexpected error.\nYour news could not been update!</string>
     <string name="service_update_classes_success">Classes Updated with Success!!</string>
     <string name="service_update_classes_error">Some error occur on updating your classes!</string>
     <string name="send_email_subject">Subject of email</string>
-    <string name="send_mail_to">Send mail to </string>
+    <string name="send_mail_to">"Send mail to "</string>
     <string name="send_mail_fail_no_app">There are no email clients installed.</string>
     <string name="send_email_body" translatable="false"> </string>
     <string name="setup_classes_request">Setup the classes you are enrolled!</string>

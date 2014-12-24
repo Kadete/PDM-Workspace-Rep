@@ -8,5 +8,4 @@
     android:height="40dp"
     android:background="#ff1a641a"
     android:textColor="#FFFFFF"
-    >
-</TextView>
+    />

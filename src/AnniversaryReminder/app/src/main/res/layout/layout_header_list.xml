@@ -9,8 +9,4 @@
     android:height="40dp"
     android:background="@drawable/blue_add_btn_grad"
     android:textColor="#FFFFFF"
->
-
-
-
-</TextView>
+/>

@@ -6,7 +6,6 @@ import android.net.Uri;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,16 +17,13 @@ import static android.provider.ContactsContract.Contacts;
 import static android.provider.ContactsContract.Data;
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
 
-/**
- * Created by Kadete And Tiago on 20/11/2014.
- */
 public class CursorUtils {
 
     private static final String TAG_UTILS_CURSOR = "TAG_UTILS_CURSOR";
 
     public static List<AnniversaryItem> getAnniversaryList(Context context)
     {
-        List<AnniversaryItem>  anniversaryItems = new LinkedList<AnniversaryItem>();
+        List<AnniversaryItem>  anniversaryItems = new LinkedList<>();
         String contactName;
         Date contactAnniDate;
         Uri contactThumbUri;
@@ -67,28 +63,9 @@ public class CursorUtils {
                 d(TAG_UTILS_CURSOR,e.getMessage());
                 e.printStackTrace();
             }
-
         }
         anniCursor.close();
         return anniversaryItems;
-    }
-
-    public static List<AnniversaryItem> getTodayAnniversaryList(Context context) {
-        List<AnniversaryItem> todayAnniversaries = new LinkedList<AnniversaryItem>();
-        for (AnniversaryItem item :  getAnniversaryList(context)){
-            if(isToFilter(item.getDate(), 0))
-                todayAnniversaries.add(item);
-        }
-        return todayAnniversaries;
-    }
-
-    public static boolean isToFilter(Date anniversaryDate, int daysToFilter){
-        Calendar filterDate = Calendar.getInstance(), anvDate = Calendar.getInstance();
-        anvDate.setTime(anniversaryDate);
-
-        filterDate.add(Calendar.DAY_OF_YEAR, daysToFilter);
-        Calendar today = Calendar.getInstance();
-        return anvDate.get(Calendar.DAY_OF_YEAR)>= today.get(Calendar.DAY_OF_YEAR) && anvDate.before(filterDate);
     }
 
 }
