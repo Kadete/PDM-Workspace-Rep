@@ -1,12 +1,11 @@
 package pt.isel.pdm.grupo17.anniversaryreminder.dialogs;
 
-/**
- * Created by Kadete on 20/11/2014.
- */
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
+import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.View;
@@ -16,10 +15,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import pt.isel.pdm.grupo17.anniversaryreminder.R;
+import pt.isel.pdm.grupo17.anniversaryreminder.broadcastreceivers.AlarmStartupReceiver;
+
 public class TimePreference extends DialogPreference {
     private Calendar calendar;
     private TimePicker picker = null;
-    private static final String TAG_DIALOG_TIME_PREFERENCE = "TAG_DIALOG_TIME_PREFERENCE";
 
     public TimePreference(Context ctxt) {
         this(ctxt, null);
@@ -59,9 +60,14 @@ public class TimePreference extends DialogPreference {
             calendar.set(Calendar.MINUTE, picker.getCurrentMinute());
 
             setSummary(getSummary());
-            if (callChangeListener(calendar.getTimeInMillis())) {
-                persistLong(calendar.getTimeInMillis());
+            long time = calendar.getTimeInMillis();
+            if (callChangeListener(time)) {
+                persistLong(time);
                 notifyChanged();
+
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+                PreferenceManager.setDefaultValues(getContext(), R.xml.preferences, true);
+                sp.edit().putLong(AlarmStartupReceiver.TAG_SCHEDULE_NOTIFY_TIME, time).apply();
 
                 getContext().sendBroadcast(new Intent("com.starlon.froyvisuals.PREFS_UPDATE"));
             }
