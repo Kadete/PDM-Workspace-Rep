@@ -3,6 +3,7 @@ package pt.isel.pdm.grupo17.thothnews.fragments;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Map;
@@ -186,6 +188,8 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         SearchView sv = new SearchView(getActivity());
         sv.setOnQueryTextListener(this);
+        int id = sv.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        ((TextView) sv.findViewById(id)).setTextColor(Color.WHITE);
         item.setActionView(sv);
     }
 

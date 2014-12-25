@@ -71,5 +71,8 @@
     <string name="send_email_subject">Assunto</string>
     <string name="setup_classes_request">Selecciona as tuas turmas antes de continuar.</string>
     <string name="toast_no_connectivity">Erro! Verifica a tua ligação!</string>
+    <string name="no_class_news">Não foram criadas notícias para esta turma!</string>
+    <string name="not_students_assigned">Esta turma não tem alunos associados!</string>
+    <string name="send_email_body">Corpo da mensagem</string>
 
 </resources>

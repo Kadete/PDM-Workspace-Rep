@@ -1,5 +1,6 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
+import android.content.ContentResolver;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -34,10 +35,10 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
         return fragment;
     }
 
-    static final int PARTICIPANTS_CURSOR_LOADER_ID = 3;
-    static final String[] CURSOR_COLUMNS = {ThothContract.Students._ID, ThothContract.Students.FULL_NAME, ThothContract.Students.AVATAR_URL, ThothContract.Paths.AVATAR_PATH,
+    private static final int PARTICIPANTS_CURSOR_LOADER_ID = 3;
+    private static final String[] CURSOR_COLUMNS = {ThothContract.Students._ID, ThothContract.Students.FULL_NAME, ThothContract.Students.AVATAR_URL, ThothContract.Paths.AVATAR_PATH,
             ThothContract.Students.ACADEMIC_EMAIL, ThothContract.Students.ENROLLED_DATE, ThothContract.Classes_Students.GROUP};
-    static final String ORDER_BY = ThothContract.Students._ID + " ASC";
+    private static final String ORDER_BY = ThothContract.Students._ID + " ASC";
 
     private MultiSwipeRefreshLayout mSwipeRefreshLayout;
     private GridView mGridView;
@@ -45,6 +46,7 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     private ParticipantsAdapter mListAdapter;
 
     private static ThothClass sThothClass;
+    private static ContentResolver sContentResolver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
         mSwipeRefreshLayout = (MultiSwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
         mGridView = (GridView) view.findViewById(android.R.id.list);
         mEmptyView = view.findViewById(android.R.id.empty);
+        sContentResolver = getActivity().getContentResolver();
         return view;
     }
 
@@ -74,13 +77,18 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                if(!ConnectionUtils.isConnected(getActivity()))
+                    return;
+
                 refreshAndUpdate();
+                Cursor studentsCursor = sContentResolver.query(UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), null, null, null, null);
+                if(!studentsCursor.moveToNext())
+                    Toast.makeText(getActivity(), getString(R.string.not_students_assigned), Toast.LENGTH_LONG).show();
+                studentsCursor.close();
             }
         });
 
-        Cursor studentsCursor = getActivity().getContentResolver()
-                .query(UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), null, null, null, null);
-
+        Cursor studentsCursor = sContentResolver.query(UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), null, null, null, null);
         if(studentsCursor.moveToNext()){
             studentsCursor.close();
             getLoaderManager().initLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
@@ -115,19 +123,13 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     }
 
     public void refreshAndUpdate() {
-        if(!isFragmentUIActive() || !(ConnectionUtils.isConnected(getActivity())))
+        if(!isFragmentUIActive() || !ConnectionUtils.isConnected(getActivity()))
             return;
 
         mSwipeRefreshLayout.setRefreshing(true);
         ThothUpdateService.startActionClassParticipantsUpdate(getActivity(), sThothClass.getID());
         getLoaderManager().restartLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
         mSwipeRefreshLayout.setRefreshing(false);
-
-        Cursor studentsCursor = getActivity().getContentResolver()
-                .query(UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), null, null, null, null);
-        if(!studentsCursor.moveToNext())
-            Toast.makeText(getActivity(),"This Class doesn't have students assign!", Toast.LENGTH_LONG).show();
-        studentsCursor.close();
     }
 
 }

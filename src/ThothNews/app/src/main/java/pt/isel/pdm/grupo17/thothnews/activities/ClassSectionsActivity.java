@@ -82,7 +82,7 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
                 public void onClick(View v) { /** send email to teacher **/
                     Intent i = new Intent(Intent.ACTION_SEND);
                     i.setType("message/rfc822");
-                    i.putExtra(Intent.EXTRA_EMAIL, teacherEmail);
+                    i.putExtra(Intent.EXTRA_EMAIL, new String[] {teacherEmail});
                     i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.send_email_subject));
                     i.putExtra(Intent.EXTRA_TEXT, getString(R.string.send_email_body));
                     try {

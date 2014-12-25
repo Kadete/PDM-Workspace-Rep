@@ -35,7 +35,7 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
             ThothContract.News.WHEN_CREATED, ThothContract.News.READ, ThothContract.News.CONTENT};
     private static final String SELECTION = ThothContract.News.CLASS_ID + " = ? ";
 
-    private static final String STATE_ACTIVATED_POSITION = "activated_position";
+    private static final String STATE_ACTIVATED_POSITION = "STATE_ACTIVATED_POSITION";
 
     private static int mActivatedPosition = ListView.INVALID_POSITION;
     private static ThothClass sThothClass;
@@ -188,7 +188,7 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
         Cursor newsCursor = getActivity().getContentResolver()
                 .query(ThothContract.News.CONTENT_URI, null, SELECTION, SELECTION_ARGS, null);
         if(!newsCursor.moveToNext())
-            Toast.makeText(getActivity(), "This Class doesn't have news created!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(R.string.no_class_news), Toast.LENGTH_LONG).show();
         newsCursor.close();
     }
 

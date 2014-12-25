@@ -114,7 +114,7 @@ public class ParticipantsAdapter extends CursorAdapter {
             public boolean onLongClick(View v) {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("message/rfc822");
-                i.putExtra(Intent.EXTRA_EMAIL, studentEmail);
+                i.putExtra(Intent.EXTRA_EMAIL, new String[] {studentEmail});
                 i.putExtra(Intent.EXTRA_SUBJECT, mContext.getString(R.string.send_email_subject));
                 i.putExtra(Intent.EXTRA_TEXT, mContext.getString(R.string.send_email_body));
                 try {

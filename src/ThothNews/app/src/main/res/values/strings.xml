@@ -92,8 +92,10 @@
     <string name="send_email_subject">Subject of email</string>
     <string name="send_mail_to">"Send mail to "</string>
     <string name="send_mail_fail_no_app">There are no email clients installed.</string>
-    <string name="send_email_body" translatable="false"> </string>
+    <string name="send_email_body">Body</string>
     <string name="setup_classes_request">Setup the classes you are enrolled!</string>
     <string name="toast_no_connectivity">Please check your wifi connection!</string>
+    <string name="not_students_assigned">This Class doesn\'t have students assign!</string>
+    <string name="no_class_news">This Class doesn\'t have news created!</string>
 
 </resources>
