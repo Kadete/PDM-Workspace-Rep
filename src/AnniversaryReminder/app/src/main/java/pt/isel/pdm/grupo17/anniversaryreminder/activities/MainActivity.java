@@ -22,6 +22,7 @@ import pt.isel.pdm.grupo17.anniversaryreminder.broadcastreceivers.AlarmStartupRe
 import pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem;
 
 import static android.text.format.DateFormat.getTimeFormat;
+import static pt.isel.pdm.grupo17.anniversaryreminder.models.AnniversaryItem.*;
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.CursorUtils.getAnniversaryList;
 import static pt.isel.pdm.grupo17.anniversaryreminder.utils.Utils.d;
 
@@ -137,8 +138,10 @@ public class MainActivity extends ListActivity {
     private void loadItems() {
         bAdapter.clear();
         for (AnniversaryItem item : getAnniversaryList(getApplicationContext())) {
-            if(item.getDaysLeft() < daysToFilter)
+            int daysLeft = item.getDaysLeft();
+            if(daysLeft != INVALID_DATE && daysLeft < daysToFilter) {
                 bAdapter.add(item);
+            }
         }
         bAdapter.orderList();
     }
