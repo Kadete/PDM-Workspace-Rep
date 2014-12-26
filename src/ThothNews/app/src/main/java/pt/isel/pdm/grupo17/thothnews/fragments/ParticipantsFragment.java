@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
@@ -77,14 +76,7 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(!ConnectionUtils.isConnected(getActivity()))
-                    return;
-
                 refreshAndUpdate();
-                Cursor studentsCursor = sContentResolver.query(UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), null, null, null, null);
-                if(!studentsCursor.moveToNext())
-                    Toast.makeText(getActivity(), getString(R.string.not_students_assigned), Toast.LENGTH_LONG).show();
-                studentsCursor.close();
             }
         });
 

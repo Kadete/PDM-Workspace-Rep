@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import java.util.Date;
@@ -16,13 +17,15 @@ public class AlarmStartupReceiver extends BroadcastReceiver {
 
     private static final String TAG_DEBUG = "TAG_RECEIVER_STARTUP_BOOT";
 
-    public static final String TAG_SCHEDULE_NOTIFY_TIME = "TAG_SCHEDULE_NOTIFY_TIME";
+    public static final String SCHEDULE_NOTIFY_TIME_PREF_KEY = "schedule_notify_time";
+    private static final String NOTIFY_ON_BOOT_PREF_KEY = "notify_on_boot";
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         Boolean prefsChanged = intent.getAction().equals("com.starlon.froyvisuals.PREFS_UPDATE"),
-                booted = Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction());
+                booted = Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) && !sharedPreferences.getBoolean(NOTIFY_ON_BOOT_PREF_KEY, true);
 
         if(! prefsChanged  && !booted)
                 return;
@@ -38,7 +41,7 @@ public class AlarmStartupReceiver extends BroadcastReceiver {
         PendingIntent mNotificationReceiverPendingIntent = PendingIntent.getBroadcast(context, 0, mNotificationReceiverIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         // Set repeating alarm
-        Long notify_time_millis = PreferenceManager.getDefaultSharedPreferences(context).getLong(TAG_SCHEDULE_NOTIFY_TIME, 0);
+        Long notify_time_millis = sharedPreferences.getLong(SCHEDULE_NOTIFY_TIME_PREF_KEY, 0);
         mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
                 notify_time_millis,
                 AlarmManager.INTERVAL_DAY,

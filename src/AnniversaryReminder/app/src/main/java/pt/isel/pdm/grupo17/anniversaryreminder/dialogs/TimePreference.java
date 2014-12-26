@@ -67,7 +67,7 @@ public class TimePreference extends DialogPreference {
 
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
                 PreferenceManager.setDefaultValues(getContext(), R.xml.preferences, true);
-                sp.edit().putLong(AlarmStartupReceiver.TAG_SCHEDULE_NOTIFY_TIME, time).apply();
+                sp.edit().putLong(AlarmStartupReceiver.SCHEDULE_NOTIFY_TIME_PREF_KEY, time).apply();
 
                 getContext().sendBroadcast(new Intent("com.starlon.froyvisuals.PREFS_UPDATE"));
             }

@@ -6,7 +6,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.activities.ClassesSelectionActivity;
+import pt.isel.pdm.grupo17.thothnews.activities.ClassesPickActivity;
 import pt.isel.pdm.grupo17.thothnews.fragments.dialogs.CleanPreferencesDialogFragment;
 
 
@@ -25,7 +25,7 @@ public class SettingsFragment extends PreferenceFragment {
 
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(getActivity(), ClassesSelectionActivity.class);
+                Intent i = new Intent(getActivity(), ClassesPickActivity.class);
                 startActivity(i);
                 return true;
             }

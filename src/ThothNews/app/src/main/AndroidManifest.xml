@@ -34,7 +34,7 @@
 
         <activity android:name=".activities.PreferencesActivity" android:label="@string/label_activity_preferences"/>
 
-        <activity android:name=".activities.ClassesSelectionActivity" android:label="@string/title_activity_class_selection"/>
+        <activity android:name=".activities.ClassesPickActivity" android:label="@string/title_activity_class_pick"/>
 
         <activity android:name=".activities.ClassSectionsActivity" android:label="@string/label_class_section_view"
                   android:configChanges="orientation|screenSize|keyboardHidden"/>

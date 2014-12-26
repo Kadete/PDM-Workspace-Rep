@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +24,7 @@ import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.FALSE;
 import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
 
-public class ClassesSelectionAdapter extends CursorAdapter {
+public class ClassesPickAdapter extends CursorAdapter {
 
     static class ClassViewHolder{
         public TextView id;
@@ -54,7 +53,7 @@ public class ClassesSelectionAdapter extends CursorAdapter {
 
     Context mContext;
 
-    public ClassesSelectionAdapter(Context context) {
+    public ClassesPickAdapter(Context context) {
         super(context, null, 0);
         mContext = context;
         sLayoutInflater = LayoutInflater.from(context);
@@ -90,12 +89,12 @@ public class ClassesSelectionAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
         ClassViewHolder holder = new ClassViewHolder();
-        View newView = sLayoutInflater.inflate(R.layout.item_class_selection, null);
+        View newView = sLayoutInflater.inflate(R.layout.item_class_pick, null);
 
-        holder.id = (TextView)newView.findViewById(R.id.class_selection_item_id);
-        holder.full_name = (TextView)newView.findViewById(R.id.class_selection_item_full_name);
-        holder.teacher = (TextView)newView.findViewById(R.id.class_selection_item_teacher);
-        holder.checkBox = (CheckBox)newView.findViewById(R.id.class_selection_item_checkEnrolled);
+        holder.id = (TextView)newView.findViewById(R.id.class_pick_item_id);
+        holder.full_name = (TextView)newView.findViewById(R.id.class_pick_item_full_name);
+        holder.teacher = (TextView)newView.findViewById(R.id.class_pick_item_teacher);
+        holder.checkBox = (CheckBox)newView.findViewById(R.id.class_pick_item_checkEnrolled);
 
         newView.setTag(holder);
         return newView;

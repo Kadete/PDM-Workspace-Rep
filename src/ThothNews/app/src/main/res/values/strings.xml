@@ -36,8 +36,8 @@
     <!-- layout: item_class_selection -->
     <string name="class_item_when" translatable="false">class_item_when</string>
     <string name="class_item_title" translatable="false">class_item_title</string>
-    <string name="class_selection_cancel">Selection was canceled!</string>
-    <string name="class_selection_ok">Selection saved with success!</string>
+    <string name="classes_pick_cancel">Selection was canceled!</string>
+    <string name="classes_pick_ok">Selection saved with success!</string>
 
     <!-- menu: main & new_view -->
     <string name="title_action_settings">Settings</string>
@@ -50,7 +50,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_action_refresh">Refresh All</string>
     <string name="clean_classes_title">Clear enrollments</string>
-    <string name="clean_classes_warning">Carefull!! You will lose all the previous preferences stored!</string>
+    <string name="clean_classes_warning">Careful!! You will lose all the previous preferences stored!</string>
     <string name="dialog_ok" translatable="false">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="clean_classes_toast">Preferences set to default!</string>
@@ -60,8 +60,8 @@
     <string name="get_news_fail_toast">Last news update failed!</string>
     <string name="request_select_class_toast">Please select one class at least!</string>
     <string name="notification_txt">Notification text</string>
-    <string name="title_activity_class_selection">Select your classes</string>
-    <string name="classes_selection_loading_error">There was a problem loading the classes list.\n Check your connection!</string>
+    <string name="title_activity_class_pick">Select your classes</string>
+    <string name="classes_pick_loading_error">There was a problem loading the classes list.\n Check your connection!</string>
 
     <string name="discard">Discard</string>
     <string name="save">Save</string>

@@ -24,8 +24,7 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
     private static final int NEXT_WEEK = 7;
 
 	// Notification Text Elements
-	private final CharSequence tickerText = "Today is someone birthday!!",
-                               contentText = "Click here to open his/her contact!";
+	private final CharSequence contentText = "Click here to open his/her contact!";
 
 	// Notification Action Elements
 	private Intent mNotificationIntent;
@@ -51,9 +50,9 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
         mNotificationManager= (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // Build the Notification
         notificationBuilder = new Notification.Builder(context)
-                .setTicker(tickerText)
                 .setSmallIcon(R.drawable.ic_birthday_hat)
                 .setAutoCancel(true)
+                .setContentText(contentText)
                 .setVibrate(mVibratePattern);
 
         String contentTitle;
@@ -62,12 +61,14 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
         for (AnniversaryItem item : list) {
             if(item.getDaysLeft() == TODAY){
                 contentTitle = "Today it's " + item.getName() + " birthday!";
-                notificationBuilder.setSound(soundURI).setLights(Color.GREEN, 500, 500);
+                notificationBuilder.setTicker(contentTitle)
+                        .setSound(soundURI).setLights(Color.GREEN, 500, 500);
                 displayNotification(context, contentTitle, item.getId());
             }
-            else  if(item.getDaysLeft() == NEXT_WEEK){
+            else if(item.getDaysLeft() == NEXT_WEEK){
                 contentTitle = item.getName() + " birthday it's next week!";
-                notificationBuilder.setSound(null).setLights(Color.BLUE, 500, 500);
+                notificationBuilder.setTicker(contentTitle)
+                        .setSound(null).setLights(Color.BLUE, 500, 500);
                 displayNotification(context, contentTitle, item.getId());
             }
         }
@@ -79,9 +80,9 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
         Uri uri = Uri.withAppendedPath(Contacts.CONTENT_URI, contactID);
         mNotificationIntent.setData(uri);
         // The PendingIntent that wraps the underlying Intent
-        PendingIntent mContentIntent = PendingIntent.getActivity(context, 0, mNotificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent mContentIntent = PendingIntent.getActivity(context, MY_NOTIFICATION_ID, mNotificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         // Build the Notification
-        notificationBuilder.setContentTitle(contentTitle).setContentText(contentText).setContentIntent(mContentIntent);
+        notificationBuilder.setContentTitle(contentTitle).setContentIntent(mContentIntent);
         // Pass the Notification to the NotificationManager:
         mNotificationManager.notify(MY_NOTIFICATION_ID++, notificationBuilder.build());
     }

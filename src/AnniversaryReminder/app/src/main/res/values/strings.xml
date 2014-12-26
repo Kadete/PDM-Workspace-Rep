@@ -33,6 +33,7 @@
     <string name="label_activity_preferences">Settings</string>
     <string name="setting_choose">Settings</string>
     <string name="untilDaysLabel">Small Text</string>
+    <string name="notify_on_boot_title">Notify me on Boot</string>
 
 
 </resources>

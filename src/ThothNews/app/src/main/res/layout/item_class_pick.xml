@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     android:layout_centerHorizontal="true">
     <TextView
-        android:id="@+id/class_selection_item_id"
+        android:id="@+id/class_pick_item_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"/>
@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <TextView
-            android:id="@+id/class_selection_item_full_name"
+            android:id="@+id/class_pick_item_full_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/class_item_full_name"
@@ -23,7 +23,7 @@
             android:textColor="#444444"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
         <TextView
-            android:id="@+id/class_selection_item_teacher"
+            android:id="@+id/class_pick_item_teacher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/class_item_teacher"
@@ -32,7 +32,7 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
     </LinearLayout>
     <CheckBox
-        android:id="@+id/class_selection_item_checkEnrolled"
+        android:id="@+id/class_pick_item_checkEnrolled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

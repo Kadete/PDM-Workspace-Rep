@@ -32,6 +32,7 @@ public class MainActivity extends ListActivity {
     private static final int FILTER_ANNIVERSARY_SETTING_REQUEST = 1;
 
     private static final int MENU_SETTINGS = Menu.FIRST;
+    private static final String FILTER_LIST_PREF_KEY =  "filter_list";
 
     private static int daysToFilter;
 
@@ -88,7 +89,7 @@ public class MainActivity extends ListActivity {
                     return;
                 case FILTER_ANNIVERSARY_SETTING_REQUEST:
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-                    daysToFilter = Integer.valueOf(sharedPreferences.getString("FILTER_PREF_LIST", "no selection"));
+                    daysToFilter = Integer.valueOf(sharedPreferences.getString(FILTER_LIST_PREF_KEY, "no selection"));
                     Toast.makeText(getApplicationContext(), "Preferences Saved With Success!", Toast.LENGTH_LONG).show();
                     return;
                 default:
@@ -106,7 +107,7 @@ public class MainActivity extends ListActivity {
         d(TAG_ACTIVITY_MAIN, "$$ SystemClock.elapsedRealtime: " + seq);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Long notify_time_millis = sharedPreferences.getLong(AlarmStartupReceiver.TAG_SCHEDULE_NOTIFY_TIME, 0);
+        Long notify_time_millis = sharedPreferences.getLong(AlarmStartupReceiver.SCHEDULE_NOTIFY_TIME_PREF_KEY, 0);
         seq = getTimeFormat(this).format(new Date(notify_time_millis));
         d(TAG_ACTIVITY_MAIN, "$$ StartupBootReceiver # notify_time: " + seq);
 

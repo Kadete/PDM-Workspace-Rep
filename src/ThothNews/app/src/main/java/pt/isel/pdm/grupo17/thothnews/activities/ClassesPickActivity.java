@@ -9,9 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.fragments.ClassesSelectionFragment;
+import pt.isel.pdm.grupo17.thothnews.fragments.ClassesPickFragment;
 
-public class ClassesSelectionActivity extends FragmentActivity{
+public class ClassesPickActivity extends FragmentActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +20,7 @@ public class ClassesSelectionActivity extends FragmentActivity{
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            ClassesSelectionFragment fragment = new ClassesSelectionFragment();
+            ClassesPickFragment fragment = new ClassesPickFragment();
             transaction.replace(R.id.fragment_container_classes, fragment);
             transaction.commit();
         }
@@ -36,10 +36,10 @@ public class ClassesSelectionActivity extends FragmentActivity{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_classes_selection, menu);
+        getMenuInflater().inflate(R.menu.menu_classes_pick, menu);
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
         if(fragment != null)
-            ((ClassesSelectionFragment) fragment).myCreateOptionsMenu(menu);
+            ((ClassesPickFragment) fragment).myCreateOptionsMenu(menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -52,7 +52,7 @@ public class ClassesSelectionActivity extends FragmentActivity{
             case R.id.action_refresh:
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
                 if(fragment != null)
-                    ((ClassesSelectionFragment) fragment).refreshAndUpdate();
+                    ((ClassesPickFragment) fragment).refreshAndUpdate();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -64,7 +64,7 @@ public class ClassesSelectionActivity extends FragmentActivity{
         super.onBackPressed();
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
         if(fragment != null)
-            ((ClassesSelectionFragment) fragment).updateClassesSelection(ClassesSelectionActivity.this, true);
+            ((ClassesPickFragment) fragment).updateClassesSelection(ClassesPickActivity.this, true);
     }
 
 }

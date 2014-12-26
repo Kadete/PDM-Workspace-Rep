@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
@@ -183,13 +182,6 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
         ThothUpdateService.startActionClassNewsUpdate(getActivity(), sThothClass.getID());
         getLoaderManager().restartLoader(NEWS_CURSOR_LOADER_ID, null, this);
         mSwipeRefreshLayout.setRefreshing(false);
-
-        String [] SELECTION_ARGS = new String[]{ String.valueOf(sThothClass.getID()) };
-        Cursor newsCursor = getActivity().getContentResolver()
-                .query(ThothContract.News.CONTENT_URI, null, SELECTION, SELECTION_ARGS, null);
-        if(!newsCursor.moveToNext())
-            Toast.makeText(getActivity(), getString(R.string.no_class_news), Toast.LENGTH_LONG).show();
-        newsCursor.close();
     }
 
 }

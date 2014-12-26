@@ -29,7 +29,7 @@ import java.util.Map;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
-import pt.isel.pdm.grupo17.thothnews.adapters.ClassesSelectionAdapter;
+import pt.isel.pdm.grupo17.thothnews.adapters.ClassesPickAdapter;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
@@ -39,7 +39,7 @@ import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
-public class ClassesSelectionFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener{
+public class ClassesPickFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener{
 
     static final int CLASSES_SELECTION_CURSOR_LOADER_ID = 1;
     static final String[] CURSOR_COLUMNS = {ThothContract.Classes._ID, ThothContract.Classes.FULL_NAME, ThothContract.Classes.TEACHER_NAME, ThothContract.Classes.SHORT_NAME,
@@ -49,7 +49,7 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
     private MultiSwipeRefreshLayout mSwipeRefreshLayout;
     private GridView mGridView;
     private View mEmptyView;
-    private ClassesSelectionAdapter mListAdapter;
+    private ClassesPickAdapter mListAdapter;
     private String mCurFilter;
 
     @Override
@@ -61,7 +61,7 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_grid_classes_selection, container, false);
+        View view = inflater.inflate(R.layout.fragment_grid_classes_pick, container, false);
 
         mSwipeRefreshLayout = (MultiSwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
         mGridView = (GridView) view.findViewById(android.R.id.list);
@@ -82,7 +82,6 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
             @Override
             public void onClick(View view) {
                 updateClassesSelection(activity, true);
-                ThothUpdateService.startActionNewsUpdate(getActivity());
             }
         });
 
@@ -94,16 +93,15 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
             activity.finish();
             return;
         }
-
-        for(Map.Entry<Long, ClassesSelectionAdapter.SelectionState> entryClass : mListAdapter.getMapSelection().entrySet()) {
+        for(Map.Entry<Long, ClassesPickAdapter.SelectionState> entryClass : mListAdapter.getMapSelection().entrySet()) {
             ContentValues values = new ContentValues();
             boolean enrolled = ((toSave) ? entryClass.getValue().finalState : entryClass.getValue().initialState);
             values.put(ThothContract.Classes.ENROLLED, enrolled ? SQLiteUtils.TRUE : SQLiteUtils.FALSE);
             activity.getContentResolver().update(UriUtils.Classes.parseClass(entryClass.getKey()), values, null, null );
-            if(toSave)
+            if(toSave && enrolled)
                 ThothUpdateService.startActionClassNewsUpdate(activity, entryClass.getKey());
         }
-        Toast.makeText(activity.getApplicationContext(),getString((toSave)? R.string.class_selection_ok : R.string.class_selection_cancel), Toast.LENGTH_LONG).show();
+        Toast.makeText(activity.getApplicationContext(),getString((toSave)? R.string.classes_pick_ok : R.string.classes_pick_cancel), Toast.LENGTH_LONG).show();
         activity.finish();
     }
 
@@ -112,7 +110,7 @@ public class ClassesSelectionFragment extends Fragment implements LoaderManager.
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mListAdapter = new ClassesSelectionAdapter(getActivity());
+        mListAdapter = new ClassesPickAdapter(getActivity());
 
         mGridView.setAdapter(mListAdapter);
         mGridView.setEmptyView(mEmptyView);

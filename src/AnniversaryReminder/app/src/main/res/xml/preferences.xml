@@ -2,22 +2,30 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="preferences_key">
+
     <PreferenceCategory
-        android:title="Anniversary Settings">
+        android:title="Filters">
         <ListPreference
-            android:key="FILTER_PREF_LIST"
-            android:title="Filter Settings"
-            android:summary="Select the amount of weeks you want to filter the anniversarys"
+            android:key="filter_list"
+            android:title="Filter Weeks"
+            android:summary="Select the amount of weeks you want to filter the anniversaries"
             android:entries="@array/filterlistentries"
             android:entryValues="@array/filterlistvalues"
             android:defaultValue="14"
             />
+    </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="Notifications">
         <pt.isel.pdm.grupo17.anniversaryreminder.dialogs.TimePreference
             android:key="schedule_notify_time"
             android:showDefault="true"
             android:title="Notify Time" />
-
+        <CheckBoxPreference
+            android:title="@string/notify_on_boot_title"
+            android:key="notify_on_boot"
+            android:enabled="true"
+            android:defaultValue="true"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

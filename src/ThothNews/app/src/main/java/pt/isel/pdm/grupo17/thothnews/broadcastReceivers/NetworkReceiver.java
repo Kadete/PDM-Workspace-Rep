@@ -24,7 +24,6 @@ public class NetworkReceiver extends BroadcastReceiver {
 
         if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
 
-            //d(TAG_BROADCAST, "Network changed");
             ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo ni_wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
@@ -37,27 +36,20 @@ public class NetworkReceiver extends BroadcastReceiver {
             if(firstTime) {
                 previousState = (ni_wifi.getState() == NetworkInfo.State.CONNECTING) ? NetworkInfo.State.DISCONNECTED : NetworkInfo.State.CONNECTED ;
                 firstTime = false;
+                ThothUpdateService.cleanNotifications(context);
             }
 
-                if(ni_wifi.isConnected() && previousState == NetworkInfo.State.DISCONNECTED){
+            if(ni_wifi.isConnected() && previousState == NetworkInfo.State.DISCONNECTED){
 
-                    ThothUpdateService.startActionNewsUpdate(context);
-                    d(TAG_BROADCAST, "--- register notification " + ni_wifi.getDetailedState().name());
-                    previousState = NetworkInfo.State.CONNECTED;
-
-                }
+                ThothUpdateService.startActionNewsUpdate(context);
+                d(TAG_BROADCAST, "--- register notification " + ni_wifi.getDetailedState().name());
+                previousState = NetworkInfo.State.CONNECTED;
+            }
             else if(previousState == NetworkInfo.State.CONNECTED){
 
                 d(TAG_BROADCAST, "--- unregister notification " + ni_wifi.getDetailedState().name());
                 previousState = NetworkInfo.State.DISCONNECTED;
-
             }
-            else
-                d(TAG_BROADCAST, "--- Other States");
-        }
-
-        else{
-            d(TAG_BROADCAST, "No interested to Received intent with action");
         }
     }
 }

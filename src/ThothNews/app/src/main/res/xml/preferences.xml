@@ -8,7 +8,7 @@
         android:title="@string/category_title"
         android:key="first_category">
 
-        <Preference android:title="@string/title_activity_class_selection"
+        <Preference android:title="@string/title_activity_class_pick"
             android:key="pick_classes"/>
 
         <Preference android:title="@string/clean_classes_title"

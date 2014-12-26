@@ -9,7 +9,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.text.Html;
 import android.util.Log;
 
@@ -30,8 +29,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
+import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
@@ -66,6 +67,9 @@ public class ThothUpdateService extends IntentService {
     public static final String URI_TEACHER_INFO = URI_API_ROOT + "/teachers/%d";
 
     private static final int COLUMN_CLASS_ID = 0;
+
+    private static final int DEFAULT_NOTIFICATION_ID = 1;
+    private static int NOTIFICATION_ID = DEFAULT_NOTIFICATION_ID;
 
     class JsonThothLink{
         public static final String SELF = "self";
@@ -128,7 +132,6 @@ public class ThothUpdateService extends IntentService {
         public static final String GROUP = "currentGroup";
     }
 
-
     public ThothUpdateService() {
         super("ThothUpdateService");
     }
@@ -145,7 +148,8 @@ public class ThothUpdateService extends IntentService {
                     break;
                 case ACTION_CLASS_NEWS_UPDATE:
                     long classID = intent.getLongExtra(ARG_CLASS_ID, ARG_CLASS_ID_DEFAULT_VALUE);
-                    handleClassNewsUpdate(classID);
+                    if(handleClassNewsUpdate(classID))
+                        sendNotification(classID);
                     break;
                 case ACTION_CLASS_PARTICIPANTS_UPDATE:
                     classID = intent.getLongExtra(ARG_CLASS_ID, ARG_CLASS_ID_DEFAULT_VALUE);
@@ -222,58 +226,57 @@ public class ThothUpdateService extends IntentService {
      */
     private void handleClassesUpdate() {
         try{
-            URL url = new URL(URI_CLASSES_LIST);
-            HttpURLConnection c = (HttpURLConnection) url.openConnection();
-            Cursor classTeacherIDCursor = null;
+            HttpURLConnection conn = (HttpURLConnection) new URL(URI_CLASSES_LIST).openConnection();
+            ContentResolver resolver = getContentResolver();
             try {
-                InputStream is = c.getInputStream();
+                InputStream is = conn.getInputStream();
                 String data = readAllFrom(is);
                 final JSONArray thothClasses = ParseUtils.parseClasses(data);
-                ContentResolver resolver = getContentResolver();
-                ContentValues currValuesClass = new ContentValues();
-                // TODO: Insert in batch instead of one by one
 
-                for(int idx = 0; idx < thothClasses.length();++idx){
-                    JSONObject jClass = thothClasses.getJSONObject(idx);
-
-                    String semester = jClass.getString(JsonThothClass.LECTIVE_SEMESTER);
-                    if(!isSemesterToFilter(semester))
+                List<JSONObject> jsonClasses = new LinkedList<>();
+                for(int idx = 0; idx < thothClasses.length();++idx) {
+                    JSONObject classJsonObj = thothClasses.getJSONObject(idx);
+                    if (!isSemesterToFilter(classJsonObj.getString(JsonThothClass.LECTIVE_SEMESTER)))
                         continue;
+                   jsonClasses.add(classJsonObj);
+                }
 
+                if(jsonClasses.isEmpty()) { return; }
+
+                Cursor classTeacherIDCursor = resolver.query(ThothContract.Teachers.CONTENT_URI, new String[]{ThothContract.Teachers._ID}, null, null, null);
+                List<Long> teachersIDs = getListFromCursor(classTeacherIDCursor);
+                classTeacherIDCursor.close();
+
+                ContentValues currValuesClass = new ContentValues();
+                for(JSONObject classObj : jsonClasses) {
+                    long classID = classObj.getLong(JsonThothClass.ID);
                     currValuesClass.clear();
-                    long classID = jClass.getLong(JsonThothClass.ID);
                     currValuesClass.put(ThothContract.Classes._ID, classID);
-                    currValuesClass.put(ThothContract.Classes.SEMESTER, semester);
-                    currValuesClass.put(ThothContract.Classes.FULL_NAME, jClass.getString(JsonThothClass.FULL_NAME));
-                    currValuesClass.put(ThothContract.Classes.COURSE, jClass.getString(JsonThothClass.COURSE_NAME));
-                    currValuesClass.put(ThothContract.Classes.SEMESTER, jClass.getString(JsonThothClass.LECTIVE_SEMESTER));
-                    currValuesClass.put(ThothContract.Classes.SHORT_NAME, jClass.getString(JsonThothClass.NAME));
-                    currValuesClass.put(ThothContract.Classes.TEACHER_NAME, jClass.getString(JsonThothClass.TEACHER));
-                    currValuesClass.put(ThothContract.Classes.LINKS, jClass.getString(JsonThothClass.LINKS));
+                    currValuesClass.put(ThothContract.Classes.FULL_NAME, classObj.getString(JsonThothClass.FULL_NAME));
+                    currValuesClass.put(ThothContract.Classes.COURSE, classObj.getString(JsonThothClass.COURSE_NAME));
+                    currValuesClass.put(ThothContract.Classes.SEMESTER, classObj.getString(JsonThothClass.LECTIVE_SEMESTER));
+                    currValuesClass.put(ThothContract.Classes.SHORT_NAME, classObj.getString(JsonThothClass.NAME));
+                    currValuesClass.put(ThothContract.Classes.SEMESTER, classObj.getString(JsonThothClass.LECTIVE_SEMESTER));
+                    currValuesClass.put(ThothContract.Classes.LINKS, classObj.getString(JsonThothClass.LINKS));
 
-                    JSONObject jFullClass = getClassObject(classID);
-                    long teacherID = jFullClass.getLong(JsonThothFullClass.TEACHER_ID);
+                    currValuesClass.put(ThothContract.Classes.TEACHER_NAME, classObj.getString(JsonThothClass.TEACHER));
+                    long teacherID = getClassObject(classID).getLong(JsonThothFullClass.TEACHER_ID);
+                    currValuesClass.put(ThothContract.Classes.TEACHER_ID, teacherID);
 
-                    Uri classTeacherUri = UriUtils.Teachers.parseTeacherID(teacherID);
-
-                    /*check if is already the teacher on the db, if not extract that info from Thoth JSONObject teacher */
-                    classTeacherIDCursor = resolver.query(classTeacherUri, new String[]{ThothContract.Teachers._ID},null,null,null);
-                    if(!classTeacherIDCursor.moveToNext()){
-                        JSONObject jFullTeacher = getTeacherObject(teacherID);
-                        insertTeacher(jFullTeacher);
-                    }
-
-                    currValuesClass.put(ThothContract.Classes.TEACHER_ID, jFullClass.getLong(JsonThothFullClass.TEACHER_ID));
                     resolver.insert(ThothContract.Classes.CONTENT_URI, currValuesClass); /** INSERT CLASS **/
 
+                    /*check if is already the teacher on the db, if not extract that info from Thoth JSONObject teacher */
+                    if (!teachersIDs.contains(teacherID)) {
+                        insertTeacher(getTeacherObject(teacherID)); /** INSERT TEACHER **/
+                        teachersIDs.add(teacherID);
+                    }
                 }
+
             } catch (JSONException e) {
                 Log.e(SERVICE_TAG, "ERROR: handleClassesUpdate(..) while parsing JSON response");
                 Log.e(SERVICE_TAG, e.getMessage());
             } finally {
-                c.disconnect();
-                if(classTeacherIDCursor != null)
-                    classTeacherIDCursor.close();
+                conn.disconnect();
             }
         }catch (MalformedURLException e) {
             d(TAG_ACTIVITY,"An error ocurred while trying to create URL to request classes list!\nMessage: "+e.getMessage());
@@ -290,40 +293,44 @@ public class ThothUpdateService extends IntentService {
         Cursor cursor = resolver.query(ThothContract.Classes.ENROLLED_URI, new String[]{ThothContract.Classes._ID}
                 ,String.format("%s = 1", ThothContract.Classes.ENROLLED), null, null);
 
-        long classID;
+        List<Long> classIds = new LinkedList<>();
         while(cursor.moveToNext()){
-            classID = cursor.getLong(COLUMN_CLASS_ID);
-            handleClassNewsUpdate(classID);
+            long classID = cursor.getLong(COLUMN_CLASS_ID);
+            if(handleClassNewsUpdate(classID))
+                classIds.add(classID);
         }
         cursor.close();
+        if(classIds.size() == 1)
+            sendNotification(classIds.get(0));
+        else if(classIds.size() > 1 )
+            sendNotification();
     }
-
-    private final long[] mVibratePattern = { 0, 200, 200, 300 };
 
     /**
      * Handle action ClassNewsUpdate in the provided background thread with the provided
      * parameters.
      * @param classID
      */
-    private void handleClassNewsUpdate(long classID) {
-        if( classID == ARG_CLASS_ID_DEFAULT_VALUE){
-            return;
-        }
+    private Boolean handleClassNewsUpdate(long classID) {
+        if( classID == ARG_CLASS_ID_DEFAULT_VALUE)
+            return false;
+
         int addedNews = 0;
+
         try {
             String urlPath = String.format(URI_CLASS_NEWS_ITEMS,classID);
             URL url = new URL(urlPath);
-            HttpURLConnection c = (HttpURLConnection) url.openConnection();
+            HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
             try {
-                InputStream is = c.getInputStream();
+                InputStream is = httpConn.getInputStream();
                 String data = readAllFrom(is);
                 is.close();
                 final JSONArray thothNews = ParseUtils.parseElement(data, JsonThothNew.ARRAY_NEWS_ITEMS);
                 ContentResolver resolver = getContentResolver();
                 // TODO: Insert in batch instead of one by one
                 // TODO: Only make request for content of the news that don't exist in the database
-                Uri classNewsUri = UriUtils.Classes.parseNewsFromClassID(classID);
-                Cursor classNewsIDsCursor = resolver.query(classNewsUri, new String[]{ThothContract.News._ID},null,null,null);
+                Cursor classNewsIDsCursor = resolver.query(UriUtils.Classes.parseNewsFromClassID(classID),
+                                                           new String[]{ThothContract.News._ID},null,null,null);
                 List<Long> classNewsIDs = getListFromCursor(classNewsIDsCursor);
                 classNewsIDsCursor.close();
                 long currNewID;
@@ -346,36 +353,80 @@ public class ThothUpdateService extends IntentService {
                         ++addedNews;
                     }
                 }
-                if(addedNews >0){
-                    Notification.Builder mBuilder = new Notification.Builder(getApplicationContext())
-                            .setContentTitle("You have news to read on!")
-                            .setContentText("Click to open the application.")
-                            .setAutoCancel(true)
-                            .setSmallIcon(R.drawable.ic_thoth)
-                            .setVibrate(mVibratePattern)
-                            .setOngoing(false);
-
-                    Intent i = new Intent(getApplicationContext(), ClassesActivity.class);
-                    i.putExtra(TagUtils.TAG_NOTIFICATION_ID, 0);
-                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 1, i, 0);
-                    mBuilder.setContentIntent(pIntent);
-                    mBuilder.setAutoCancel(true);
-
-                    NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                    notificationManager.notify(0, mBuilder.build());
-                }
             } catch (JSONException e) {
                 Log.e(SERVICE_TAG, "ERROR: handleClassNewsUpdate(..) while parsing JSON response");
                 Log.e(SERVICE_TAG, e.getMessage());
+                return false;
             } finally {
-                c.disconnect();
+                httpConn.disconnect();
             }
         } catch (MalformedURLException e) {
             d(TAG_ACTIVITY, "An error occurred while trying to create URL to request news list given classID:" + classID + "\nMessage: " + e.getMessage());
+            return false;
         } catch (IOException e) {
             d(TAG_ACTIVITY, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
+            return false;
         }
+        return (addedNews > 0);
+    }
+
+    private static final long[] mVibratePattern = { 0, 200, 200, 300 };
+    private NotificationManager notificationManager = null;
+    private Notification.Builder mBuilder = null;
+
+    private void sendNotification() {
+        Intent intent = new Intent(this.getApplication(), ClassesActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pIntent = PendingIntent.getActivity(this.getApplicationContext(), NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        if(mBuilder == null){
+            mBuilder = new Notification.Builder(getApplicationContext())
+                    .setContentText("Click to open the new from this class.")
+                    .setAutoCancel(true)
+                    .setSmallIcon(R.drawable.ic_thoth)
+                    .setVibrate(mVibratePattern)
+                    .setOngoing(false);
+        }
+
+        mBuilder.setContentTitle("News from various classes")
+                .setContentIntent(pIntent);
+
+        if(notificationManager == null)
+            notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID++, mBuilder.build());
+    }
+
+    private void sendNotification(long classID) {
+        Cursor classInfo = getContentResolver().query(UriUtils.Classes.parseClass(classID), null, null, null, null);
+        if(classInfo.moveToNext()){
+            ThothClass thothClass = ThothClass.fromCursor(classInfo);
+
+            Intent intent = new Intent(this.getApplication(), ClassSectionsActivity.class);
+            intent.putExtra(TagUtils.TAG_SERIALIZABLE_CLASS, thothClass);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pIntent = PendingIntent.getActivity(this.getApplicationContext(), NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+            if(mBuilder == null){
+                mBuilder = new Notification.Builder(getApplicationContext())
+                    .setContentText("Click to open the new from this class.")
+                    .setAutoCancel(true)
+                    .setSmallIcon(R.drawable.ic_thoth)
+                    .setVibrate(mVibratePattern)
+                    .setOngoing(false);
+            }
+
+            mBuilder.setContentTitle("News from "+ thothClass.getFullName())
+                    .setContentIntent(pIntent);
+
+            if(notificationManager == null)
+                notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(NOTIFICATION_ID++, mBuilder.build());
+        }
+    }
+
+    public static void cleanNotifications(Context context){
+        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancelAll();
+        NOTIFICATION_ID = DEFAULT_NOTIFICATION_ID;
     }
 
     static final String[] CURSOR_COLUMNS = {ThothContract.Students._ID};
@@ -518,5 +569,4 @@ public class ThothUpdateService extends IntentService {
         teacherStream.close();
         return new JSONObject(teacherData);
     }
-
 }

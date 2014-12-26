@@ -45,12 +45,12 @@
     <string name="notification_txt">Texto de notificação</string>
     <string name="classes_loading_error">Houve um problema ao carregar a sua lista de turmas.\nVerifique a sua ligação!</string>
     <string name="label_activity_classes">As Tuas Turmas Thoth</string>
-    <string name="title_activity_class_selection">Selecciona as tuas turmas</string>
-    <string name="class_selection_cancel">Selecção Descartada!</string>
-    <string name="class_selection_ok">Turmas seleccionadas guardadas com sucesso!</string>
+    <string name="title_activity_class_pick">Selecciona as tuas turmas</string>
+    <string name="classes_pick_cancel">Selecção Descartada!</string>
+    <string name="classes_pick_ok">Turmas seleccionadas guardadas com sucesso!</string>
     <string name="discard">Descartar</string>
     <string name="save">Gravar</string>
-    <string name="classes_selection_loading_error">Houve um problema ao carregar a lista de todas as turmas.\nVerifique a sua ligação!</string>
+    <string name="classes_pick_loading_error">Houve um problema ao carregar a lista de todas as turmas.\nVerifique a sua ligação!</string>
     <string name="news_loading_error">Houve um problema ao carregar a lista de notícias desta turma.\nVerifique a sua ligação!</string>
     <string name="tab_participants">Participantes</string>
     <string name="tab_news">Notícias</string>
