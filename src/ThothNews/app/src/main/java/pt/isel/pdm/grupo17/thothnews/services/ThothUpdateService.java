@@ -30,7 +30,6 @@ import java.util.List;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
-import pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
@@ -140,20 +139,17 @@ public class ThothUpdateService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             switch (intent.getAction()){
-                case ACTION_NEWS_UPDATE:
-                    handleNewsUpdate();
-                    break;
                 case ACTION_CLASSES_UPDATE:
                     handleClassesUpdate();
                     break;
+                case ACTION_NEWS_UPDATE:
+                    handleNewsUpdate();
+                    break;
                 case ACTION_CLASS_NEWS_UPDATE:
-                    long classID = intent.getLongExtra(ARG_CLASS_ID, ARG_CLASS_ID_DEFAULT_VALUE);
-                    if(handleClassNewsUpdate(classID))
-                        sendNotification(classID);
+                    handleClassNewsUpdate(intent.getLongExtra(ARG_CLASS_ID, ARG_CLASS_ID_DEFAULT_VALUE));
                     break;
                 case ACTION_CLASS_PARTICIPANTS_UPDATE:
-                    classID = intent.getLongExtra(ARG_CLASS_ID, ARG_CLASS_ID_DEFAULT_VALUE);
-                    handleClassParticipantsUpdate(classID);
+                    handleClassParticipantsUpdate(intent.getLongExtra(ARG_CLASS_ID, ARG_CLASS_ID_DEFAULT_VALUE));
             }
         }
     }
@@ -293,17 +289,10 @@ public class ThothUpdateService extends IntentService {
         Cursor cursor = resolver.query(ThothContract.Classes.ENROLLED_URI, new String[]{ThothContract.Classes._ID}
                 ,String.format("%s = 1", ThothContract.Classes.ENROLLED), null, null);
 
-        List<Long> classIds = new LinkedList<>();
-        while(cursor.moveToNext()){
-            long classID = cursor.getLong(COLUMN_CLASS_ID);
-            if(handleClassNewsUpdate(classID))
-                classIds.add(classID);
-        }
+        while(cursor.moveToNext())
+            handleClassNewsUpdate(cursor.getLong(COLUMN_CLASS_ID));
+
         cursor.close();
-        if(classIds.size() == 1)
-            sendNotification(classIds.get(0));
-        else if(classIds.size() > 1 )
-            sendNotification();
     }
 
     /**
@@ -311,9 +300,9 @@ public class ThothUpdateService extends IntentService {
      * parameters.
      * @param classID
      */
-    private Boolean handleClassNewsUpdate(long classID) {
+    private void handleClassNewsUpdate(long classID) {
         if( classID == ARG_CLASS_ID_DEFAULT_VALUE)
-            return false;
+            return;
 
         int addedNews = 0;
 
@@ -353,48 +342,24 @@ public class ThothUpdateService extends IntentService {
                         ++addedNews;
                     }
                 }
+                if(addedNews > 0)
+                    sendNotification(classID);
             } catch (JSONException e) {
                 Log.e(SERVICE_TAG, "ERROR: handleClassNewsUpdate(..) while parsing JSON response");
                 Log.e(SERVICE_TAG, e.getMessage());
-                return false;
             } finally {
                 httpConn.disconnect();
             }
         } catch (MalformedURLException e) {
             d(TAG_ACTIVITY, "An error occurred while trying to create URL to request news list given classID:" + classID + "\nMessage: " + e.getMessage());
-            return false;
         } catch (IOException e) {
             d(TAG_ACTIVITY, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
-            return false;
         }
-        return (addedNews > 0);
     }
 
     private static final long[] mVibratePattern = { 0, 200, 200, 300 };
     private NotificationManager notificationManager = null;
-    private Notification.Builder mBuilder = null;
-
-    private void sendNotification() {
-        Intent intent = new Intent(this.getApplication(), ClassesActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pIntent = PendingIntent.getActivity(this.getApplicationContext(), NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        if(mBuilder == null){
-            mBuilder = new Notification.Builder(getApplicationContext())
-                    .setContentText("Click to open the new from this class.")
-                    .setAutoCancel(true)
-                    .setSmallIcon(R.drawable.ic_thoth)
-                    .setVibrate(mVibratePattern)
-                    .setOngoing(false);
-        }
-
-        mBuilder.setContentTitle("News from various classes")
-                .setContentIntent(pIntent);
-
-        if(notificationManager == null)
-            notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFICATION_ID++, mBuilder.build());
-    }
+    private Notification.Builder builder = null;
 
     private void sendNotification(long classID) {
         Cursor classInfo = getContentResolver().query(UriUtils.Classes.parseClass(classID), null, null, null, null);
@@ -404,10 +369,10 @@ public class ThothUpdateService extends IntentService {
             Intent intent = new Intent(this.getApplication(), ClassSectionsActivity.class);
             intent.putExtra(TagUtils.TAG_SERIALIZABLE_CLASS, thothClass);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pIntent = PendingIntent.getActivity(this.getApplicationContext(), NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            PendingIntent pIntent = PendingIntent.getActivity(this.getApplication(), NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-            if(mBuilder == null){
-                mBuilder = new Notification.Builder(getApplicationContext())
+            if(builder == null){
+                builder = new Notification.Builder(getApplicationContext())
                     .setContentText("Click to open the new from this class.")
                     .setAutoCancel(true)
                     .setSmallIcon(R.drawable.ic_thoth)
@@ -415,12 +380,12 @@ public class ThothUpdateService extends IntentService {
                     .setOngoing(false);
             }
 
-            mBuilder.setContentTitle("News from "+ thothClass.getFullName())
+            builder.setContentTitle("News from "+ thothClass.getFullName())
                     .setContentIntent(pIntent);
 
             if(notificationManager == null)
-                notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(NOTIFICATION_ID++, mBuilder.build());
+                notificationManager = (NotificationManager) this.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(NOTIFICATION_ID++, builder.build());
         }
     }
 
@@ -497,7 +462,7 @@ public class ThothUpdateService extends IntentService {
 
         JSONObject avatarsObj = jFullTeacher.getJSONObject(JsonThothTeacher.AVATAR);
         String avatarUrl = avatarsObj.getString(JsonThothAvatar.SIZE128);
-        currValuesTeacher.put(ThothContract.Teachers.AVATAR_URL, avatarUrl);
+        currValuesTeacher.put(ThothContract.Avatars.AVATAR_URL, avatarUrl);
         currValuesTeacher.put(ThothContract.Teachers.LINKS, jFullTeacher.getString(JsonThothTeacher.LINKS));
         getContentResolver().insert(ThothContract.Teachers.CONTENT_URI, currValuesTeacher);
     }
@@ -509,7 +474,7 @@ public class ThothUpdateService extends IntentService {
         currValuesParticipants.put(ThothContract.Students.ACADEMIC_EMAIL, jsonStudent.getString(JsonThothParticipant.ACADEMIC_EMAIL));
 
         JSONObject avatarsObj = jsonStudent.getJSONObject(JsonThothTeacher.AVATAR);
-        currValuesParticipants.put(ThothContract.Students.AVATAR_URL, avatarsObj.getString(JsonThothAvatar.SIZE128));
+        currValuesParticipants.put(ThothContract.Avatars.AVATAR_URL, avatarsObj.getString(JsonThothAvatar.SIZE128));
         currValuesParticipants.put(ThothContract.Students.ENROLLED_DATE, jsonStudent.getString(JsonThothParticipant.ENROLL_DATE));
         currValuesParticipants.put(ThothContract.Students.CLASS_ID, classID);
         getContentResolver().insert(ThothContract.Students.CONTENT_URI, currValuesParticipants);

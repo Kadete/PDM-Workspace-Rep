@@ -11,6 +11,7 @@ import android.widget.TextView;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
+import pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
@@ -56,7 +57,7 @@ public class SingleNewFragment extends Fragment {
 
     public void updateNew(){
         ContentValues values = new ContentValues();
-        values.put(ThothContract.News.READ, 1);
+        values.put(ThothContract.News.READ, SQLiteUtils.TRUE);
         if(mThothNew != null)
             getActivity().getContentResolver().update(UriUtils.News.parseNewID(mThothNew.getID()), values, null, null );
     }

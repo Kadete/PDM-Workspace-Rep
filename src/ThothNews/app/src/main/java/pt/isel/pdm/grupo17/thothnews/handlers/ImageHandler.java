@@ -31,12 +31,13 @@ public class ImageHandler extends Handler {
 
     public void handleMessage (Message msg){
         Data data = (Data)msg.obj;
-        URL url;
         try {
-            url = new URL(data.avatarUri);
-            HttpURLConnection c = (HttpURLConnection) url.openConnection();
-            InputStream s = c.getInputStream();
-            Bitmap bm = BitmapFactory.decodeStream(s);
+            HttpURLConnection conn = (HttpURLConnection) new URL(data.avatarUri).openConnection();
+            InputStream inputStream = conn.getInputStream();
+            Bitmap bm = BitmapFactory.decodeStream(inputStream);
+
+            if(data.im != null)
+                _h.publishImage(data.im, bm);
 
             long id = Long.parseLong(ParseUtils.getUriSegment(data.routeUri, 1));
             File photoFile = BitmapUtils.createImageFile(id, data.path);
@@ -44,12 +45,10 @@ public class ImageHandler extends Handler {
             BitmapUtils.storeBitmapToFile(bm, mCurrentPhotoPath);
 
             ContentValues values = new ContentValues();
-            values.put(ThothContract.Paths.AVATAR_PATH, mCurrentPhotoPath);
+            values.put(ThothContract.Avatars.AVATAR_PATH, mCurrentPhotoPath);
 
             if(data.routeUri !=null)
                 _h.update(data.routeUri, values, null, null);
-            if(data.im != null)
-                _h.publishImage(data.im, bm);
 
         } catch (IOException ignored) {
             Log.d("IMAGE_HANDLER", "handleMessage ignored: " + ignored.getMessage());

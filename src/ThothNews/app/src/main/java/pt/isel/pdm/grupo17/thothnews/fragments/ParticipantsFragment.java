@@ -35,7 +35,7 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     }
 
     private static final int PARTICIPANTS_CURSOR_LOADER_ID = 3;
-    private static final String[] CURSOR_COLUMNS = {ThothContract.Students._ID, ThothContract.Students.FULL_NAME, ThothContract.Students.AVATAR_URL, ThothContract.Paths.AVATAR_PATH,
+    private static final String[] CURSOR_COLUMNS = {ThothContract.Students._ID, ThothContract.Students.FULL_NAME, ThothContract.Avatars.AVATAR_URL, ThothContract.Avatars.AVATAR_PATH,
             ThothContract.Students.ACADEMIC_EMAIL, ThothContract.Students.ENROLLED_DATE, ThothContract.Classes_Students.GROUP};
     private static final String ORDER_BY = ThothContract.Students._ID + " ASC";
 

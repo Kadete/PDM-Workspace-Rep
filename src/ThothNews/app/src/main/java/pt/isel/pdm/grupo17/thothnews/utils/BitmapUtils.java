@@ -16,7 +16,7 @@ import java.io.IOException;
 public class BitmapUtils {
     private static final String APP_DIR_TEACHERS = "ThothNews/Teachers";
     private static final String APP_DIR_STUDENTS = "ThothNews/Students";
-//    public static String mBitmapStoragePath;
+
     public static final String IMAGE_EXTENSION = ".jpg";
 
     public static enum EnumModel {
@@ -54,12 +54,9 @@ public class BitmapUtils {
     }
 
     public static boolean storeBitmapToFile(Bitmap bitmap, String filePath) {
-
-        if (Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)) {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             try {
-                BufferedOutputStream bos = new BufferedOutputStream(
-                        new FileOutputStream(filePath));
+                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                 bos.flush();
                 bos.close();
@@ -78,7 +75,6 @@ public class BitmapUtils {
         image.createNewFile();
         return image;
     }
-
 
     public static class LoadBitmapTask extends AsyncTask<String, String, Bitmap> {
 

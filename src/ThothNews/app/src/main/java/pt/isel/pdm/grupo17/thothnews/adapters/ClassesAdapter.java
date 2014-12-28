@@ -32,7 +32,7 @@ public class ClassesAdapter extends CursorAdapter {
     }
 
     static LayoutInflater sLayoutInflater = null;
-    List<ThothClass> mClasses = new ArrayList<ThothClass>();
+    List<ThothClass> mClasses = new ArrayList<>();
     Context mContext;
 
     public ClassesAdapter(Context context) {

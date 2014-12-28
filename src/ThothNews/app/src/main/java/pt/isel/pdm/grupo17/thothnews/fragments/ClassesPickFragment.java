@@ -73,7 +73,7 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateClassesSelection(activity, false);
+                updateClassesPicked(activity, false);
             }
         });
 
@@ -81,14 +81,14 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateClassesSelection(activity, true);
+                updateClassesPicked(activity, true);
             }
         });
 
         return view;
     }
 
-    public void updateClassesSelection(FragmentActivity activity, boolean toSave){
+    public void updateClassesPicked(FragmentActivity activity, boolean toSave){
         if(mListAdapter.getMapSelection().isEmpty()) {
             activity.finish();
             return;
@@ -145,7 +145,6 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
             Toast.makeText(getActivity(),getString(R.string.toast_wait_message),Toast.LENGTH_LONG).show();
             refreshAndUpdate();
         }
-
     }
 
     @Override

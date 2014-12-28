@@ -44,94 +44,88 @@ uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
 ADDED from AndroidManifest.xml:15:5
 	android:name
 		ADDED from AndroidManifest.xml:15:22
-uses-permission#android.permission.READ_PHONE_STATE
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
 ADDED from AndroidManifest.xml:16:5
 	android:name
 		ADDED from AndroidManifest.xml:16:22
-uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from AndroidManifest.xml:17:5
-	android:maxSdkVersion
-		ADDED from AndroidManifest.xml:19:9
-	android:name
-		ADDED from AndroidManifest.xml:18:9
 application
-ADDED from AndroidManifest.xml:21:5
+ADDED from AndroidManifest.xml:18:5
 MERGED from com.android.support:support-v4:21.0.3:16:5
 	android:allowBackup
-		ADDED from AndroidManifest.xml:22:9
+		ADDED from AndroidManifest.xml:19:9
 	android:icon
-		ADDED from AndroidManifest.xml:23:9
+		ADDED from AndroidManifest.xml:20:9
 	android:theme
-		ADDED from AndroidManifest.xml:24:9
+		ADDED from AndroidManifest.xml:21:9
 activity#pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity
-ADDED from AndroidManifest.xml:26:9
+ADDED from AndroidManifest.xml:23:9
 	android:label
-		ADDED from AndroidManifest.xml:28:13
+		ADDED from AndroidManifest.xml:25:13
 	android:name
-		ADDED from AndroidManifest.xml:27:13
+		ADDED from AndroidManifest.xml:24:13
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:29:13
+ADDED from AndroidManifest.xml:26:13
 action#android.intent.action.MAIN
-ADDED from AndroidManifest.xml:30:17
+ADDED from AndroidManifest.xml:27:17
 	android:name
-		ADDED from AndroidManifest.xml:30:25
+		ADDED from AndroidManifest.xml:27:25
 category#android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:31:17
+ADDED from AndroidManifest.xml:28:17
 	android:name
-		ADDED from AndroidManifest.xml:31:27
+		ADDED from AndroidManifest.xml:28:27
 activity#pt.isel.pdm.grupo17.thothnews.activities.PreferencesActivity
-ADDED from AndroidManifest.xml:35:9
+ADDED from AndroidManifest.xml:32:9
 	android:label
-		ADDED from AndroidManifest.xml:35:66
+		ADDED from AndroidManifest.xml:32:66
 	android:name
-		ADDED from AndroidManifest.xml:35:19
-activity#pt.isel.pdm.grupo17.thothnews.activities.ClassesSelectionActivity
-ADDED from AndroidManifest.xml:37:9
+		ADDED from AndroidManifest.xml:32:19
+activity#pt.isel.pdm.grupo17.thothnews.activities.ClassesPickActivity
+ADDED from AndroidManifest.xml:34:9
 	android:label
-		ADDED from AndroidManifest.xml:37:71
+		ADDED from AndroidManifest.xml:34:66
 	android:name
-		ADDED from AndroidManifest.xml:37:19
+		ADDED from AndroidManifest.xml:34:19
 activity#pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity
+ADDED from AndroidManifest.xml:36:9
+	android:label
+		ADDED from AndroidManifest.xml:36:68
+	android:configChanges
+		ADDED from AndroidManifest.xml:37:19
+	android:name
+		ADDED from AndroidManifest.xml:36:19
+activity#pt.isel.pdm.grupo17.thothnews.activities.SingeNewActivity
 ADDED from AndroidManifest.xml:39:9
 	android:label
-		ADDED from AndroidManifest.xml:39:68
-	android:configChanges
-		ADDED from AndroidManifest.xml:40:19
+		ADDED from AndroidManifest.xml:39:63
 	android:name
 		ADDED from AndroidManifest.xml:39:19
-activity#pt.isel.pdm.grupo17.thothnews.activities.SingeNewActivity
-ADDED from AndroidManifest.xml:42:9
-	android:label
-		ADDED from AndroidManifest.xml:42:63
-	android:name
-		ADDED from AndroidManifest.xml:42:19
 receiver#pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver
-ADDED from AndroidManifest.xml:44:9
+ADDED from AndroidManifest.xml:41:9
 	android:name
-		ADDED from AndroidManifest.xml:44:19
+		ADDED from AndroidManifest.xml:41:19
 intent-filter#android.net.conn.CONNECTIVITY_CHANGE+android.net.wifi.STATE_CHANGE
-ADDED from AndroidManifest.xml:45:13
+ADDED from AndroidManifest.xml:42:13
 action#android.net.conn.CONNECTIVITY_CHANGE
-ADDED from AndroidManifest.xml:46:17
+ADDED from AndroidManifest.xml:43:17
 	android:name
-		ADDED from AndroidManifest.xml:46:25
+		ADDED from AndroidManifest.xml:43:25
 action#android.net.wifi.STATE_CHANGE
-ADDED from AndroidManifest.xml:47:17
+ADDED from AndroidManifest.xml:44:17
 	android:name
-		ADDED from AndroidManifest.xml:47:25
+		ADDED from AndroidManifest.xml:44:25
 provider#pt.isel.pdm.grupo17.thothnews.data.ThothProvider
-ADDED from AndroidManifest.xml:51:9
+ADDED from AndroidManifest.xml:48:9
 	android:authorities
-		ADDED from AndroidManifest.xml:53:13
+		ADDED from AndroidManifest.xml:50:13
 	android:enabled
-		ADDED from AndroidManifest.xml:54:13
+		ADDED from AndroidManifest.xml:51:13
 	android:exported
-		ADDED from AndroidManifest.xml:55:13
-	android:name
 		ADDED from AndroidManifest.xml:52:13
-service#pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService
-ADDED from AndroidManifest.xml:58:9
-	android:exported
-		ADDED from AndroidManifest.xml:60:13
 	android:name
-		ADDED from AndroidManifest.xml:59:13
+		ADDED from AndroidManifest.xml:49:13
+service#pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService
+ADDED from AndroidManifest.xml:55:9
+	android:exported
+		ADDED from AndroidManifest.xml:57:13
+	android:name
+		ADDED from AndroidManifest.xml:56:13

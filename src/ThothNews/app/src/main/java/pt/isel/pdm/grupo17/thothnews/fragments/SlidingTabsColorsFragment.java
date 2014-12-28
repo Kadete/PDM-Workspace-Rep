@@ -34,9 +34,7 @@ public class SlidingTabsColorsFragment extends Fragment {
             mDividerColor = dividerColor;
         }
 
-        ParticipantsFragment createParticipantsFragment() {
-            return ParticipantsFragment.newInstance();
-        }
+        ParticipantsFragment createParticipantsFragment() { return ParticipantsFragment.newInstance(); }
 
         NewsListFragment createNewsListFragment() {
             return NewsListFragment.newInstance();

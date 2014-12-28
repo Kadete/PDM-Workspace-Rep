@@ -13,11 +13,8 @@ public class ThothDBHelper extends SQLiteOpenHelper {
     /** Schema version. */
     public static final int DB_VERSION = 2;
 
-//    final private Context mContext;
-
     public ThothDBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
-//        this.mContext = context;
     }
 
     @Override
@@ -39,7 +36,4 @@ public class ThothDBHelper extends SQLiteOpenHelper {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-//    void deleteDatabase() {
-//        mContext.deleteDatabase(DB_NAME);
-//    }
 }

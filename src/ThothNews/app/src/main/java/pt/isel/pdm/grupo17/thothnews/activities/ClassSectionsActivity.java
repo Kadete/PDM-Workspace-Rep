@@ -60,19 +60,22 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
         sThothClass = (ThothClass) intent.getSerializableExtra(TagUtils.TAG_SERIALIZABLE_CLASS);
 
         final TextView tvClass = (TextView) findViewById(R.id.tv_class_name);
-        final TextView tvTeacher = (TextView) findViewById(R.id.tv_teacher_name);
-        final ImageView ivTeacherAvatar = (ImageView) findViewById(R.id.iv_teacher_avatar);
-        final TextView tvTeacherEmail = (TextView) findViewById(R.id.tv_teacher_email);
-
         tvClass.setText(sThothClass.getFullName());
+
+        setupTeacherInfo();
+    }
+
+    private void setupTeacherInfo(){
+        final TextView tvTeacher = (TextView) findViewById(R.id.tv_teacher_name);
         tvTeacher.setText(sThothClass.getTeacherName());
 
         long teacherID = sThothClass.getTeacherID();
         Uri teacherUri = UriUtils.Teachers.parseTeacherID(teacherID);
-        String [] cursorColumns = new String[] {ThothContract.Teachers._ID, ThothContract.Teachers.ACADEMIC_EMAIL, ThothContract.Teachers.AVATAR_URL, ThothContract.Paths.AVATAR_PATH};
+        String [] cursorColumns = new String[] {ThothContract.Teachers._ID, ThothContract.Teachers.ACADEMIC_EMAIL, ThothContract.Avatars.AVATAR_URL, ThothContract.Avatars.AVATAR_PATH};
         Cursor teacherCursor = getApplication().getContentResolver().query(teacherUri,cursorColumns , null, null, null);
 
         if(teacherCursor.moveToNext()) {
+            final TextView tvTeacherEmail = (TextView) findViewById(R.id.tv_teacher_email);
             tvTeacherEmail.setMovementMethod(LinkMovementMethod.getInstance());
             final String teacherEmail = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teachers.ACADEMIC_EMAIL));
             tvTeacherEmail.setText(teacherEmail);
@@ -92,6 +95,7 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
                     }
                 }
             });
+            final ImageView ivTeacherAvatar = (ImageView) findViewById(R.id.iv_teacher_avatar);
             setTeacherAvatar(ivTeacherAvatar, teacherCursor, teacherID);
         }
         teacherCursor.close();
@@ -99,12 +103,12 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
 
     private void setTeacherAvatar(ImageView ivTeacherAvatar, Cursor teacherCursor, long teacherID) {
 
-        String avatarPath = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Paths.AVATAR_PATH)); // saved path
+        String avatarPath = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Avatars.AVATAR_PATH)); // saved path
 
         if (avatarPath == null || avatarPath.isEmpty()) { /** photo not saved yet. Get avatar via req HTTP and then save the file on phone ROM **/
 
             String storagePath = BitmapUtils.initStoragePath(getApplication(), DIR_PATH_TEACHER);
-            String avatarUrl = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teachers.AVATAR_URL));
+            String avatarUrl = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Avatars.AVATAR_URL));
             SetViewAndUpdateHandler svh = new SetViewAndUpdateHandler(Looper.getMainLooper(), getContentResolver());
 
             ImageHandlerThread th = new ImageHandlerThread();

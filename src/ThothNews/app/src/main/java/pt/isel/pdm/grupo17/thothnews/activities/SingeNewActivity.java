@@ -3,6 +3,7 @@ package pt.isel.pdm.grupo17.thothnews.activities;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -40,7 +41,7 @@ public class SingeNewActivity extends FragmentActivity {
 
             mViewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
                 @Override
-                public android.support.v4.app.Fragment getItem(int position) {
+                public Fragment getItem(int position) {
                     return SingleNewFragment.newInstance(sThothNewList.get(position));
                 }
                 @Override

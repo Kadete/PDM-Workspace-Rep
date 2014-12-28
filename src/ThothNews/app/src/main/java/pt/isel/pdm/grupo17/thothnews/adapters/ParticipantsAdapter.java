@@ -134,13 +134,13 @@ public class ParticipantsAdapter extends CursorAdapter {
         Cursor studentAvatarPath = mContext.getContentResolver().query(UriUtils.Students.parseStudentID(id),null, null, null, null);
         String avatarPath = null;
         if(studentAvatarPath.moveToNext())
-            avatarPath = studentAvatarPath.getString(studentAvatarPath.getColumnIndex(ThothContract.Paths.AVATAR_PATH));
+            avatarPath = studentAvatarPath.getString(studentAvatarPath.getColumnIndex(ThothContract.Avatars.AVATAR_PATH));
         studentAvatarPath.close();
 
         if (avatarPath == null || avatarPath.isEmpty()) { /** photo not saved yet. Get avatar via req HTTP and then save the file on phone ROM **/
 
             String storagePath = BitmapUtils.initStoragePath(mContext, DIR_PATH_STUDENT);
-            String avatarUrl = cursor.getString(cursor.getColumnIndex(ThothContract.Students.AVATAR_URL));
+            String avatarUrl = cursor.getString(cursor.getColumnIndex(ThothContract.Avatars.AVATAR_URL));
             SetViewAndUpdateHandler svh = new SetViewAndUpdateHandler(Looper.getMainLooper(), mContext.getContentResolver());
 
             ImageHandlerThread th = new ImageHandlerThread();

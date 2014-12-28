@@ -38,16 +38,15 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
 
     private static int mActivatedPosition = ListView.INVALID_POSITION;
     private static ThothClass sThothClass;
-    private static boolean mTwoPane;
+    private static boolean sTwoPane;
     public static boolean isTwoPane() {
-        return mTwoPane;
+        return sTwoPane;
     }
 
     private Callbacks mCallbacks = sDummyCallbacks;
 
     private static MultiSwipeRefreshLayout mSwipeRefreshLayout;
     private ListView mListView;
-    private View mEmptyView;
 
     private NewsAdapter mListAdapter;
 
@@ -73,7 +72,6 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
         View sNewsView = inflater.inflate(R.layout.fragment_section_news, container, false);
         mSwipeRefreshLayout = (MultiSwipeRefreshLayout) sNewsView.findViewById(R.id.swiperefresh);
         mListView = (ListView) sNewsView.findViewById(android.R.id.list);
-        mEmptyView = sNewsView.findViewById(android.R.id.empty);
         return sNewsView;
     }
 
@@ -87,12 +85,11 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
         sThothClass = ClassSectionsActivity.getThothClass();
 
         if (getActivity().findViewById(R.id.fragment_container_detail_new) != null)
-            mTwoPane = true;
+            sTwoPane = true;
 
         mListAdapter = new NewsAdapter(getActivity());
 
         mListView.setAdapter(mListAdapter);
-        mListView.setEmptyView(mEmptyView);
 
         mSwipeRefreshLayout.setSwipeableChildren(android.R.id.list, android.R.id.empty);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -144,7 +141,7 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     public void onListItemClick(ListView l, View view, int position, long id) {
         super.onListItemClick(l, view, position, id);
         ThothNew thothNew = (ThothNew) mListAdapter.getItem(position);
-        if (mTwoPane) {
+        if (sTwoPane) {
             NewsAdapter.setSelectedNewID(thothNew.getID());
             mCallbacks.onItemSelected((ThothNew) mListAdapter.getItem(position));
         } else {
