@@ -2,6 +2,7 @@ package pt.isel.pdm.grupo17.thothnews.fragments;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
@@ -65,8 +68,10 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
         super.onViewCreated(view, savedInstanceState);
 
         mListAdapter = new ClassesAdapter(getActivity());
+        AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mListAdapter);
+        animationAdapter.setAbsListView(mGridView);
 
-        mGridView.setAdapter(mListAdapter);
+        mGridView.setAdapter(animationAdapter);
         mGridView.setEmptyView(mEmptyView);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -86,6 +91,7 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
                 refreshAndUpdate();
             }
         });
+        mSwipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
 
         getLoaderManager().initLoader(CLASSES_CURSOR_LOADER_ID, null, this);
 

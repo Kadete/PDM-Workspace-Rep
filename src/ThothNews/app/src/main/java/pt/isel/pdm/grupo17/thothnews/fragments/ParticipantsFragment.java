@@ -2,6 +2,7 @@ package pt.isel.pdm.grupo17.thothnews.fragments;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -12,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
@@ -27,10 +30,8 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
 
     public static ParticipantsFragment newInstance() {
         Bundle bundle = new Bundle();
-
         ParticipantsFragment fragment = new ParticipantsFragment();
         fragment.setArguments(bundle);
-
         return fragment;
     }
 
@@ -69,7 +70,9 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
         sThothClass = ClassSectionsActivity.getThothClass();
 
         mListAdapter = new ParticipantsAdapter(getActivity());
-        mGridView.setAdapter(mListAdapter);
+        AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mListAdapter);
+        animationAdapter.setAbsListView(mGridView);
+        mGridView.setAdapter(animationAdapter);
         mGridView.setEmptyView(mEmptyView);
 
         mSwipeRefreshLayout.setSwipeableChildren(android.R.id.list, android.R.id.empty);
@@ -79,6 +82,7 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
                 refreshAndUpdate();
             }
         });
+        mSwipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
 
         Cursor studentsCursor = sContentResolver.query(UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), null, null, null, null);
         if(studentsCursor.moveToNext()){

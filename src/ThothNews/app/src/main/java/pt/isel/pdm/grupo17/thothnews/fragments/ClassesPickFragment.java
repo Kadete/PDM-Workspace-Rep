@@ -25,6 +25,8 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
+
 import java.util.Map;
 
 import pt.isel.pdm.grupo17.thothnews.R;
@@ -111,8 +113,10 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
         super.onViewCreated(view, savedInstanceState);
 
         mListAdapter = new ClassesPickAdapter(getActivity());
+        AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mListAdapter);
+        animationAdapter.setAbsListView(mGridView);
 
-        mGridView.setAdapter(mListAdapter);
+        mGridView.setAdapter(animationAdapter);
         mGridView.setEmptyView(mEmptyView);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -132,6 +136,7 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
                 refreshAndUpdate();
             }
         });
+        mSwipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
 
         Cursor classesCursor = getActivity().getContentResolver()
                 .query(ThothContract.Classes.CONTENT_URI, null, null, null, null);

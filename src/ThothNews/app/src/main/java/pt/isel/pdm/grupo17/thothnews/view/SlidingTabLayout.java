@@ -29,6 +29,8 @@ import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
+import com.ToxicBakery.viewpager.transforms.RotateUpTransformer;
+
 /**
  * To be used with ViewPager to provide a tab indicator component which give constant feedback as to
  * the user's scroll progress.
@@ -169,6 +171,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
             viewPager.setOnPageChangeListener(new InternalViewPagerListener());
             populateTabStrip();
         }
+        mViewPager.setPageTransformer(true, new RotateUpTransformer());
     }
 
     /**

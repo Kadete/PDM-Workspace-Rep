@@ -3,6 +3,7 @@ package pt.isel.pdm.grupo17.thothnews.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -13,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
@@ -88,8 +91,9 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
             sTwoPane = true;
 
         mListAdapter = new NewsAdapter(getActivity());
-
-        mListView.setAdapter(mListAdapter);
+        AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mListAdapter);
+        animationAdapter.setAbsListView(mListView);
+        mListView.setAdapter(animationAdapter);
 
         mSwipeRefreshLayout.setSwipeableChildren(android.R.id.list, android.R.id.empty);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -98,6 +102,7 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
                 refreshAndUpdate();
             }
         });
+        mSwipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
 
         getLoaderManager().initLoader(NEWS_CURSOR_LOADER_ID, null, this);
     }
