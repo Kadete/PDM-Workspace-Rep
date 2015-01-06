@@ -39,7 +39,7 @@ public class CleanPreferencesDialogFragment extends DialogFragment {
 
                     Toast.makeText(getActivity(), toastSuccessMessage, Toast.LENGTH_LONG).show();
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    sharedPreferences.edit().putInt(TagUtils.TAG_CLASSES_SELECTED, 0).apply();
+                    sharedPreferences.edit().putStringSet(TagUtils.TAG_CLASSES_SELECTED, null).apply();
                 }
             })
             .setNegativeButton(cancel, new DialogInterface.OnClickListener() {

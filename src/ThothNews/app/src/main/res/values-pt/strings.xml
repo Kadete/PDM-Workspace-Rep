@@ -80,5 +80,6 @@
     <string name="thoth_semesters_title">Semestres</string>
     <string name="title_action_clear_all">Limpar selecções</string>
     <string name="thoth_classes_summary_no_semester">Por favor seleccione pelo menos um semestre!</string>
+    <string name="thoth_classes_summary_enrolled">" "turmas associadas.</string>
 
 </resources>

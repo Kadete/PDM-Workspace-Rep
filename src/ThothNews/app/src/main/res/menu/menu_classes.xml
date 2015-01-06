@@ -6,6 +6,11 @@
         <!--android:orderInCategory="100"-->
         <!--android:icon="@android:drawable/ic_menu_rotate"-->
         <!--android:showAsAction="ifRoom" />-->
+    <item android:id="@+id/action_webview"
+        android:title="@string/title_action_web_view"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_webview"
+        android:showAsAction="ifRoom" />
     <item android:id="@+id/action_settings"
         android:title="@string/title_action_settings"
         android:orderInCategory="100"

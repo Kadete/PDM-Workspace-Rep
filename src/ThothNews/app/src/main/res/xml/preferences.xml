@@ -26,6 +26,7 @@
         android:key="notification_category">
         <SwitchPreference
             android:key="@string/vibration_switch_key"
+            android:icon="@drawable/ic_notification_vibration"
             android:title="Vibration" />
     </PreferenceCategory>
 
@@ -34,7 +35,8 @@
         android:key="notification_category">
         <SwitchPreference
             android:key="@string/data_mobile_switch_key"
-            android:title="Data Mobile" />
+            android:title="Data Mobile"
+            android:icon="@drawable/ic_sim_data_mobile"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -112,14 +112,18 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
             return;
         }
         ContentResolver resolver = activity.getContentResolver();
+        int nrClassesToUpdate = 0;
         for(Map.Entry<Long, ClassesPickAdapter.SelectionState> entryClass : mListAdapter.getMapSelection().entrySet()) {
             ContentValues values = new ContentValues();
             boolean enrolled = ((toSave) ? entryClass.getValue().finalState : entryClass.getValue().initialState);
             values.put(ThothContract.Classes.ENROLLED, enrolled ? SQLiteUtils.TRUE : SQLiteUtils.FALSE);
             resolver.update(UriUtils.Classes.parseClass(entryClass.getKey()), values, null, null );
             if(toSave && enrolled)
-                ThothUpdateService.startActionClassNewsUpdate(activity, entryClass.getKey());
+                nrClassesToUpdate++;
         }
+        if(nrClassesToUpdate != 0)
+            ThothUpdateService.startActionNewsUpdate(activity);
+
         if(toSave){
             Cursor cursor = resolver.query(ThothContract.Classes.ENROLLED_URI, null, selection, selectionArgs, null);
             List<String> classes = new LinkedList<>();
@@ -167,7 +171,7 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
 
         /** FILTER SEMESTERS SELECTED **/
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Set<String> semestersSet = sharedPreferences.getStringSet(TagUtils.TAG_MULTILIST_SEMESTERS_KEY, null);
+        Set<String> semestersSet = sharedPreferences.getStringSet(TagUtils.TAG_MULTI_LIST_SEMESTERS_KEY, null);
         if(!semestersSet.isEmpty()) {
             selection = "";
             selectionArgs = new String[semestersSet.size()];

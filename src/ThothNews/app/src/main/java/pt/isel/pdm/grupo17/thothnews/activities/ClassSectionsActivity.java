@@ -200,6 +200,12 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
 //                if(fragment != null)
 //                     fragment.refreshLoader();
 //                return true;
+            case R.id.action_webview:
+                Intent intent = new Intent(this, WebViewActivity.class);
+                String full_path = WebViewActivity.CLASSES_ROUTE.concat(sThothClass.getFullName().replaceAll(" ",""));
+                intent.putExtra(TagUtils.TAG_EXTRA_WEB_VIEW_URL, full_path);
+                startActivity(intent);
+                return true;
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;

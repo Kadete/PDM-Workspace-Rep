@@ -101,7 +101,7 @@ public class ClassesAdapter extends CursorAdapter {
 
         Boolean newsToRead = cursorNewsRead.moveToNext();
 
-        holder.new_news.setImageResource((newsToRead) ? R.drawable.ic_news_to_read : R.drawable.ic_action_visibility);
+        holder.new_news.setImageResource((newsToRead) ? R.drawable.ic_news_to_read : R.drawable.ic_action_done_all);
         cursorNewsRead.close();
         holder.full_name.setTypeface(null, (newsToRead) ? Typeface.BOLD : Typeface.NORMAL);
         holder.teacher.setTypeface(null, (newsToRead) ? Typeface.BOLD : Typeface.NORMAL);

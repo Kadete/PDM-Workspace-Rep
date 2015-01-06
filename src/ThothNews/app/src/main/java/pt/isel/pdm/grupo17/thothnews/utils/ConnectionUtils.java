@@ -16,5 +16,4 @@ public class ConnectionUtils {
             Toast.makeText(context, context.getString(R.string.toast_no_connectivity), Toast.LENGTH_LONG).show();
         return connected;
     }
-
 }

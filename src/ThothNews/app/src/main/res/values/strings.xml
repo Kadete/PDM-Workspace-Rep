@@ -45,7 +45,6 @@
     <!-- xml: preferences -->
     <string name="category_classes_title">Classes</string>
     <string name="thoth_classes_title">Classes List</string>
-
     <string name="hello_world" translatable="false">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_action_refresh">Refresh All</string>
@@ -54,7 +53,6 @@
     <string name="dialog_ok" translatable="false">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="clean_classes_toast">Your selection has been cleaned!</string>
-
     <string name="thoth_connection_failed_toast">Thoth connection failed!</string>
     <string name="get_news_success_toast">Last news updated with success!</string>
     <string name="get_news_fail_toast">Last news update failed!</string>
@@ -62,19 +60,15 @@
     <string name="notification_txt">Notification text</string>
     <string name="title_activity_class_pick">Select your classes</string>
     <string name="classes_pick_loading_error">There was a problem loading the classes list.\n Check your connection!</string>
-
     <string name="discard">Discard</string>
     <string name="save">Save</string>
-    
     <string name="dummy_section_text" translatable="false">Section %1d is just a dummy section.</string>
     <string name="tab_news">News</string>
     <string name="tab_participants">Participants</string>
     <string name="label_class_section_view">Your Class</string>
-
     <string name="empty_text">List is empty! Swipe down to refresh.</string>
     <string name="item_class_lbl">Class:</string>
     <string name="item_teacher_lbl">Teacher:</string>
-
     <string name="participant_item_full_name" translatable="false">participant_item_full_name</string>
     <string name="participant_item_email" translatable="false">participant_item_email</string>
     <string name="participant_item_number_and_group" translatable="false">participant_item_number_and_group</string>
@@ -107,5 +101,6 @@
     <string name="thoth_semesters_summary">Please select the semesters your want to filter.</string>
     <string name="thoth_classes_summary_no_semester">Please choose at least one semester!</string>
     <string name="thoth_classes_summary">Please choose at least one classe!</string>
-
+    <string name="title_action_web_view" translatable="false" />
+    <string name="thoth_classes_summary_enrolled"> classes enrolled.</string>
 </resources>

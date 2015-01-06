@@ -38,7 +38,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
-        multiSelectListPreference = (MultiSelectListPreference) findPreference(TagUtils.TAG_MULTILIST_SEMESTERS_KEY);
+        multiSelectListPreference = (MultiSelectListPreference) findPreference(TagUtils.TAG_MULTI_LIST_SEMESTERS_KEY);
         setEntriesToMultiSelectListPref(sharedPreferences);
         setSemestersSummary();
 
@@ -75,7 +75,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
-            case TagUtils.TAG_MULTILIST_SEMESTERS_KEY:
+            case TagUtils.TAG_MULTI_LIST_SEMESTERS_KEY:
                 setSemestersSummary();
                 return;
             case TagUtils.TAG_LIST_SEMESTERS:
@@ -122,17 +122,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     private void setClassesSummary(SharedPreferences sharedPreferences){
         Set<String> classesSelected = sharedPreferences.getStringSet(TagUtils.TAG_CLASSES_SELECTED, null);
-        String summary = "";
-        if (classesSelected != null && !classesSelected.isEmpty()) {
-            Iterator<String> iterator = classesSelected.iterator();
-            while (iterator.hasNext()){
-                summary += iterator.next();
-                if (iterator.hasNext())
-                    summary += ", ";
-            }
-        } else{
-            summary = getResources().getString(R.string.thoth_classes_summary);
-        }
+        String summary = (classesSelected != null)
+                ? classesSelected.size() + " " + getResources().getString(R.string.thoth_classes_summary_enrolled)
+                : getResources().getString(R.string.thoth_classes_summary);
         classPreference.setSummary(summary);
     }
 

@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.fragments.ClassesFragment;
 import pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
 public class ClassesActivity extends FragmentActivity{
 
@@ -44,8 +45,13 @@ public class ClassesActivity extends FragmentActivity{
 //                if(fragment != null)
 //                    ((ClassesFragment) fragment).refreshAndUpdate();
 //                return true;
+            case R.id.action_webview:
+                Intent intent = new Intent(this, WebViewActivity.class);
+                intent.putExtra(TagUtils.TAG_EXTRA_WEB_VIEW_URL, WebViewActivity.CLASSES_ROUTE);
+                startActivity(intent);
+                return true;
             case R.id.action_settings:
-                startActivity(new Intent(new Intent(ClassesActivity.this, SettingsActivity.class)));
+                startActivity(new Intent(ClassesActivity.this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

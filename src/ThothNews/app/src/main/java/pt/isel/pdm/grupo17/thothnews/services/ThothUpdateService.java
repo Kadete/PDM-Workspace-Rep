@@ -32,6 +32,7 @@ import java.util.Set;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
+import pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
@@ -68,11 +69,7 @@ public class ThothUpdateService extends IntentService {
     public static final String URI_TEACHER_INFO = URI_API_ROOT + "/teachers/%d";
 
     private static final int COLUMN_CLASS_ID = 0;
-
-    private static final int DEFAULT_NOTIFICATION_ID = 1;
-    private static int NOTIFICATION_ID = DEFAULT_NOTIFICATION_ID;
-
-
+    private static final int NOTIFICATION_ID = 1;
 
     class JsonThothLink{
         public static final String SELF = "self";
@@ -269,7 +266,7 @@ public class ThothUpdateService extends IntentService {
 
                 List<String> semestersToFilter = new LinkedList<>(); // <Semester, toFilter>
                 SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                final Set<String> semestersSet = sharedPrefs.getStringSet(TagUtils.TAG_MULTILIST_SEMESTERS_KEY, null);
+                final Set<String> semestersSet = sharedPrefs.getStringSet(TagUtils.TAG_MULTI_LIST_SEMESTERS_KEY, null);
 
                 if (semestersSet != null && !semestersSet.isEmpty()){
                     for(Object semester : semestersSet.toArray()){
@@ -341,9 +338,13 @@ public class ThothUpdateService extends IntentService {
         Cursor cursor = resolver.query(ThothContract.Classes.ENROLLED_URI, new String[]{ThothContract.Classes._ID}
                 ,String.format("%s = 1", ThothContract.Classes.ENROLLED), null, null);
 
-        while(cursor.moveToNext())
-            handleClassNewsUpdate(cursor.getLong(COLUMN_CLASS_ID));
-
+        List<Long> listClassesToNotify = new LinkedList<>();
+        while(cursor.moveToNext()) {
+            long classID = cursor.getLong(COLUMN_CLASS_ID);
+            if(handleClassNewsUpdate(classID))
+                listClassesToNotify.add(classID);
+        }
+        sendNotifications(listClassesToNotify);
         cursor.close();
     }
 
@@ -352,9 +353,9 @@ public class ThothUpdateService extends IntentService {
      * parameters.
      * @param classID
      */
-    private void handleClassNewsUpdate(long classID) {
+    private boolean handleClassNewsUpdate(long classID) {
         if( classID == ARG_CLASS_ID_DEFAULT_VALUE)
-            return;
+            return false;
 
         int addedNews = 0;
 
@@ -395,7 +396,7 @@ public class ThothUpdateService extends IntentService {
                     }
                 }
                 if(addedNews > 0)
-                    sendNotification(classID);
+                    return true;
             } catch (JSONException e) {
                 d(SERVICE_TAG, "ERROR: handleClassNewsUpdate(..) while parsing JSON response");
                 d(SERVICE_TAG, e.getMessage());
@@ -407,49 +408,58 @@ public class ThothUpdateService extends IntentService {
         } catch (IOException e) {
             d(SERVICE_TAG, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
         }
+        return false;
     }
 
     private static final long[] mVibratePattern = { 0, 200, 200, 300 };
     private NotificationManager notificationManager = null;
     private Notification.Builder builder = null;
 
-    private void sendNotification(long classID) {
-        Cursor classInfo = getContentResolver().query(UriUtils.Classes.parseClass(classID), null, null, null, null);
-        if(classInfo.moveToNext()){
-            ThothClass thothClass = ThothClass.fromCursor(classInfo);
-
-            Intent intent = new Intent(this.getApplication(), ClassSectionsActivity.class);
-            intent.putExtra(TagUtils.TAG_SERIALIZABLE_CLASS, thothClass);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pIntent = PendingIntent.getActivity(this.getApplication(), NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-            if(builder == null){
-                builder = new Notification.Builder(getApplicationContext())
-                    .setContentText("Click to open the new from this class.")
-                    .setAutoCancel(true)
-                    .setSmallIcon(R.drawable.ic_thoth)
-                    .setOngoing(false);
-            }
-
-            if(!isToVibrate)
-                builder.setVibrate(null);
-            else
-                builder.setVibrate(mVibratePattern);
-
-            builder.setContentTitle("News from "+ thothClass.getFullName())
-                    .setContentIntent(pIntent);
-
-            if(notificationManager == null)
-                notificationManager = (NotificationManager) this.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(NOTIFICATION_ID++, builder.build());
+    private void sendNotifications(List<Long> classesID) {
+        Intent intent = null;
+        if(builder == null){
+            builder = new Notification.Builder(getApplicationContext())
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.ic_thoth)
+                .setOngoing(false);
         }
+        if(notificationManager == null)
+            notificationManager = (NotificationManager) this.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        switch (classesID.size()) {
+            case 0:
+                return;
+            case 1:
+                Cursor classInfo = getContentResolver().query(UriUtils.Classes.parseClass(classesID.get(0)), null, null, null, null);
+                if (classInfo.moveToNext()) {
+                    ThothClass thothClass = ThothClass.fromCursor(classInfo);
+                    intent = new Intent(this.getApplication(), ClassSectionsActivity.class);
+                    intent.putExtra(TagUtils.TAG_SERIALIZABLE_CLASS, thothClass);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    builder.setContentTitle("You got news from " + thothClass.getFullName())
+                        .setContentText("Click to open the new from " + thothClass.getFullName());
+                }
+                classInfo.close();
+                break;
+            default:
+                intent = new Intent(this.getApplication(), ClassesActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                builder.setContentTitle("You have new news from " + classesID.size() + " classes.")
+                        .setContentText("Click to open ThothNews Application.");
+                break;
+        }
+
+        PendingIntent pIntent = PendingIntent.getActivity(this.getApplication(), NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        builder.setContentIntent(pIntent)
+            .setVibrate((!isToVibrate) ? null : mVibratePattern);
+
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 
     public static boolean isToVibrate = true;
 
     public static void cleanNotifications(Context context){
         ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancelAll();
-        NOTIFICATION_ID = DEFAULT_NOTIFICATION_ID;
     }
 
     static final String[] CURSOR_COLUMNS = {ThothContract.Students._ID};

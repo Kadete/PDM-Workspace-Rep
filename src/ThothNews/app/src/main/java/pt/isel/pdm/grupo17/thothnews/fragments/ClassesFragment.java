@@ -97,7 +97,7 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                Set<String> semestersSet = sharedPreferences.getStringSet(TagUtils.TAG_MULTILIST_SEMESTERS_KEY, null);
+                Set<String> semestersSet = sharedPreferences.getStringSet(TagUtils.TAG_MULTI_LIST_SEMESTERS_KEY, null);
                 startActivity(new Intent(getActivity(), (semestersSet == null || semestersSet.isEmpty())
                                                             ? SettingsActivity.class : ClassesPickActivity.class));
             }
