@@ -16,20 +16,22 @@ import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
 public class ThothProvider extends ContentProvider {
     private static UriMatcher _matcher;
     private ThothDBHelper _helper;
-    public static final int ROUTE_CLASSES = 0;
-    public static final int ROUTE_CLASSES_ID = 1;
-    public static final int ROUTE_CLASSES_ENROLLED = 2;
-    public static final int ROUTE_CLASSES_ID_NEWS = 3;
-    public static final int ROUTE_CLASSES_ID_PARTICIPANTS = 4;
-    public static final int ROUTE_CLASSES_ID_PARTICIPANTS_ID = 5;
-    public static final int ROUTE_NEWS = 6;
-    public static final int ROUTE_NEWS_ID = 7;
-    public static final int ROUTE_STUDENTS = 8;
-    public static final int ROUTE_STUDENTS_ID = 9;
-    public static final int ROUTE_TEACHERS = 10;
-    public static final int ROUTE_TEACHERS_ID = 11;
-    public static final int ROUTE_CLASSES_STUDENTS = 12;
-    public static final int ROUTE_CLASSES_SEARCH= 13;
+    private static final int ROUTE_CLASSES = 0;
+    private static final int ROUTE_CLASSES_ID = 1;
+    private static final int ROUTE_CLASSES_ENROLLED = 2;
+    private static final int ROUTE_CLASSES_ID_NEWS = 3;
+    private static final int ROUTE_CLASSES_ID_PARTICIPANTS = 4;
+    private static final int ROUTE_CLASSES_ID_PARTICIPANTS_ID = 5;
+    private static final int ROUTE_NEWS = 6;
+    private static final int ROUTE_NEWS_ID = 7;
+    private static final int ROUTE_STUDENTS = 8;
+    private static final int ROUTE_STUDENTS_ID = 9;
+    private static final int ROUTE_TEACHERS = 10;
+    private static final int ROUTE_TEACHERS_ID = 11;
+    private static final int ROUTE_CLASSES_STUDENTS = 12;
+    private static final int ROUTE_CLASSES_SEARCH = 13;
+    private static final int ROUTE_SEMESTERS = 14;
+
     /**
      * Position of the class _id on URI path segments such as "classes/#", "classes/#/news"
      */
@@ -39,6 +41,7 @@ public class ThothProvider extends ContentProvider {
     private static final int TEACHER_ID_POSITION = 1;
     private static final int STUDENTS_ID_POSITION = 1;
 //    private static final int PARTICIPANTS_ID_POSITION = 3;
+
 
     static {
         _matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -56,6 +59,7 @@ public class ThothProvider extends ContentProvider {
         _matcher.addURI(CONTENT_AUTHORITY, "teachers/#", ROUTE_TEACHERS_ID);
         _matcher.addURI(CONTENT_AUTHORITY, "classesStudents", ROUTE_CLASSES_STUDENTS);
         _matcher.addURI(CONTENT_AUTHORITY, "classesSearch/*", ROUTE_CLASSES_SEARCH);
+        _matcher.addURI(CONTENT_AUTHORITY, "semesters", ROUTE_SEMESTERS);
     }
 
     @Override
@@ -109,6 +113,7 @@ public class ThothProvider extends ContentProvider {
             case ROUTE_NEWS_ID:
             case ROUTE_STUDENTS_ID:
             case ROUTE_CLASSES_SEARCH:
+            case ROUTE_SEMESTERS:
                 throw new UnsupportedOperationException("Insert not supported on URI: "+uri);
             default:
                 d("Uri = %s, Unmatched URI", uri.toString());
@@ -199,10 +204,19 @@ public class ThothProvider extends ContentProvider {
             case ROUTE_CLASSES_SEARCH:
                 d("Uri = %s, ROUTE_CLASSES_SEARCH", uri.toString());
                 String classeName = getName(uri,CLASS_NAME_POSITION);
-                selection = ThothContract.Classes.COURSE + " LIKE ?";
-                selectionArgs = new String [] { String.valueOf(classeName)+"%"};
+                String courseName =  ThothContract.Classes.COURSE;
+                String[] semesters = selection.split("OR"), args = new String[selectionArgs.length*2];
+                selection = "";
+                for (int i = 0, argCount = 0; i < semesters.length; i++){
+                    selection += SQLiteUtils.appendWhereCondition(semesters[i], courseName ) + ((i+1 < semesters.length) ? " OR " : "");
+                    args[argCount++] = selectionArgs[i];
+                    args[argCount++] = String.valueOf(classeName) + "%";
+                }
                 cursor = db.query(ThothContract.Classes.TABLE_NAME, projection
-                        , selection, selectionArgs ,null,null, sortOrder);
+                        , selection, args ,null,null, sortOrder);
+                break;
+            case ROUTE_SEMESTERS:
+                cursor = db.rawQuery("SELECT DISTINCT " + ThothContract.Classes.SEMESTER + " FROM " + ThothContract.Classes.TABLE_NAME + " ASC", null);
                 break;
             default:
                 d("Uri = %s, Unmatched URI", uri.toString());
@@ -263,6 +277,7 @@ public class ThothProvider extends ContentProvider {
             case ROUTE_CLASSES_ENROLLED:
             case ROUTE_CLASSES_ID_PARTICIPANTS:
             case ROUTE_CLASSES_SEARCH:
+            case ROUTE_SEMESTERS:
                 throw new UnsupportedOperationException("Update not supported on URI: "+uri);
             default:
                 d("Uri = %s, Unmatched URI", uri.toString());
@@ -322,6 +337,7 @@ public class ThothProvider extends ContentProvider {
             case ROUTE_CLASSES_ID_NEWS:
             case ROUTE_CLASSES_ID_PARTICIPANTS:
             case ROUTE_CLASSES_SEARCH:
+            case ROUTE_SEMESTERS:
                 throw new UnsupportedOperationException("Delete not supported on URI: "+uri);
             default:
                 d("Uri = %s, Unmatched URI", uri.toString());

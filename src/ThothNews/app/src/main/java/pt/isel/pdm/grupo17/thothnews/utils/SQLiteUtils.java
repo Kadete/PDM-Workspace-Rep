@@ -6,16 +6,17 @@ import android.database.Cursor;
 import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.activities.PreferencesActivity;
+import pt.isel.pdm.grupo17.thothnews.activities.SettingsActivity;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 
 public class SQLiteUtils {
 
     public static final String TRUE = "1", FALSE = "0";
 
-    private static String wherePrefix = " AND (",
+    private static String wherePrefixOr = " OR (",
+            wherePrefixAnd = " AND (",
             whereInitialPrefix = " (",
-            whereSuffix = " = ? )";
+            whereSuffix = " LIKE ? )";
 
     public static String appendWhereCondition(String src, String... conditions){
         // No conditions to add, do nothing
@@ -31,7 +32,7 @@ public class SQLiteUtils {
 
         }else{
             builder = new StringBuilder(src);
-            builder.append(wherePrefix);
+            builder.append(wherePrefixAnd);
 
         }
 
@@ -41,7 +42,7 @@ public class SQLiteUtils {
 
         // Append ", AND (" and " = ? )" to each arg
         for(int idx=1;idx<conditions.length;++idx){
-            builder.append(wherePrefix)
+            builder.append(wherePrefixAnd)
                     .append(conditions[idx])
                     .append(whereSuffix);
         }
@@ -72,7 +73,7 @@ public class SQLiteUtils {
         Cursor cClassesEnrolled = context.getContentResolver().query(ThothContract.Classes.ENROLLED_URI, null, null, null, null);
         if(!cClassesEnrolled.moveToNext()){
             Toast.makeText(context, context.getString(R.string.setup_classes_request), Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(context, PreferencesActivity.class);
+            Intent intent = new Intent(context, SettingsActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             cClassesEnrolled.close();
             context.startActivity(intent);

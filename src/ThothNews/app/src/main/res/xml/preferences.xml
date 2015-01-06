@@ -5,13 +5,36 @@
 
     <intent android:action=".PreferencesActivity"/>
     <PreferenceCategory
-        android:title="@string/category_title"
-        android:key="first_category">
-
-        <Preference android:title="@string/title_activity_class_pick"
-            android:key="pick_classes"/>
-
-        <Preference android:title="@string/clean_classes_title"
-            android:key="reset_classes"/>
+        android:title="@string/category_classes_title"
+        android:key="classes_category">
+        <MultiSelectListPreference
+            android:key="multi_select_list_key"
+            android:title="@string/thoth_semesters_title"
+            android:summary="@string/thoth_semesters_summary"
+            android:defaultValue="@array/empty_array"
+            android:entryValues="@array/empty_array"
+            android:entries="@array/empty_array"
+            />
+        <Preference
+            android:key="@string/pick_classes_key"
+            android:title="@string/title_activity_class_pick"
+            android:summary="" />
     </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/category_notifications_title"
+        android:key="notification_category">
+        <SwitchPreference
+            android:key="@string/vibration_switch_key"
+            android:title="Vibration" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/category_connectivity_title"
+        android:key="notification_category">
+        <SwitchPreference
+            android:key="@string/data_mobile_switch_key"
+            android:title="Data Mobile" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

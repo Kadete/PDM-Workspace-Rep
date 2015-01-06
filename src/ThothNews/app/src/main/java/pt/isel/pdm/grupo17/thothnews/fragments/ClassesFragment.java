@@ -1,9 +1,11 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -15,10 +17,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
+
+import java.util.Set;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
+import pt.isel.pdm.grupo17.thothnews.activities.ClassesPickActivity;
+import pt.isel.pdm.grupo17.thothnews.activities.SettingsActivity;
 import pt.isel.pdm.grupo17.thothnews.adapters.ClassesAdapter;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
@@ -81,6 +88,18 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.putExtra(TagUtils.TAG_SERIALIZABLE_CLASS, thothClass);
                 startActivity(i);
+            }
+        });
+
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.attachToListView(mGridView);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                Set<String> semestersSet = sharedPreferences.getStringSet(TagUtils.TAG_MULTILIST_SEMESTERS_KEY, null);
+                startActivity(new Intent(getActivity(), (semestersSet == null || semestersSet.isEmpty())
+                                                            ? SettingsActivity.class : ClassesPickActivity.class));
             }
         });
 

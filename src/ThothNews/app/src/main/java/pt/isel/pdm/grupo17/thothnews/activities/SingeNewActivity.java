@@ -78,7 +78,7 @@ public class SingeNewActivity extends FragmentActivity {
                 onBackPressed();
                 return true;
             case R.id.action_settings:
-                startActivity(new Intent(SingeNewActivity.this, PreferencesActivity.class));
+                startActivity(new Intent(SingeNewActivity.this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

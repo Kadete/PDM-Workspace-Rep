@@ -5,12 +5,14 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
-import pt.isel.pdm.grupo17.thothnews.fragments.SettingsFragment;
+import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.FALSE;
 
@@ -36,9 +38,8 @@ public class CleanPreferencesDialogFragment extends DialogFragment {
                     getActivity().getContentResolver().update(ThothContract.Classes.CONTENT_URI, values, null, null);
 
                     Toast.makeText(getActivity(), toastSuccessMessage, Toast.LENGTH_LONG).show();
-                    getFragmentManager().beginTransaction()
-                            .replace(android.R.id.content, new SettingsFragment())
-                            .commit();
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    sharedPreferences.edit().putInt(TagUtils.TAG_CLASSES_SELECTED, 0).apply();
                 }
             })
             .setNegativeButton(cancel, new DialogInterface.OnClickListener() {

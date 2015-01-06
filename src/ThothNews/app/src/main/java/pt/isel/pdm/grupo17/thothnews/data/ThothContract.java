@@ -20,11 +20,17 @@ public final class ThothContract {
     public static final String PATH_CLASSES_STUDENTS = "classesStudents";
     public static final String PATH_CLASSES_ENROLLED = "enrolled";
 
+    public static final String PATH_SEMESTERS = "semesters";
+
     private static final String TYPE_TEXT = " TEXT";
     private static final String TYPE_INTEGER = " INTEGER";
     private static final String TYPE_BOOLEAN = " BOOLEAN";
     private static final String PRIMARY_KEY = " PRIMARY KEY ";
     private static final String COMMA_SEP = ", ";
+
+
+    public static final Uri SEMESTERS_URI =
+            BASE_CONTENT_URI.buildUpon().appendPath(PATH_SEMESTERS).build();
 
     public static class Classes implements BaseColumns{
 
@@ -53,7 +59,6 @@ public final class ThothContract {
         public static final Uri ENROLLED_URI =
             BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLASSES)
                 .appendPath(PATH_CLASSES_ENROLLED).build();
-
 
         public static final String TABLE_NAME = "classes",
                 FULL_NAME = "fullName",

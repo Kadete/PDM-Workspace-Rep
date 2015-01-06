@@ -3,4 +3,5 @@
     <string-array name="empty_array" />
 
     <string-array name="news_id_read" />
+    <string-array name="courses">courses</string-array>
 </resources>

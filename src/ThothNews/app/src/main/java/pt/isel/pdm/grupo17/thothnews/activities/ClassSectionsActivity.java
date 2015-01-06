@@ -195,13 +195,13 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
                 ReadAllDialogFragment readAllDialogFragment = ReadAllDialogFragment.newInstance(sThothClass.getID());
                 readAllDialogFragment.show(getSupportFragmentManager(), "Read All News Dialog Fragment");
                 return true;
-            case R.id.action_refresh:
-                SlidingTabsColorsFragment fragment = (SlidingTabsColorsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container_class_sections);
-                if(fragment != null)
-                     fragment.refreshLoader();
-                return true;
+//            case R.id.action_refresh:
+//                SlidingTabsColorsFragment fragment = (SlidingTabsColorsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container_class_sections);
+//                if(fragment != null)
+//                     fragment.refreshLoader();
+//                return true;
             case R.id.action_settings:
-                startActivity(new Intent(this, PreferencesActivity.class));
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

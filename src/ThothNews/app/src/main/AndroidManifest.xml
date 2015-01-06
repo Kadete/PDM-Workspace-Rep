@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.PreferencesActivity" android:label="@string/label_activity_preferences"/>
+        <activity android:name=".activities.SettingsActivity" android:label="@string/label_activity_preferences"/>
 
         <activity android:name=".activities.ClassesPickActivity" android:label="@string/title_activity_class_pick"/>
 
@@ -42,6 +42,7 @@
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.STATE_CHANGE" />
+                <action android:name="action_data_mobile_change" />
             </intent-filter>
         </receiver>
 

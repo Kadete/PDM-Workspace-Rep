@@ -8,9 +8,10 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.preference.PreferenceManager;
 import android.text.Html;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,9 +25,10 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
@@ -38,7 +40,6 @@ import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.readAllFrom;
-import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ACTIVITY;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -53,6 +54,7 @@ public class ThothUpdateService extends IntentService {
     private static final String ACTION_CLASS_NEWS_UPDATE = "pt.isel.pdm.grupo17.thothnews.services.action.CLASS_NEWS_UPDATE";
     private static final String ACTION_CLASS_PARTICIPANTS_UPDATE = "pt.isel.pdm.grupo17.thothnews.services.action.CLASS_PARTICIPANTS_UPDATE";
     private static final String ACTION_CLASSES_UPDATE = "pt.isel.pdm.grupo17.thothnews.services.action.CLASSES_UPDATE";
+    private static final String ACTION_SEMESTERS_UPDATE = "pt.isel.pdm.grupo17.thothnews.services.action.SEMESTERS_UPDATE";
 
     private static final String ARG_CLASS_ID = "pt.isel.pdm.grupo17.thothnews.services.extra.ARG_CLASS_ID";
     private static final int ARG_CLASS_ID_DEFAULT_VALUE = -1;
@@ -69,6 +71,8 @@ public class ThothUpdateService extends IntentService {
 
     private static final int DEFAULT_NOTIFICATION_ID = 1;
     private static int NOTIFICATION_ID = DEFAULT_NOTIFICATION_ID;
+
+
 
     class JsonThothLink{
         public static final String SELF = "self";
@@ -139,6 +143,9 @@ public class ThothUpdateService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             switch (intent.getAction()){
+                case ACTION_SEMESTERS_UPDATE:
+                    handleSemestersUpdate();
+                    break;
                 case ACTION_CLASSES_UPDATE:
                     handleClassesUpdate();
                     break;
@@ -152,6 +159,12 @@ public class ThothUpdateService extends IntentService {
                     handleClassParticipantsUpdate(intent.getLongExtra(ARG_CLASS_ID, ARG_CLASS_ID_DEFAULT_VALUE));
             }
         }
+    }
+
+    public static void startActionSemestersUpdate(Context context) {
+        Intent intent = new Intent(context, ThothUpdateService.class);
+        intent.setAction(ACTION_SEMESTERS_UPDATE);
+        context.startService(intent);
     }
 
     /**
@@ -209,11 +222,36 @@ public class ThothUpdateService extends IntentService {
         context.startService(intent);
     }
 
-    static final List<String> SemestersToFilter = new LinkedList<>(Arrays.asList("1314v", "1415i"));
+    private void handleSemestersUpdate(){
+        try{
+            HttpURLConnection conn = (HttpURLConnection) new URL(URI_CLASSES_LIST).openConnection();
+            try {
+                InputStream is = conn.getInputStream();
+                String data = readAllFrom(is);
+                final JSONArray thothClasses = ParseUtils.parseClasses(data);
 
-    /*TODO: make this a preference or generic*/
-    public boolean isSemesterToFilter(String semester){
-        return SemestersToFilter.contains(semester);
+                List<String> semesters = new LinkedList<>();
+                for(int idx = 0; idx < thothClasses.length();++idx) {
+                    JSONObject classJsonObj = thothClasses.getJSONObject(idx);
+                    String semester = classJsonObj.getString(JsonThothClass.LECTIVE_SEMESTER);
+                    if (semesters.contains(semester))
+                        continue;
+                    semesters.add(semester);
+                }
+                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                sharedPrefs.edit().putStringSet(TagUtils.TAG_LIST_SEMESTERS, new HashSet<>(semesters)).apply();
+
+            } catch (JSONException e) {
+                d(SERVICE_TAG, "ERROR: handleClassesUpdate(..) while parsing JSON response");
+                d(SERVICE_TAG, e.getMessage());
+            } finally {
+                conn.disconnect();
+            }
+        }catch (MalformedURLException e) {
+            d(SERVICE_TAG,"An error ocurred while trying to create URL to request classes list!\nMessage: "+e.getMessage());
+        } catch (IOException e) {
+            d(SERVICE_TAG, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
+        }
     }
 
     /**
@@ -229,11 +267,25 @@ public class ThothUpdateService extends IntentService {
                 String data = readAllFrom(is);
                 final JSONArray thothClasses = ParseUtils.parseClasses(data);
 
+                List<String> semestersToFilter = new LinkedList<>(); // <Semester, toFilter>
+                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                final Set<String> semestersSet = sharedPrefs.getStringSet(TagUtils.TAG_MULTILIST_SEMESTERS_KEY, null);
+
+                if (semestersSet != null && !semestersSet.isEmpty()){
+                    for(Object semester : semestersSet.toArray()){
+                        semestersToFilter.add(String.valueOf(semester));
+                    }
+                }
+
                 List<JSONObject> jsonClasses = new LinkedList<>();
+
                 for(int idx = 0; idx < thothClasses.length();++idx) {
                     JSONObject classJsonObj = thothClasses.getJSONObject(idx);
-                    if (!isSemesterToFilter(classJsonObj.getString(JsonThothClass.LECTIVE_SEMESTER)))
+                    String semester = classJsonObj.getString(JsonThothClass.LECTIVE_SEMESTER);
+
+                    if (!semestersToFilter.contains(semester)) // check if semester is to filter
                         continue;
+
                    jsonClasses.add(classJsonObj);
                 }
 
@@ -269,15 +321,15 @@ public class ThothUpdateService extends IntentService {
                 }
 
             } catch (JSONException e) {
-                Log.e(SERVICE_TAG, "ERROR: handleClassesUpdate(..) while parsing JSON response");
-                Log.e(SERVICE_TAG, e.getMessage());
+                d(SERVICE_TAG, "ERROR: handleClassesUpdate(..) while parsing JSON response");
+                d(SERVICE_TAG, e.getMessage());
             } finally {
                 conn.disconnect();
             }
         }catch (MalformedURLException e) {
-            d(TAG_ACTIVITY,"An error ocurred while trying to create URL to request classes list!\nMessage: "+e.getMessage());
+            d(SERVICE_TAG,"An error ocurred while trying to create URL to request classes list!\nMessage: "+e.getMessage());
         } catch (IOException e) {
-            d(TAG_ACTIVITY, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
+            d(SERVICE_TAG, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
         }
     }
 
@@ -345,15 +397,15 @@ public class ThothUpdateService extends IntentService {
                 if(addedNews > 0)
                     sendNotification(classID);
             } catch (JSONException e) {
-                Log.e(SERVICE_TAG, "ERROR: handleClassNewsUpdate(..) while parsing JSON response");
-                Log.e(SERVICE_TAG, e.getMessage());
+                d(SERVICE_TAG, "ERROR: handleClassNewsUpdate(..) while parsing JSON response");
+                d(SERVICE_TAG, e.getMessage());
             } finally {
                 httpConn.disconnect();
             }
         } catch (MalformedURLException e) {
-            d(TAG_ACTIVITY, "An error occurred while trying to create URL to request news list given classID:" + classID + "\nMessage: " + e.getMessage());
+            d(SERVICE_TAG, "An error occurred while trying to create URL to request news list given classID:" + classID + "\nMessage: " + e.getMessage());
         } catch (IOException e) {
-            d(TAG_ACTIVITY, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
+            d(SERVICE_TAG, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
         }
     }
 
@@ -376,9 +428,13 @@ public class ThothUpdateService extends IntentService {
                     .setContentText("Click to open the new from this class.")
                     .setAutoCancel(true)
                     .setSmallIcon(R.drawable.ic_thoth)
-                    .setVibrate(mVibratePattern)
                     .setOngoing(false);
             }
+
+            if(!isToVibrate)
+                builder.setVibrate(null);
+            else
+                builder.setVibrate(mVibratePattern);
 
             builder.setContentTitle("News from "+ thothClass.getFullName())
                     .setContentIntent(pIntent);
@@ -388,6 +444,8 @@ public class ThothUpdateService extends IntentService {
             notificationManager.notify(NOTIFICATION_ID++, builder.build());
         }
     }
+
+    public static boolean isToVibrate = true;
 
     public static void cleanNotifications(Context context){
         ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancelAll();
@@ -440,15 +498,15 @@ public class ThothUpdateService extends IntentService {
                     assigningStudentToClass(classID, currParticipantID, nGroup);
                 }
             } catch (JSONException e) {
-                Log.e(SERVICE_TAG, "ERROR: handleClassNewsUpdate(..) while parsing JSON response");
-                Log.e(SERVICE_TAG, e.getMessage());
+                d(SERVICE_TAG, "ERROR: handleClassNewsUpdate(..) while parsing JSON response");
+                d(SERVICE_TAG, e.getMessage());
             } finally {
                 c.disconnect();
             }
         } catch (MalformedURLException e) {
-            d(TAG_ACTIVITY, "An error occurred while trying to create URL to request participants list given classID:" + classID + "\nMessage: " + e.getMessage());
+            d(SERVICE_TAG, "An error occurred while trying to create URL to request participants list given classID:" + classID + "\nMessage: " + e.getMessage());
         } catch (IOException e) {
-            d(TAG_ACTIVITY, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
+            d(SERVICE_TAG, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
         }
     }
 

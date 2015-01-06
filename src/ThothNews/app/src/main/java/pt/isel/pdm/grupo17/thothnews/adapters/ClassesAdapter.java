@@ -100,7 +100,8 @@ public class ClassesAdapter extends CursorAdapter {
         Cursor cursorNewsRead = mContext.getContentResolver().query(classNewsUri, new String[] {ThothContract.Classes._ID}, selection, selectionArgs, orderBy);
 
         Boolean newsToRead = cursorNewsRead.moveToNext();
-        holder.new_news.setVisibility((newsToRead)? View.VISIBLE : View.GONE);
+
+        holder.new_news.setImageResource((newsToRead) ? R.drawable.ic_news_to_read : R.drawable.ic_action_visibility);
         cursorNewsRead.close();
         holder.full_name.setTypeface(null, (newsToRead) ? Typeface.BOLD : Typeface.NORMAL);
         holder.teacher.setTypeface(null, (newsToRead) ? Typeface.BOLD : Typeface.NORMAL);

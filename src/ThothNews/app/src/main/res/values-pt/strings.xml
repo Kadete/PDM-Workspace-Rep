@@ -27,7 +27,7 @@
     <string name="title_action_settings">Definições</string>
 
     <!-- xml: preferences -->
-    <string name="category_title">Turmas</string>
+    <string name="category_classes_title">Turmas</string>
     <string name="thoth_classes_title">Lista de Turmas</string>
     <string name="thoth_classes_summary">Seleccione as turmas a receber noticias</string>
     <string name="action_settings">Definições</string>
@@ -74,5 +74,10 @@
     <string name="no_class_news">Não foram criadas notícias para esta turma!</string>
     <string name="not_students_assigned">Esta turma não tem alunos associados!</string>
     <string name="send_email_body">Corpo da mensagem</string>
+    <string name="category_connectivity_title">Connectividade</string>
+    <string name="category_notifications_title">Notificações</string>
+    <string name="thoth_semesters_summary">Seleccione os semestre que pretende filtrar</string>
+    <string name="thoth_semesters_title">Semestres</string>
+    <string name="title_action_clear_all">Limpar selecções</string>
 
 </resources>

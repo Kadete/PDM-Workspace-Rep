@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.fragments.ClassesPickFragment;
+import pt.isel.pdm.grupo17.thothnews.fragments.dialogs.CleanPreferencesDialogFragment;
 
 public class ClassesPickActivity extends FragmentActivity{
 
@@ -49,10 +50,15 @@ public class ClassesPickActivity extends FragmentActivity{
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.action_refresh:
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
-                if(fragment != null)
-                    ((ClassesPickFragment) fragment).refreshAndUpdate();
+//            case R.id.action_refresh:
+//                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
+//                if(fragment != null)
+//                    ((ClassesPickFragment) fragment).refreshAndUpdate();
+//                return true;
+
+            case R.id.action_clear_all:
+                CleanPreferencesDialogFragment dFragment = new CleanPreferencesDialogFragment();
+                dFragment.show(getFragmentManager(), "Dialog Fragment");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -64,7 +70,7 @@ public class ClassesPickActivity extends FragmentActivity{
         super.onBackPressed();
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
         if(fragment != null)
-            ((ClassesPickFragment) fragment).updateClassesPicked(ClassesPickActivity.this, true);
+            ((ClassesPickFragment) fragment).updateClassesPicked(true);
     }
 
 }

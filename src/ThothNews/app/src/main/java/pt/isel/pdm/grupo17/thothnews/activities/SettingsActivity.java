@@ -7,19 +7,23 @@ import android.view.MenuItem;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.fragments.SettingsFragment;
+import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 
-public class PreferencesActivity extends PreferenceActivity {
+public class SettingsActivity extends PreferenceActivity{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setTitle(R.string.label_activity_preferences);
 
+        ThothUpdateService.startActionSemestersUpdate(getApplicationContext());
+
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .replace(android.R.id.content, new SettingsFragment())
                     .commit();
         }
+
     }
 
     @Override
@@ -28,6 +32,7 @@ public class PreferencesActivity extends PreferenceActivity {
         ActionBar actionbar = this.getActionBar();
         assert actionbar != null;
         actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setIcon(android.R.drawable.ic_menu_preferences);
     }
 
     @Override

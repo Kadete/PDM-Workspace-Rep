@@ -2,7 +2,6 @@ package pt.isel.pdm.grupo17.thothnews.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
@@ -40,13 +39,13 @@ public class ClassesActivity extends FragmentActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_refresh:
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
-                if(fragment != null)
-                    ((ClassesFragment) fragment).refreshAndUpdate();
-                return true;
+//            case R.id.action_refresh:
+//                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
+//                if(fragment != null)
+//                    ((ClassesFragment) fragment).refreshAndUpdate();
+//                return true;
             case R.id.action_settings:
-                startActivity(new Intent(new Intent(ClassesActivity.this, PreferencesActivity.class)));
+                startActivity(new Intent(new Intent(ClassesActivity.this, SettingsActivity.class)));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
