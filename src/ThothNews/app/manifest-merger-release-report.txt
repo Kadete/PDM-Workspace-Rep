@@ -16,6 +16,9 @@ ADDED from AndroidManifest.xml:2:1
 uses-sdk
 ADDED from AndroidManifest.xml:7:5
 MERGED from com.android.support:support-v4:21.0.3:15:5
+MERGED from com.melnykov:floatingactionbutton:1.1.0:8:5
+MERGED from com.android.support:recyclerview-v7:21.0.0:15:5
+MERGED from com.android.support:support-v4:21.0.3:15:5
 MERGED from com.github.siyamed:android-shape-imageview:0.9.2:8:5
 MERGED from com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.0.0:23:5
 MERGED from com.nhaarman.listviewanimations:lib-core:3.1.0:22:5
@@ -56,6 +59,9 @@ ADDED from AndroidManifest.xml:16:5
 application
 ADDED from AndroidManifest.xml:18:5
 MERGED from com.android.support:support-v4:21.0.3:16:5
+MERGED from com.melnykov:floatingactionbutton:1.1.0:12:5
+MERGED from com.android.support:recyclerview-v7:21.0.0:17:5
+MERGED from com.android.support:support-v4:21.0.3:16:5
 MERGED from com.nhaarman.listviewanimations:lib-core:3.1.0:26:5
 MERGED from com.nhaarman.listviewanimations:lib-manipulation:3.1.0:26:5
 MERGED from com.nhaarman.listviewanimations:lib-core-slh:3.1.0:26:5
@@ -81,10 +87,10 @@ category#android.intent.category.LAUNCHER
 ADDED from AndroidManifest.xml:28:17
 	android:name
 		ADDED from AndroidManifest.xml:28:27
-activity#pt.isel.pdm.grupo17.thothnews.activities.PreferencesActivity
+activity#pt.isel.pdm.grupo17.thothnews.activities.SettingsActivity
 ADDED from AndroidManifest.xml:32:9
 	android:label
-		ADDED from AndroidManifest.xml:32:66
+		ADDED from AndroidManifest.xml:32:63
 	android:name
 		ADDED from AndroidManifest.xml:32:19
 activity#pt.isel.pdm.grupo17.thothnews.activities.ClassesPickActivity
@@ -141,6 +147,12 @@ ADDED from AndroidManifest.xml:56:9
 		ADDED from AndroidManifest.xml:58:13
 	android:name
 		ADDED from AndroidManifest.xml:57:13
+activity#android.support.v7.widget.TestActivity
+ADDED from com.android.support:recyclerview-v7:21.0.0:18:9
+	android:label
+		ADDED from com.android.support:recyclerview-v7:21.0.0:18:19
+	android:name
+		ADDED from com.android.support:recyclerview-v7:21.0.0:18:60
 activity#com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.SwipeTouchListenerTestActivity
 ADDED from com.nhaarman.listviewanimations:lib-manipulation:3.1.0:27:9
 	android:name

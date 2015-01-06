@@ -20,7 +20,7 @@
         <com.github.siyamed.shapeimageview.CircularImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_tab_participants"
+            android:src="@drawable/ic_image_camera"
             app:siBorderWidth="1dp"
             android:id="@+id/student_item_avatar"/>
     </FrameLayout>

@@ -123,7 +123,7 @@ public class NewsAdapter extends CursorAdapter {
         if(NewsListFragment.isTwoPane()){
             if (newSelectID == Long.valueOf(holder.id.getText().toString())) {
                 view.findViewById(R.id.arrow).setVisibility(View.VISIBLE);
-                view.setBackground(view.getResources().getDrawable(R.drawable.new_selected));
+                view.setBackground(view.getResources().getDrawable(R.drawable.bg_new_selected));
                 holder.title.setTextSize(22);
                 holder.when.setTextSize(18);
             }

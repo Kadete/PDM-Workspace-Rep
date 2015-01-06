@@ -3,7 +3,7 @@
     <item android:id="@+id/action_read_all"
         android:title="@string/title_action_refresh"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_tab_news"
+        android:icon="@drawable/ic_action_done_all"
         android:showAsAction="ifRoom" />
     <!--<item android:id="@+id/action_refresh"-->
         <!--android:title="@string/title_action_refresh"-->

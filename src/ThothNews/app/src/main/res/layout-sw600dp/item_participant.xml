@@ -15,7 +15,7 @@
     <com.github.siyamed.shapeimageview.RoundedImageView
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:src="@drawable/ic_tab_participants"
+        android:src="@drawable/ic_image_camera"
         app:siRadius="6dp"
         app:siBorderWidth="2dp"
         app:siSquare="true"

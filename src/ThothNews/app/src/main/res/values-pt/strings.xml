@@ -29,7 +29,7 @@
     <!-- xml: preferences -->
     <string name="category_classes_title">Turmas</string>
     <string name="thoth_classes_title">Lista de Turmas</string>
-    <string name="thoth_classes_summary">Seleccione as turmas a receber noticias</string>
+    <string name="thoth_classes_summary">Por favor seleccione pelo menos uma turma!</string>
     <string name="action_settings">Definições</string>
     <string name="title_action_refresh">Actualizar notícias</string>
     <string name="clean_classes_title">Limpar inscrições</string>
@@ -65,7 +65,7 @@
     <string name="news_read_all_toast_success">As tua notícias foram marcadas com sucesso!!</string>
     <string name="news_read_all_warning">Cuidado!!\nTodas as notícias referente á turma presente, serão marcadas como lidas.</string>
     <string name="service_update_classes_error">Ocorreu um erro inesperado.\nAs tuas turmas não foram actualizadas!</string>
-    <string name="service_update_classes_success">As</string>
+    <string name="service_update_classes_success">As turmas foram actualizadas com sucesso!</string>
     <string name="send_mail_to">"Envie email para "</string>
     <string name="send_mail_fail_no_app">Infelizmente não tem nenhuma aplicação capaz de resolver este tipo de pedido!</string>
     <string name="send_email_subject">Assunto</string>
@@ -79,5 +79,6 @@
     <string name="thoth_semesters_summary">Seleccione os semestre que pretende filtrar</string>
     <string name="thoth_semesters_title">Semestres</string>
     <string name="title_action_clear_all">Limpar selecções</string>
+    <string name="thoth_classes_summary_no_semester">Por favor seleccione pelo menos um semestre!</string>
 
 </resources>
