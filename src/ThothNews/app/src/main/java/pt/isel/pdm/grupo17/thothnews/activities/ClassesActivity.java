@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.fragments.ClassesFragment;
+import pt.isel.pdm.grupo17.thothnews.utils.ConnectionUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
@@ -40,21 +41,17 @@ public class ClassesActivity extends FragmentActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-//            case R.id.action_refresh:
-//                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
-//                if(fragment != null)
-//                    ((ClassesFragment) fragment).refreshAndUpdate();
-//                return true;
             case R.id.action_webview:
+                if(!ConnectionUtils.checkConnection(getApplicationContext(), true))
+                    break;
                 Intent intent = new Intent(this, WebViewActivity.class);
-                intent.putExtra(TagUtils.TAG_EXTRA_WEB_VIEW_URL, WebViewActivity.CLASSES_ROUTE);
+                intent.putExtra(TagUtils.TAG_EXTRA_WEB_VIEW_URL, WebViewActivity.URI_CLASSES_ROOT);
                 startActivity(intent);
                 return true;
             case R.id.action_settings:
                 startActivity(new Intent(ClassesActivity.this, SettingsActivity.class));
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -20,28 +20,36 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.adapters.NewsAdapter;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.fragments.NewsListFragment;
 import pt.isel.pdm.grupo17.thothnews.fragments.SingleNewFragment;
 import pt.isel.pdm.grupo17.thothnews.fragments.SlidingTabsColorsFragment;
+import pt.isel.pdm.grupo17.thothnews.fragments.WebViewFragment;
+import pt.isel.pdm.grupo17.thothnews.fragments.WorkItemsListFragment;
 import pt.isel.pdm.grupo17.thothnews.fragments.dialogs.ReadAllDialogFragment;
 import pt.isel.pdm.grupo17.thothnews.handlers.ImageHandler;
 import pt.isel.pdm.grupo17.thothnews.handlers.ImageHandlerThread;
 import pt.isel.pdm.grupo17.thothnews.handlers.SetViewAndUpdateHandler;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
+import pt.isel.pdm.grupo17.thothnews.models.ThothWorkItem;
 import pt.isel.pdm.grupo17.thothnews.utils.BitmapUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.ConnectionUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.BitmapUtils.EnumModel.DIR_PATH_TEACHER;
 
-public class ClassSectionsActivity extends FragmentActivity implements NewsListFragment.Callbacks{
+public class ClassSectionsActivity extends FragmentActivity implements NewsListFragment.CallbackNew, WorkItemsListFragment.CallbackWorkItem {
 
     private static ThothClass sThothClass;
     public static ThothClass getThothClass() {
         return sThothClass;
+    }
+
+    private static boolean sTwoPane;
+    public static boolean isTwoPane() {
+        return sTwoPane;
     }
 
     @Override
@@ -54,6 +62,9 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
             SlidingTabsColorsFragment fragment = new SlidingTabsColorsFragment();
             transaction.replace(R.id.fragment_container_class_sections, fragment);
             transaction.commit();
+
+            if(findViewById(R.id.fragment_dummy) != null)
+                sTwoPane = true;
         }
 
         Intent intent = getIntent();
@@ -161,13 +172,24 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
 
     @Override
     public void onItemSelected(ThothNew thothNew) {
-        if (NewsListFragment.isTwoPane()) {
+        if (isTwoPane()) {
             Bundle arguments = new Bundle();
             arguments.putSerializable(TagUtils.TAG_SERIALIZABLE_NEW, thothNew);
-            SingleNewFragment fragment = new SingleNewFragment();
-            fragment.setArguments(arguments);
+            SingleNewFragment singleNewFragment = new SingleNewFragment();
+            singleNewFragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container_detail_new, fragment)
+                    .replace(R.id.fragment_container_new_detailed, singleNewFragment)
+                    .commit();
+        }
+    }
+
+    @Override
+    public void onItemSelected(ThothWorkItem workItem) {
+        if (isTwoPane()) {
+            WebViewFragment webViewFragment = new WebViewFragment();
+            webViewFragment.init(workItem.getUrl());
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container_workitem_detailed, webViewFragment)
                     .commit();
         }
     }
@@ -176,13 +198,6 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_class_sections, menu);
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public void onBackPressed(){
-        super.onBackPressed();
-        if(NewsListFragment.isTwoPane())
-            NewsAdapter.setSelectedNewID(NewsAdapter.NO_NEW_SELECTED);
     }
 
     @Override
@@ -195,23 +210,19 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
                 ReadAllDialogFragment readAllDialogFragment = ReadAllDialogFragment.newInstance(sThothClass.getID());
                 readAllDialogFragment.show(getSupportFragmentManager(), "Read All News Dialog Fragment");
                 return true;
-//            case R.id.action_refresh:
-//                SlidingTabsColorsFragment fragment = (SlidingTabsColorsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container_class_sections);
-//                if(fragment != null)
-//                     fragment.refreshLoader();
-//                return true;
             case R.id.action_webview:
+                if(!ConnectionUtils.checkConnection(getApplicationContext(), true))
+                    break;
                 Intent intent = new Intent(this, WebViewActivity.class);
-                String full_path = WebViewActivity.CLASSES_ROUTE.concat(sThothClass.getFullName().replaceAll(" ",""));
+                String fullName = sThothClass.getFullName().replaceAll(" ", "");
+                String full_path = String.format("%s/%s", WebViewActivity.URI_CLASSES_ROOT, fullName);
                 intent.putExtra(TagUtils.TAG_EXTRA_WEB_VIEW_URL, full_path);
                 startActivity(intent);
                 return true;
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
-
 }

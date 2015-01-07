@@ -46,7 +46,7 @@ public class ClassesPickAdapter extends CursorAdapter {
         }
     }
 
-    static Map<Long,SelectionState> sMapSelection = new HashMap<>();
+    public static Map<Long,SelectionState> sMapSelection = new HashMap<>();
     public Map<Long,SelectionState> getMapSelection (){
         return sMapSelection;
     }
@@ -58,12 +58,6 @@ public class ClassesPickAdapter extends CursorAdapter {
         mContext = context;
         sLayoutInflater = LayoutInflater.from(context);
     }
-
-//    public void clearList() {
-//        mClasses.clear();
-//        mContext.getContentResolver().delete(ThothContract.Classes.CONTENT_URI, null, null);
-//        notifyDataSetChanged();
-//    }
 
     @Override
     public Object getItem(int position) {

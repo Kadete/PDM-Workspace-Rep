@@ -1,11 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity" >
-    <!--<item android:id="@+id/action_refresh"-->
-        <!--android:title="@string/title_action_refresh"-->
-        <!--android:orderInCategory="100"-->
-        <!--android:icon="@android:drawable/ic_menu_rotate"-->
-        <!--android:showAsAction="ifRoom" />-->
     <item android:id="@+id/action_webview"
         android:title="@string/title_action_web_view"
         android:orderInCategory="100"

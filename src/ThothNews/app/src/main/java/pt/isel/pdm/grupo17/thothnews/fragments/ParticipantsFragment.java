@@ -56,7 +56,7 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_section_participants, container, false);
-        mSwipeRefreshLayout = (MultiSwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout = (MultiSwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         mGridView = (GridView) view.findViewById(android.R.id.list);
         mEmptyView = view.findViewById(android.R.id.empty);
         sContentResolver = getActivity().getContentResolver();
@@ -119,7 +119,7 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     }
 
     public void refreshAndUpdate() {
-        if(!isFragmentUIActive() || !ConnectionUtils.isConnected(getActivity()))
+        if(!isFragmentUIActive() || !ConnectionUtils.checkConnection(getActivity(), true))
             return;
 
         mSwipeRefreshLayout.setRefreshing(true);

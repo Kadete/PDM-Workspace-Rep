@@ -49,12 +49,6 @@ public class ParticipantsAdapter extends CursorAdapter {
         BitmapUtils.initStoragePath(mContext, EnumModel.DIR_PATH_STUDENT);
     }
 
-//    public void clearList() {
-//        mParticipants.clear();
-//        mContext.getContentResolver().delete(ThothContract.Participants.CONTENT_URI, null, null);
-//        notifyDataSetChanged();
-//    }
-
     @Override
     public Object getItem(int position) {
         return mParticipants.get(position);

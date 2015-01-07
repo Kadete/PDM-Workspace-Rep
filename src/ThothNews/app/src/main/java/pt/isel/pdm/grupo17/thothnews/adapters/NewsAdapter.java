@@ -15,8 +15,8 @@ import java.text.ParseException;
 import java.util.Date;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
-import pt.isel.pdm.grupo17.thothnews.fragments.NewsListFragment;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNewsList;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
@@ -34,10 +34,10 @@ public class NewsAdapter extends CursorAdapter {
         public CheckBox checkRead;
     }
 
-    public static final int NO_NEW_SELECTED = -1;
-    private static long newSelectID = NO_NEW_SELECTED;
+    public static final long NO_NEW_SELECTED = -1;
+    public long newSelectID = NO_NEW_SELECTED;
 
-    public static void setSelectedNewID(long id) {
+    public void setSelectedNewID(long id) {
         newSelectID = id;
     }
 
@@ -51,12 +51,6 @@ public class NewsAdapter extends CursorAdapter {
         sLayoutInflater = LayoutInflater.from(mContext);
     }
 
-//    public void clearList() {
-//        mNews.clear();
-//        mContext.getContentResolver().delete(ThothContract.News.CONTENT_URI, null, null);
-//        notifyDataSetChanged();
-//    }
-
     @Override
     public Object getItem(int position) {
         return mNews.get(position);
@@ -69,7 +63,6 @@ public class NewsAdapter extends CursorAdapter {
     @Override
     public Cursor swapCursor(Cursor newCursor) {
         Cursor oldCursor = super.swapCursor(newCursor);
-
         mNews.clear();
         if (newCursor !=null) {
             newCursor.moveToFirst();
@@ -88,10 +81,10 @@ public class NewsAdapter extends CursorAdapter {
         NewViewHolder holder = new NewViewHolder();
         View newView = sLayoutInflater.inflate(R.layout.item_new, null);
 
-        holder.id = (TextView)newView.findViewById(R.id.new_item_id);
-        holder.title = (TextView)newView.findViewById(R.id.new_item_title);
-        holder.when = (TextView)newView.findViewById(R.id.new_item_when);
-        holder.checkRead = (CheckBox)newView.findViewById(R.id.new_item_checkread);
+        holder.id = (TextView)newView.findViewById(R.id.item_new_id);
+        holder.title = (TextView)newView.findViewById(R.id.item_new_title);
+        holder.when = (TextView)newView.findViewById(R.id.item_new_when);
+        holder.checkRead = (CheckBox)newView.findViewById(R.id.item_new_checkread);
 
         newView.setTag(holder);
         return newView;
@@ -102,36 +95,29 @@ public class NewsAdapter extends CursorAdapter {
         NewViewHolder holder = (NewViewHolder)view.getTag();
 
         final String id = cursor.getString(cursor.getColumnIndex(ThothContract.News._ID));
-
         holder.id.setText(id);
         holder.title.setText(cursor.getString(cursor.getColumnIndex(ThothContract.News.TITLE)));
 
-        Date date = new Date();
         try {
-            date = DateUtils.SAVE_DATE_FORMAT.parse(cursor.getString(cursor.getColumnIndex(ThothContract.News.WHEN_CREATED)));
+            Date date = DateUtils.SAVE_DATE_FORMAT.parse(cursor.getString(cursor.getColumnIndex(ThothContract.News.WHEN_CREATED)));
+            holder.when.setText(DateUtils.SHOW_DATE_FORMAT.format(date));
         } catch (ParseException e) {
             d(TAG_ADAPTER, "FAIL TO PARSE DATE");
         }
-        String dateStr = DateUtils.SHOW_DATE_FORMAT.format(date);
-        holder.when.setText(dateStr);
 
         Boolean read = cursor.getString(cursor.getColumnIndex(ThothContract.News.READ)).equals(TRUE);
         holder.checkRead.setChecked(read);
         holder.title.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
         holder.when.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
 
-        if(NewsListFragment.isTwoPane()){
-            if (newSelectID == Long.valueOf(holder.id.getText().toString())) {
+        if(ClassSectionsActivity.isTwoPane()){
+            if (newSelectID == Long.valueOf(id)) {
                 view.findViewById(R.id.arrow).setVisibility(View.VISIBLE);
                 view.setBackground(view.getResources().getDrawable(R.drawable.bg_new_selected));
-                holder.title.setTextSize(22);
-                holder.when.setTextSize(18);
             }
             else {
                 view.findViewById(R.id.arrow).setVisibility((!read) ? View.VISIBLE :  View.INVISIBLE);
                 view.setBackground(new ColorDrawable((!read) ? 0x33440000 : 0x44444444));
-                holder.title.setTextSize(18);
-                holder.when.setTextSize(14);
             }
         }
         else {

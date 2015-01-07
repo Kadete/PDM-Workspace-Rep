@@ -17,15 +17,10 @@ import pt.isel.pdm.grupo17.thothnews.activities.WebViewActivity;
 public class WebViewFragment extends Fragment {
 
     private String curURL;
-    private WebView webview;
+    public WebView webview;
 
     public void init(String url) {
         curURL = url;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override

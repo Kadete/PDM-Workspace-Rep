@@ -10,11 +10,6 @@
         android:orderInCategory="100"
         android:icon="@drawable/ic_action_done_all"
         android:showAsAction="ifRoom" />
-    <!--<item android:id="@+id/action_refresh"-->
-        <!--android:title="@string/title_action_refresh"-->
-        <!--android:orderInCategory="100"-->
-        <!--android:icon="@android:drawable/ic_menu_rotate"-->
-        <!--android:showAsAction="ifRoom" />-->
     <item android:id="@+id/action_settings"
         android:title="@string/title_action_settings"
         android:orderInCategory="100"

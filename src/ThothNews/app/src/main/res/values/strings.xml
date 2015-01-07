@@ -103,4 +103,9 @@
     <string name="thoth_classes_summary">Please choose at least one classe!</string>
     <string name="title_action_web_view" translatable="false" />
     <string name="thoth_classes_summary_enrolled"> classes enrolled.</string>
+    <string name="item_workItem_title" translatable="false">item_workItem_title</string>
+    <string name="item_workItem_whenStart" translatable="false">item_workItem_whenStart</string>
+    <string name="item_workItem_whenDue" translatable="false">item_workItem_whenDue</string>
+    <string name="item_workItem_url" translatable="false">item_workItem_url</string>
+    <string name="tab_work_items">Work Items</string>
 </resources>

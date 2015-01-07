@@ -57,7 +57,7 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
 
         View view = inflater.inflate(R.layout.fragment_grid_classes, container, false);
 
-        mSwipeRefreshLayout = (MultiSwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout = (MultiSwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         mGridView = (GridView) view.findViewById(android.R.id.list);
         mEmptyView = view.findViewById(android.R.id.empty);
 
@@ -97,7 +97,7 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                Set<String> semestersSet = sharedPreferences.getStringSet(TagUtils.TAG_MULTI_LIST_SEMESTERS_KEY, null);
+                Set<String> semestersSet = sharedPreferences.getStringSet(TagUtils.TAG_MULTILIST_SEMESTERS_PREF_KEY, null);
                 startActivity(new Intent(getActivity(), (semestersSet == null || semestersSet.isEmpty())
                                                             ? SettingsActivity.class : ClassesPickActivity.class));
             }
@@ -133,7 +133,7 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     public void refreshAndUpdate() {
-        if(!ConnectionUtils.isConnected(getActivity()))
+        if(!ConnectionUtils.checkConnection(getActivity(), true))
             return;
 
         mSwipeRefreshLayout.setRefreshing(true);

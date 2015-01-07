@@ -7,7 +7,6 @@ import android.view.MenuItem;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.fragments.SettingsFragment;
-import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 
 public class SettingsActivity extends PreferenceActivity{
 
@@ -16,14 +15,11 @@ public class SettingsActivity extends PreferenceActivity{
         super.onCreate(savedInstanceState);
         getActionBar().setTitle(R.string.label_activity_preferences);
 
-        ThothUpdateService.startActionSemestersUpdate(getApplicationContext());
-
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .replace(android.R.id.content, new SettingsFragment())
                     .commit();
         }
-
     }
 
     @Override

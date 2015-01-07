@@ -3,7 +3,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="preference_key">
 
-    <intent android:action=".PreferencesActivity"/>
     <PreferenceCategory
         android:title="@string/category_classes_title"
         android:key="classes_category">

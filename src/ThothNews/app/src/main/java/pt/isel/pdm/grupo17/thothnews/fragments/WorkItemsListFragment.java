@@ -1,6 +1,7 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -19,58 +20,60 @@ import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
-import pt.isel.pdm.grupo17.thothnews.activities.SingeNewActivity;
-import pt.isel.pdm.grupo17.thothnews.adapters.NewsAdapter;
+import pt.isel.pdm.grupo17.thothnews.activities.WebViewActivity;
+import pt.isel.pdm.grupo17.thothnews.adapters.WorkItemsAdapter;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
-import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
+import pt.isel.pdm.grupo17.thothnews.models.ThothWorkItem;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 import pt.isel.pdm.grupo17.thothnews.utils.ConnectionUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
-public class NewsListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class WorkItemsListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    private static final int NEWS_CURSOR_LOADER_ID = 2;
+    private static final int WORK_ITEMS_CURSOR_LOADER_ID = 3;
 
-    private static final String[] CURSOR_COLUMNS = {ThothContract.News._ID, ThothContract.News.TITLE,
-            ThothContract.News.WHEN_CREATED, ThothContract.News.READ, ThothContract.News.CONTENT};
-    private static final String SELECTION = ThothContract.News.CLASS_ID + " = ? ";
+    private static final String[] CURSOR_COLUMNS = {ThothContract.WorkItems._ID, ThothContract.WorkItems.TITLE,
+            ThothContract.WorkItems.START_DATE, ThothContract.WorkItems.DUE_DATE, ThothContract.WorkItems.URL};
+    private static final String SELECTION = ThothContract.WorkItems.CLASS_ID + " = ? ";
 
-    private static final String STATE_ACTIVATED_POSITION_NEW_ITEM = "STATE_ACTIVATED_POSITION_NEW_ITEM";
+    private static final String STATE_ACTIVATED_POSITION_WORK_ITEM = "STATE_ACTIVATED_POSITION_WORK_ITEM";
 
     private static int mActivatedPosition = ListView.INVALID_POSITION;
     private static ThothClass sThothClass;
 
-    private CallbackNew mCallback = sDummyCallback;
+    private CallbackWorkItem mCallbacks = sDummyCallback;
 
     private static MultiSwipeRefreshLayout mSwipeRefreshLayout;
+    private static ContentResolver sContentResolver;
     private ListView mListView;
+    private WorkItemsAdapter mListAdapter;
 
-    private NewsAdapter mListAdapter;
-
-    public interface CallbackNew {
-        public void onItemSelected(ThothNew thothNew);
+    public interface CallbackWorkItem {
+        public void onItemSelected(ThothWorkItem workItem);
     }
 
-    private static CallbackNew sDummyCallback = new CallbackNew() {
+    private static CallbackWorkItem sDummyCallback = new CallbackWorkItem() {
         @Override
-        public void onItemSelected(ThothNew thothNew) {
+        public void onItemSelected(ThothWorkItem workItem) {
         }
     };
 
-    public static NewsListFragment newInstance() {
+    public static WorkItemsListFragment newInstance() {
         Bundle bundle = new Bundle();
-        NewsListFragment fragment = new NewsListFragment();
+        WorkItemsListFragment fragment = new WorkItemsListFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View sNewsView = inflater.inflate(R.layout.fragment_section_news, container, false);
+        View sNewsView = inflater.inflate(R.layout.fragment_section_workitems, container, false);
         mSwipeRefreshLayout = (MultiSwipeRefreshLayout) sNewsView.findViewById(R.id.swipe_refresh);
         mListView = (ListView) sNewsView.findViewById(android.R.id.list);
+        sContentResolver = getActivity().getContentResolver();
         return sNewsView;
     }
 
@@ -78,12 +81,13 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION_NEW_ITEM))
-            setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION_NEW_ITEM));
+        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION_WORK_ITEM))
+            setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION_WORK_ITEM));
 
         sThothClass = ClassSectionsActivity.getThothClass();
 
-        mListAdapter = new NewsAdapter(getActivity());
+
+        mListAdapter = new WorkItemsAdapter(getActivity());
         AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mListAdapter);
         animationAdapter.setAbsListView(mListView);
         mListView.setAdapter(animationAdapter);
@@ -97,65 +101,74 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
         });
         mSwipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
 
-        getLoaderManager().initLoader(NEWS_CURSOR_LOADER_ID, null, this);
+        Cursor workItemsCursor = sContentResolver.query(UriUtils.Classes.parseWorkItemsFromClassID(sThothClass.getID()), null, null, null, null);
+        if(workItemsCursor.moveToNext()){
+            workItemsCursor.close();
+            getLoaderManager().initLoader(WORK_ITEMS_CURSOR_LOADER_ID, null, this);
+        }
+        else {
+            workItemsCursor.close();
+            refreshAndUpdate();
+        }
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        if (!(activity instanceof CallbackNew)) {
+        if (!(activity instanceof CallbackWorkItem)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
-        mCallback = (CallbackNew) activity;
+        mCallbacks = (CallbackWorkItem) activity;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallback = sDummyCallback;
+        mCallbacks = sDummyCallback;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mActivatedPosition != ListView.INVALID_POSITION) {
-            outState.putInt(STATE_ACTIVATED_POSITION_NEW_ITEM, mActivatedPosition);
+            outState.putInt(STATE_ACTIVATED_POSITION_WORK_ITEM, mActivatedPosition);
         }
     }
 
     private void setActivatedPosition(int position) {
         getListView().setItemChecked((position == ListView.INVALID_POSITION) ? mActivatedPosition : position, false);
+        mActivatedPosition = position;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getLoaderManager().restartLoader(NEWS_CURSOR_LOADER_ID, null, this);
+        getLoaderManager().restartLoader(WORK_ITEMS_CURSOR_LOADER_ID, null, this);
     }
 
     @Override
     public void onListItemClick(ListView l, View view, int position, long id) {
         super.onListItemClick(l, view, position, id);
-        ThothNew thothNew = (ThothNew) mListAdapter.getItem(position);
+        ThothWorkItem workItem = (ThothWorkItem) mListAdapter.getItem(position);
         if (ClassSectionsActivity.isTwoPane()) {
-            mListAdapter.setSelectedNewID(thothNew.getID());
-            mCallback.onItemSelected((ThothNew) mListAdapter.getItem(position));
+            mListAdapter.setSelectedWorkItemID(workItem.getID());
+            mCallbacks.onItemSelected((ThothWorkItem) mListAdapter.getItem(position));
+            getLoaderManager().restartLoader(WORK_ITEMS_CURSOR_LOADER_ID, null, this);
         } else {
-            Intent i = new Intent(getActivity(), SingeNewActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.putExtra(TagUtils.TAG_SELECT_CLASS_NAME, sThothClass.getFullName());
-            i.putExtra(TagUtils.TAG_SERIALIZABLE_LIST, mListAdapter.getNewsList());
-            i.putExtra(TagUtils.TAG_SELECT_NEW_POSITION, position);
-            startActivity(i);
+            if(!ConnectionUtils.checkConnection(getActivity(), true))
+                return;
+            Intent intent = new Intent(getActivity(), WebViewActivity.class);
+            intent.putExtra(TagUtils.TAG_EXTRA_WEB_VIEW_URL, workItem.getUrl());
+            startActivity(intent);
         }
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String [] SELECTION_ARGS = new String[]{ String.valueOf(sThothClass.getID()) };
-        return new CursorLoader(getActivity(), ThothContract.News.CONTENT_URI,
-                CURSOR_COLUMNS, SELECTION, SELECTION_ARGS, ThothContract.News.READ +", "+ ThothContract.News.WHEN_CREATED + " DESC");
+        return new CursorLoader(getActivity(), ThothContract.WorkItems.CONTENT_URI,
+                CURSOR_COLUMNS, SELECTION, SELECTION_ARGS, null);
     }
 
     @Override
@@ -173,9 +186,8 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
             return;
 
         mSwipeRefreshLayout.setRefreshing(true);
-        ThothUpdateService.startActionClassNewsUpdate(getActivity(), sThothClass.getID());
-        getLoaderManager().restartLoader(NEWS_CURSOR_LOADER_ID, null, this);
+        ThothUpdateService.startActionWorkItemsUpdate(getActivity(), sThothClass.getID());
+        getLoaderManager().restartLoader(WORK_ITEMS_CURSOR_LOADER_ID, null, this);
         mSwipeRefreshLayout.setRefreshing(false);
     }
-
 }

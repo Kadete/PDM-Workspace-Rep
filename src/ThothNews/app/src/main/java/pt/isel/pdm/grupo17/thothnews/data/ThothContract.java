@@ -19,18 +19,13 @@ public final class ThothContract {
     public static final String PATH_STUDENTS = "students";
     public static final String PATH_CLASSES_STUDENTS = "classesStudents";
     public static final String PATH_CLASSES_ENROLLED = "enrolled";
-
-    public static final String PATH_SEMESTERS = "semesters";
+    public static final String PATH_WORK_ITEMS = "workItems";
 
     private static final String TYPE_TEXT = " TEXT";
     private static final String TYPE_INTEGER = " INTEGER";
     private static final String TYPE_BOOLEAN = " BOOLEAN";
     private static final String PRIMARY_KEY = " PRIMARY KEY ";
     private static final String COMMA_SEP = ", ";
-
-
-    public static final Uri SEMESTERS_URI =
-            BASE_CONTENT_URI.buildUpon().appendPath(PATH_SEMESTERS).build();
 
     public static class Classes implements BaseColumns{
 
@@ -174,12 +169,10 @@ public final class ThothContract {
     }
 
     public static class Classes_Students implements BaseColumns {
-        public static final String
+        public static final String TABLE_NAME = "classes_students",
                 KEY_CLASS_ID = "class_id",
                 KEY_STUDENT_ID = "student_id",
                 GROUP = "currentGroup";
-
-        public static final String TABLE_NAME = "classes_students";
 
         /**
          * Fully qualified URI for combining "Classes" and "Students" resources.
@@ -198,5 +191,37 @@ public final class ThothContract {
         public static final String AVATAR_URL = "avatarUrl"; //external location
         public static final String AVATAR_PATH = "avatarPath"; //inside location
     }
+
+    public static class WorkItems implements BaseColumns{
+        public static final String TABLE_NAME = "workItems",
+                TITLE = "title",
+                START_DATE = "startDate",
+                DUE_DATE = "dueDate",
+                URL = "myUrl",
+                CLASS_ID = "classId";
+
+        /**
+         * MIME type for lists of news.
+         */
+        public static final String CONTENT_DIR_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.thothprovider.workItems";
+        /**
+         * MIME type for individual new
+         */
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.thothprovider.workItems";
+        /**
+         * Fully qualified URI for "workItems" resources.
+         */
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_WORK_ITEMS).build();
+
+        static final String CREATE_QUERY = "CREATE TABLE " + WorkItems.TABLE_NAME + " ("
+                + WorkItems._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP
+                + WorkItems.TITLE + TYPE_TEXT + COMMA_SEP + WorkItems.URL + COMMA_SEP
+                + WorkItems.START_DATE + TYPE_TEXT + COMMA_SEP + WorkItems.DUE_DATE + TYPE_TEXT + COMMA_SEP
+                + WorkItems.CLASS_ID + TYPE_INTEGER + ")";
+    }
+
 
 }

@@ -41,12 +41,6 @@ public class ClassesAdapter extends CursorAdapter {
         sLayoutInflater = LayoutInflater.from(context);
     }
 
-//    public void clearList() {
-//        mClasses.clear();
-//        mContext.getContentResolver().delete(ThothContract.Classes.CONTENT_URI, null, null);
-//        notifyDataSetChanged();
-//    }
-
     @Override
     public Object getItem(int position) {
         return mClasses.get(position);

@@ -37,9 +37,9 @@ public class CleanPreferencesDialogFragment extends DialogFragment {
                     values.put(ThothContract.Classes.ENROLLED, FALSE);
                     getActivity().getContentResolver().update(ThothContract.Classes.CONTENT_URI, values, null, null);
 
-                    Toast.makeText(getActivity(), toastSuccessMessage, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), toastSuccessMessage, Toast.LENGTH_SHORT).show();
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    sharedPreferences.edit().putStringSet(TagUtils.TAG_CLASSES_SELECTED, null).apply();
+                    sharedPreferences.edit().putStringSet(TagUtils.TAG_SELECTED_CLASSES, null).apply();
                 }
             })
             .setNegativeButton(cancel, new DialogInterface.OnClickListener() {

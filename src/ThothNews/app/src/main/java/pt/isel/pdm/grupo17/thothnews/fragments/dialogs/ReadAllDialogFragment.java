@@ -46,10 +46,10 @@ public class ReadAllDialogFragment extends DialogFragment {
                     SlidingTabsColorsFragment fragment = (SlidingTabsColorsFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container_class_sections);
                     if (fragment != null) {
                         fragment.updateReadAll(sClassID);
-                        Toast.makeText(getActivity(), toastSuccessMessage, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), toastSuccessMessage, Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    Toast.makeText(getActivity(), toastFailMessage, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), toastFailMessage, Toast.LENGTH_SHORT).show();
                 }
             })
             .setNegativeButton(cancel, new DialogInterface.OnClickListener() {

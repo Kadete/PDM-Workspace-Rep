@@ -35,19 +35,19 @@ public class SlidingTabsColorsFragment extends Fragment {
         }
 
         ParticipantsFragment createParticipantsFragment() { return ParticipantsFragment.newInstance(); }
-
         NewsListFragment createNewsListFragment() {
             return NewsListFragment.newInstance();
+        }
+        WorkItemsListFragment createWorkItemsListFragment() {
+            return WorkItemsListFragment.newInstance();
         }
 
         CharSequence getTitle() {
             return mTitle;
         }
-
         int getIndicatorColor() {
             return mIndicatorColor;
         }
-
         int getDividerColor() {
             return mDividerColor;
         }
@@ -73,6 +73,13 @@ public class SlidingTabsColorsFragment extends Fragment {
                     mTabs.add(new SamplePagerItem(
                             getString(R.string.tab_participants), // Title
                             Color.BLUE, // Indicator color
+                            Color.GRAY // Divider color
+                    ));
+                    break;
+                case WORK_ITEMS_LIST_FRAGMENT_POSITION:
+                    mTabs.add(new SamplePagerItem(
+                            getString(R.string.tab_work_items), // Title
+                            Color.GREEN, // Indicator color
                             Color.GRAY // Divider color
                     ));
                     break;
@@ -110,23 +117,14 @@ public class SlidingTabsColorsFragment extends Fragment {
 
         });
     }
-    static final int TOTAL_FRAGMENTS = 2;
+    static final int TOTAL_FRAGMENTS = 3;
     public static final int NEWS_LIST_FRAGMENT_POSITION = 0;
     public static final int PARTICIPANTS_FRAGMENT_POSITION = 1;
-
-    public void refreshLoader() {
-        refreshNewsLoader();
-        refreshParticipantsLoader();
-    }
+    public static final int WORK_ITEMS_LIST_FRAGMENT_POSITION = 2;
 
     private void refreshNewsLoader(){
         if(sampleFragmentPagerAdapter.newsListFragment != null)
             sampleFragmentPagerAdapter.newsListFragment.refreshAndUpdate();
-    }
-
-    private void refreshParticipantsLoader(){
-        if(sampleFragmentPagerAdapter.participantsFragment != null)
-            sampleFragmentPagerAdapter.participantsFragment.refreshAndUpdate();
     }
 
     public void updateReadAll(long classID) {
@@ -136,7 +134,6 @@ public class SlidingTabsColorsFragment extends Fragment {
         refreshNewsLoader();
     }
 
-
     public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 
         SampleFragmentPagerAdapter(FragmentManager fm) {
@@ -144,17 +141,16 @@ public class SlidingTabsColorsFragment extends Fragment {
         }
 
         private NewsListFragment newsListFragment = null;
-        private ParticipantsFragment participantsFragment = null;
 
         @Override
         public Fragment getItem(int i) {
             switch (i){
                 case NEWS_LIST_FRAGMENT_POSITION:
-                    newsListFragment = mTabs.get(NEWS_LIST_FRAGMENT_POSITION).createNewsListFragment();
-                    return newsListFragment;
+                    return newsListFragment = mTabs.get(NEWS_LIST_FRAGMENT_POSITION).createNewsListFragment();
                 case PARTICIPANTS_FRAGMENT_POSITION:
-                    participantsFragment = mTabs.get(PARTICIPANTS_FRAGMENT_POSITION).createParticipantsFragment();
-                    return participantsFragment;
+                    return mTabs.get(PARTICIPANTS_FRAGMENT_POSITION).createParticipantsFragment();
+                case WORK_ITEMS_LIST_FRAGMENT_POSITION:
+                    return mTabs.get(WORK_ITEMS_LIST_FRAGMENT_POSITION).createWorkItemsListFragment();
                 default:
                     throw new IllegalStateException();
             }

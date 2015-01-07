@@ -50,15 +50,12 @@ public class ClassesPickActivity extends FragmentActivity{
             case android.R.id.home:
                 onBackPressed();
                 return true;
-//            case R.id.action_refresh:
-//                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
-//                if(fragment != null)
-//                    ((ClassesPickFragment) fragment).refreshAndUpdate();
-//                return true;
-
             case R.id.action_clear_all:
                 CleanPreferencesDialogFragment dFragment = new CleanPreferencesDialogFragment();
                 dFragment.show(getFragmentManager(), "Dialog Fragment");
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_classes);
+                if(fragment != null)
+                    ((ClassesPickFragment) fragment).clearSelectedList();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

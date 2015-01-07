@@ -11,12 +11,12 @@ public class TagUtils {
     public static final String TAG_NOTIFICATION_ID = "TAG_NOTIFICATION_ID";
     public static final String TAG_EXTRA_WEB_VIEW_URL = "TAG_EXTRA_WEB_VIEW_URL";
 
-    public static final String TAG_CLASSES_SELECTED = "TAG_CLASSES_SELECTED";
-    public static final String TAG_LIST_SEMESTERS = "TAG_LIST_SEMESTERS";
+    public static final String TAG_SELECTED_CLASSES = "TAG_SELECTED_CLASSES";
+    public static final String TAG_LIST_ALL_SEMESTERS = "TAG_LIST_ALL_SEMESTERS";
 
-    public static final String TAG_MULTI_LIST_SEMESTERS_KEY = "multi_select_list_key";
-    public static final String TAG_DATA_MOBILE_SWITCH_KEY = "data_mobile_switch_key";
-    public static final String TAG_VIBRATION_SWITCH_KEY = "vibration_switch_key";
+    public static final String TAG_MULTILIST_SEMESTERS_PREF_KEY = "multi_select_list_key";
+    public static final String TAG_DATA_MOBILE_SWITCH_PREF_KEY = "data_mobile_switch_key";
+    public static final String TAG_VIBRATION_SWITCH_PREF_KEY = "vibration_switch_key";
     public static final String TAG_PICK_CLASSES_KEY = "pick_classes_key";
 
     public static final String TAG_ACTIVITY = "TAG_ACTIVITY";

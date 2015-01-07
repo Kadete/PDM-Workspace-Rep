@@ -29,6 +29,8 @@ public class ThothDBHelper extends SQLiteOpenHelper {
         db.execSQL(ThothContract.Teachers.CREATE_QUERY);
         d("HELPER CREATE Classes_Students", ThothContract.Classes_Students.CREATE_QUERY);
         db.execSQL(ThothContract.Classes_Students.CREATE_QUERY);
+        d("HELPER CREATE WorkItems", ThothContract.WorkItems.CREATE_QUERY);
+        db.execSQL(ThothContract.WorkItems.CREATE_QUERY);
     }
 
     @Override

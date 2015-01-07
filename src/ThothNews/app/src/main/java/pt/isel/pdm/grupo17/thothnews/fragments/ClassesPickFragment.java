@@ -82,7 +82,7 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
 
         View view = inflater.inflate(R.layout.fragment_grid_classes_pick, container, false);
 
-        mSwipeRefreshLayout = (MultiSwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout = (MultiSwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         mGridView = (GridView) view.findViewById(android.R.id.list);
         mEmptyView = view.findViewById(android.R.id.empty);
 
@@ -132,12 +132,18 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
                     classes.add(cursor.getString(cursor.getColumnIndex(ThothContract.Classes.FULL_NAME)).replaceAll("\\s+",""));
             }
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
-            sharedPreferences.edit().putStringSet(TagUtils.TAG_CLASSES_SELECTED, new HashSet<>(classes)).apply();
+            sharedPreferences.edit().putStringSet(TagUtils.TAG_SELECTED_CLASSES, new HashSet<>(classes)).apply();
         }
-        Toast.makeText(activity.getApplicationContext(),getString((toSave)? R.string.classes_pick_ok : R.string.classes_pick_cancel), Toast.LENGTH_LONG).show();
+        clearSelectedList();
+
+        Toast.makeText(activity.getApplicationContext(),getString((toSave)? R.string.classes_pick_ok : R.string.classes_pick_cancel), Toast.LENGTH_SHORT).show();
         activity.finish();
     }
 
+
+    public void clearSelectedList() {
+        ClassesPickAdapter.sMapSelection.clear();
+    }
     /**runs after the View (onCreateView) has been created.**/
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -171,7 +177,7 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
 
         /** FILTER SEMESTERS SELECTED **/
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Set<String> semestersSet = sharedPreferences.getStringSet(TagUtils.TAG_MULTI_LIST_SEMESTERS_KEY, null);
+        Set<String> semestersSet = sharedPreferences.getStringSet(TagUtils.TAG_MULTILIST_SEMESTERS_PREF_KEY, null);
         if(!semestersSet.isEmpty()) {
             selection = "";
             selectionArgs = new String[semestersSet.size()];
@@ -225,7 +231,7 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
     }
 
     public void refreshAndUpdate() {
-        if(!ConnectionUtils.isConnected(getActivity()))
+        if(!ConnectionUtils.checkConnection(getActivity(), true))
             return;
 
         mSwipeRefreshLayout.setRefreshing(true);

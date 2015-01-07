@@ -46,13 +46,7 @@ public class NetworkReceiver extends BroadcastReceiver {
             return;
         }
 
-
         if (action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
-
-//            d(TAG_BROADCAST, "Network info  = " + ni_wifi);
-//            d(TAG_BROADCAST, "Wifi connected  = " + ni_wifi.isConnected());
-//            d(TAG_BROADCAST, "Wifi state  = " + ni_wifi.getDetailedState());
-
             if(firstTime) {
                 previousState = (ni_wifi.getState() == NetworkInfo.State.CONNECTING) ? NetworkInfo.State.DISCONNECTED : NetworkInfo.State.CONNECTED ;
                 firstTime = false;
@@ -60,14 +54,10 @@ public class NetworkReceiver extends BroadcastReceiver {
             }
 
             if(ni_wifi.isConnected() && previousState == NetworkInfo.State.DISCONNECTED){
-
                 ThothUpdateService.startActionNewsUpdate(context);
-                d(TAG_BROADCAST, "--- register notification " + ni_wifi.getDetailedState().name());
                 previousState = NetworkInfo.State.CONNECTED;
             }
             else if(previousState == NetworkInfo.State.CONNECTED){
-
-                d(TAG_BROADCAST, "--- unregister notification " + ni_wifi.getDetailedState().name());
                 previousState = NetworkInfo.State.DISCONNECTED;
             }
         }

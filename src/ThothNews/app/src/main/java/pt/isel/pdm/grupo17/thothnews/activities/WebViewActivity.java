@@ -11,10 +11,10 @@ import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
 public class WebViewActivity extends FragmentActivity {
 
-    private WebViewFragment mWebViewFragment;
-
     public static final String THOTH_HOST = "thoth.cc.e.ipl.pt";
-    public static final String CLASSES_ROUTE = "http://thoth.cc.e.ipl.pt/classes/";
+    public static final String URI_CLASSES_ROOT= "http://thoth.cc.e.ipl.pt/classes";
+
+    private WebViewFragment mWebViewFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

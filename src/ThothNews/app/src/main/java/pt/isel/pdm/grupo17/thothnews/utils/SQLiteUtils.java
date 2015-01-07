@@ -72,7 +72,7 @@ public class SQLiteUtils {
     public static void startPrefsIfNoClassesEnrolled(Context context){
         Cursor cClassesEnrolled = context.getContentResolver().query(ThothContract.Classes.ENROLLED_URI, null, null, null, null);
         if(!cClassesEnrolled.moveToNext()){
-            Toast.makeText(context, context.getString(R.string.setup_classes_request), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, context.getString(R.string.setup_classes_request), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(context, SettingsActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             cClassesEnrolled.close();
