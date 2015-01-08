@@ -51,19 +51,19 @@ public class SingleNewFragment extends Fragment {
             webViewContent.setBackgroundColor(Color.TRANSPARENT);
             webViewContent.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
 
-            String template = "<html><body>%s</body></html>";
-            String content = mThothNew.getContent();
-            if(content.contains("http://")){
-                String aux = "";
-                for(String word : content.split(" ")){
-                    if(word.startsWith("http://"))
-                        word = " <a href=\""+ word + "\">"+word +"</a> ";
-                    aux += word + " ";
-                }
-                content = aux;
-            }
-            String body = String.format(template, content);
-            webViewContent.loadDataWithBaseURL(null, body, "text/html", "UTF-8", null);
+//            String template = "<html><body>%s</body></html>";
+//            String content = mThothNew.getContent();
+//            if(content.contains("http://")){ // finding links without tag
+//                String aux = "";
+//                for(String word : content.split(" ")){
+//                    if(word.startsWith("http://"))
+//                        word = " <a href=\""+ word + "\">"+word +"</a> ";
+//                    aux += word + " ";
+//                }
+//                content = aux;
+//            }
+//            String body = String.format(template, content);
+            webViewContent.loadDataWithBaseURL(null, mThothNew.getContent(), "text/html", "UTF-8", null);
             if(ClassSectionsActivity.isTwoPane())
                 updateNew();
         }else

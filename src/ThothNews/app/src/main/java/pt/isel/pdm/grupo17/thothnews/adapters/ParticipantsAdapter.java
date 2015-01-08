@@ -3,6 +3,7 @@ package pt.isel.pdm.grupo17.thothnews.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,6 +79,7 @@ public class ParticipantsAdapter extends CursorAdapter {
 
         holder.id = (TextView)newView.findViewById(R.id.participant_item_id);
         holder.number_and_group = (TextView)newView.findViewById(R.id.participant_item_number_and_group);
+        holder.number_and_group.setPaintFlags(holder.number_and_group.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
         holder.fullName = (TextView)newView.findViewById(R.id.participant_item_full_name);
         holder.email = (TextView)newView.findViewById(R.id.participant_item_email);
         holder.avatar = (ImageView)newView.findViewById(R.id.student_item_avatar);

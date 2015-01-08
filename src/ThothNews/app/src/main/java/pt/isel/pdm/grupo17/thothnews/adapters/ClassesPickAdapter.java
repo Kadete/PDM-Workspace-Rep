@@ -3,7 +3,9 @@ package pt.isel.pdm.grupo17.thothnews.adapters;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,6 +89,7 @@ public class ClassesPickAdapter extends CursorAdapter {
 
         holder.id = (TextView)newView.findViewById(R.id.class_pick_item_id);
         holder.full_name = (TextView)newView.findViewById(R.id.class_pick_item_full_name);
+        holder.full_name.setPaintFlags(holder.full_name.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
         holder.teacher = (TextView)newView.findViewById(R.id.class_pick_item_teacher);
         holder.checkBox = (CheckBox)newView.findViewById(R.id.class_pick_item_checkEnrolled);
 
@@ -101,12 +104,12 @@ public class ClassesPickAdapter extends CursorAdapter {
         long id = cursor.getLong(cursor.getColumnIndex(ThothContract.Classes._ID));
         holder.id.setText(String.valueOf(id));
         holder.full_name.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Classes.FULL_NAME)));
-        holder.teacher.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Classes.TEACHER_NAME)));
+        holder.teacher.setText(Html.fromHtml(context.getString(R.string.teacher_label) + cursor.getString(cursor.getColumnIndex(ThothContract.Classes.TEACHER_NAME))));
 
         Boolean isEnrolled = cursor.getString(cursor.getColumnIndex(ThothContract.Classes.ENROLLED)).equals(TRUE);
         holder.checkBox.setChecked(isEnrolled);
 
-        view.setBackground(new ColorDrawable((isEnrolled) ? 0x33440000 : 0x33333333));
+        view.setBackground(new ColorDrawable((isEnrolled) ? 0x33440000 : 0xffb7dde1));
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +123,7 @@ public class ClassesPickAdapter extends CursorAdapter {
 
                 mContext.getContentResolver().update(UriUtils.Classes.parseClass(id), values, null, null );
 
-                view.setBackground(new ColorDrawable((toggleChecked) ? 0x33440000 : 0x33333333));
+                view.setBackground(new ColorDrawable((toggleChecked) ? 0x33440000 : 0xffb7dde1));
 
                 if(sMapSelection.containsKey(id)){
                     SelectionState selectionState = sMapSelection.get(id);

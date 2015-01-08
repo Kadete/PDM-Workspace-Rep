@@ -21,6 +21,8 @@
                 android:horizontalSpacing="2dp"
                 android:verticalSpacing="2dp"
                 android:padding="2dp"
+                android:dividerHeight="1dp"
+                android:divider="#FFFFFF"
                 android:drawSelectorOnTop="true"/>
             <TextView
                 android:id="@android:id/empty"

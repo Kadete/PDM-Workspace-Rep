@@ -68,7 +68,7 @@
     <string name="label_class_section_view">Your Class</string>
     <string name="empty_text">List is empty! Swipe down to refresh.</string>
     <string name="item_class_lbl">Class:</string>
-    <string name="item_teacher_lbl">Teacher:</string>
+    <string name="item_teacher_lbl">Regent:</string>
     <string name="participant_item_full_name" translatable="false">participant_item_full_name</string>
     <string name="participant_item_email" translatable="false">participant_item_email</string>
     <string name="participant_item_number_and_group" translatable="false">participant_item_number_and_group</string>
@@ -108,4 +108,8 @@
     <string name="item_workItem_whenDue" translatable="false">item_workItem_whenDue</string>
     <string name="item_workItem_url" translatable="false">item_workItem_url</string>
     <string name="tab_work_items">Work Items</string>
+    <string name="teacher_label"><![CDATA[<small>Regent:</small>]]>" "</string>
+    <string name="start_date_label"><![CDATA[<small>Start Date:</small>]]></string>
+    <string name="due_date_label"><![CDATA[<small>Due Date:</small>]]></string>
+    <string name="create_date_label"><![CDATA[<small>Create Date:</small>]]></string>
 </resources>

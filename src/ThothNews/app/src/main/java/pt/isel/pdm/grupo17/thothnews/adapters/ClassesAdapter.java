@@ -2,9 +2,10 @@ package pt.isel.pdm.grupo17.thothnews.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Typeface;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,7 @@ public class ClassesAdapter extends CursorAdapter {
 
         holder.id = (TextView)newView.findViewById(R.id.class_item_id);
         holder.full_name = (TextView)newView.findViewById(R.id.class_item_full_name);
+        holder.full_name.setPaintFlags(holder.full_name.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
         holder.teacher = (TextView)newView.findViewById(R.id.class_item_teacher);
         holder.new_news = (ImageView)newView.findViewById(R.id.class_item_new_news_ic);
 
@@ -85,9 +87,8 @@ public class ClassesAdapter extends CursorAdapter {
 
         holder.id.setText(String.valueOf(classeID));
         holder.full_name.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Classes.FULL_NAME)));
-        holder.teacher.setText(cursor.getString(cursor.getColumnIndex(ThothContract.Classes.TEACHER_NAME)));
-
-        String selection = ThothContract.News.READ + " =  ? ";
+        holder.teacher.setText(Html.fromHtml(context.getString(R.string.teacher_label) + cursor.getString(cursor.getColumnIndex(ThothContract.Classes.TEACHER_NAME))));
+         String selection = ThothContract.News.READ + " =  ? ";
         String [] selectionArgs =  new String[] { FALSE };
         String orderBy = ThothContract.News.READ;
         Uri classNewsUri = UriUtils.Classes.parseNewsFromClassID(classeID);
@@ -97,9 +98,7 @@ public class ClassesAdapter extends CursorAdapter {
 
         holder.new_news.setImageResource((newsToRead) ? R.drawable.ic_news_to_read : R.drawable.ic_action_done_all);
         cursorNewsRead.close();
-        holder.full_name.setTypeface(null, (newsToRead) ? Typeface.BOLD : Typeface.NORMAL);
-        holder.teacher.setTypeface(null, (newsToRead) ? Typeface.BOLD : Typeface.NORMAL);
-        view.setBackground(new ColorDrawable((newsToRead) ? 0x33440000 : 0x33333333));
+        view.setBackground(new ColorDrawable((newsToRead) ? 0x33440000 : 0xffb7dde1));
     }
 
 }

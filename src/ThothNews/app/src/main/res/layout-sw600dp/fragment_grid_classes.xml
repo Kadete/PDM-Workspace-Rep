@@ -13,10 +13,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:numColumns="auto_fit"
-            android:listSelector="@android:color/transparent"
-            android:horizontalSpacing="2dp"
             android:verticalSpacing="2dp"
-            android:padding="2dp"/>
+            android:horizontalSpacing="2dp"
+            android:padding="2dp"
+            android:listSelector="@android:color/transparent"/>
         <TextView
             android:id="@android:id/empty"
             android:layout_width="wrap_content"

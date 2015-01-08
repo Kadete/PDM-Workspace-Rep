@@ -57,7 +57,7 @@
     <string name="label_class_section_view">A Tua Turma</string>
     <string name="empty_text">A lista está vazia! Desliza para baixo para fazer refresh.</string>
     <string name="item_class_lbl">Turma:</string>
-    <string name="item_teacher_lbl">Docente:</string>
+    <string name="item_teacher_lbl">Regente:</string>
     <string name="participant_main_info_tv">, Grupo:</string>
     <string name="toast_wait_message">Este processo pode ser demorado. Por favor espere um pouco.</string>
     <string name="news_read_all_title">Marcar notícias como lidas</string>
@@ -82,5 +82,9 @@
     <string name="thoth_classes_summary_no_semester">Por favor seleccione pelo menos um semestre!</string>
     <string name="thoth_classes_summary_enrolled">" "turmas associadas.</string>
     <string name="tab_work_items">Trabalhos</string>
+    <string name="teacher_label"><![CDATA[<small>Docente:</small> ]]>" "</string>
+    <string name="due_date_label"><![CDATA[<small>Data de entrega:</small>]]></string>
+    <string name="create_date_label"><![CDATA[<small>Data de criação:</small>]]></string>
+    <string name="start_date_label">Data de criação</string>
 
 </resources>

@@ -2,7 +2,8 @@ package pt.isel.pdm.grupo17.thothnews.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.Paint;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +79,7 @@ public class WorkItemsAdapter extends CursorAdapter {
 
         holder.id = (TextView)newView.findViewById(R.id.item_workItem_id);
         holder.title = (TextView)newView.findViewById(R.id.item_workItem_title);
+        holder.title.setPaintFlags(holder.title.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
         holder.whenStart = (TextView)newView.findViewById(R.id.item_workItem_whenStart);
         holder.whenDue = (TextView)newView.findViewById(R.id.item_workItem_whenDue);
         holder.url = (TextView)newView.findViewById(R.id.item_workItem_url);
@@ -98,24 +100,23 @@ public class WorkItemsAdapter extends CursorAdapter {
         try {
             Date dateStart = DateUtils.SAVE_DATE_FORMAT.parse(cursor.getString(cursor.getColumnIndex(ThothContract.WorkItems.START_DATE)));
             Date dateDue = DateUtils.SAVE_DATE_FORMAT.parse(cursor.getString(cursor.getColumnIndex(ThothContract.WorkItems.DUE_DATE)));
-            holder.whenStart.setText("Start Date: " + DateUtils.SHOW_DATE_FORMAT.format(dateStart));
-            holder.whenDue.setText("Due Date: " + DateUtils.SHOW_DATE_FORMAT.format(dateDue));
+            holder.whenStart.setText(Html.fromHtml(context.getString(R.string.start_date_label)+" <b>" + DateUtils.SHOW_DATE_FORMAT.format(dateStart)+"</b>"));
+            holder.whenDue.setText(Html.fromHtml(context.getString(R.string.due_date_label)+" <b>" + DateUtils.SHOW_DATE_FORMAT.format(dateDue)+"</b>"));
         } catch (ParseException e) {
             d(TAG_ADAPTER, "FAIL TO PARSE DATE");
         }
 
         if(ClassSectionsActivity.isTwoPane()){
             if (workItemSelectedID == Long.valueOf(id)) {
-                view.setBackground(view.getResources().getDrawable(R.drawable.bg_new_selected));
+                view.findViewById(R.id.layout_work_item_info).setBackground(mContext.getResources().getDrawable(R.drawable.bg_new_selected));
+                view.findViewById(R.id.layout_work_item_visibility).setVisibility(View.GONE);
                 view.findViewById(R.id.iv_workitem_webview).setVisibility(View.GONE);
             }
             else {
-                view.setBackground(new ColorDrawable(0x33440000));
+                view.findViewById(R.id.layout_work_item_info).setBackground(mContext.getResources().getDrawable(R.drawable.grad_light_blue));
+                view.findViewById(R.id.layout_work_item_visibility).setVisibility(View.VISIBLE);
                 view.findViewById(R.id.iv_workitem_webview).setVisibility(View.VISIBLE);
             }
-        }
-        else{
-            view.setBackground(view.getResources().getDrawable(R.drawable.bg_new_selected));
         }
 
     }

@@ -2,13 +2,15 @@ package pt.isel.pdm.grupo17.thothnews.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -27,11 +29,15 @@ import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ADAPTER;
 
 public class NewsAdapter extends CursorAdapter {
 
+    private Drawable dwVisibility;
+    private Drawable dwVisibilityOff;
+
     class NewViewHolder {
         public TextView id;
         public TextView title;
         public TextView when;
         public CheckBox checkRead;
+        public ImageView ivVisibility;
     }
 
     public static final long NO_NEW_SELECTED = -1;
@@ -49,6 +55,8 @@ public class NewsAdapter extends CursorAdapter {
         super(context, null, 0);
         mContext = context;
         sLayoutInflater = LayoutInflater.from(mContext);
+        dwVisibility = mContext.getResources().getDrawable(R.drawable.ic_action_visibility);
+        dwVisibilityOff = mContext.getResources().getDrawable(R.drawable.ic_action_visibility_off);
     }
 
     @Override
@@ -83,9 +91,10 @@ public class NewsAdapter extends CursorAdapter {
 
         holder.id = (TextView)newView.findViewById(R.id.item_new_id);
         holder.title = (TextView)newView.findViewById(R.id.item_new_title);
+        holder.title.setPaintFlags(holder.title.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
         holder.when = (TextView)newView.findViewById(R.id.item_new_when);
         holder.checkRead = (CheckBox)newView.findViewById(R.id.item_new_checkread);
-
+        holder.ivVisibility = (ImageView)newView.findViewById(R.id.iv_new_visibility);
         newView.setTag(holder);
         return newView;
     }
@@ -97,32 +106,30 @@ public class NewsAdapter extends CursorAdapter {
         final String id = cursor.getString(cursor.getColumnIndex(ThothContract.News._ID));
         holder.id.setText(id);
         holder.title.setText(cursor.getString(cursor.getColumnIndex(ThothContract.News.TITLE)));
-
         try {
             Date date = DateUtils.SAVE_DATE_FORMAT.parse(cursor.getString(cursor.getColumnIndex(ThothContract.News.WHEN_CREATED)));
-            holder.when.setText(DateUtils.SHOW_DATE_FORMAT.format(date));
+            holder.when.setText(Html.fromHtml(context.getString(R.string.create_date_label) + " <b>" + DateUtils.SHOW_DATE_FORMAT.format(date) + "</b>"));
         } catch (ParseException e) {
             d(TAG_ADAPTER, "FAIL TO PARSE DATE");
         }
 
         Boolean read = cursor.getString(cursor.getColumnIndex(ThothContract.News.READ)).equals(TRUE);
         holder.checkRead.setChecked(read);
-        holder.title.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
-        holder.when.setTypeface(null, (!read) ? Typeface.BOLD : Typeface.NORMAL);
 
         if(ClassSectionsActivity.isTwoPane()){
-            if (newSelectID == Long.valueOf(id)) {
-                view.findViewById(R.id.arrow).setVisibility(View.VISIBLE);
-                view.setBackground(view.getResources().getDrawable(R.drawable.bg_new_selected));
-            }
-            else {
-                view.findViewById(R.id.arrow).setVisibility((!read) ? View.VISIBLE :  View.INVISIBLE);
-                view.setBackground(new ColorDrawable((!read) ? 0x33440000 : 0x44444444));
+            if(newSelectID == Long.valueOf(id)){
+                view.findViewById(R.id.layout_new_info).setBackground(mContext.getResources().getDrawable(R.drawable.bg_new_selected));
+                view.findViewById(R.id.layout_new_visibility).setVisibility(View.GONE);
+                holder.ivVisibility.setVisibility(View.GONE);
+            }else{
+                view.findViewById(R.id.layout_new_info).setBackground(mContext.getResources().getDrawable((read) ? R.drawable.grad_light_blue : R.drawable.grad_light_red));
+                view.findViewById(R.id.layout_new_visibility).setVisibility(View.VISIBLE);
+                holder.ivVisibility.setVisibility(View.VISIBLE);
+                holder.ivVisibility.setImageDrawable((read) ? dwVisibility : dwVisibilityOff);
             }
         }
         else {
-            view.findViewById(R.id.arrow).setVisibility((!read) ? View.VISIBLE :  View.INVISIBLE);
-            view.setBackground(new ColorDrawable((!read) ? 0x33440000 : 0x33333333));
+            view.findViewById(R.id.layout_new_info).setBackground(mContext.getResources().getDrawable((read) ? R.drawable.grad_light_blue : R.drawable.grad_light_red));
         }
     }
 

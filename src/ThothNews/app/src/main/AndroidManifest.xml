@@ -18,11 +18,14 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <!--android:debuggable="true"-->
     <application
-        android:allowBackup="true"
         android:icon="@drawable/ic_thoth"
         android:theme="@style/AppTheme"
-        android:allowClearUserData="true">
+        android:allowBackup="true"
+        android:vmSafeMode="true"
+        android:allowClearUserData="true"
+        android:hardwareAccelerated="true">
         <activity
             android:name=".activities.ClassesActivity"
             android:label="@string/label_app_name" >

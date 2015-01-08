@@ -72,7 +72,7 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
 
         final TextView tvClass = (TextView) findViewById(R.id.tv_class_name);
         tvClass.setText(sThothClass.getFullName());
-
+        tvClass.setPaintFlags(tvClass.getPaintFlags()|Paint.UNDERLINE_TEXT_FLAG);
         setupTeacherInfo();
     }
 
@@ -90,7 +90,7 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
             tvTeacherEmail.setMovementMethod(LinkMovementMethod.getInstance());
             final String teacherEmail = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teachers.ACADEMIC_EMAIL));
             tvTeacherEmail.setText(teacherEmail);
-            tvTeacherEmail.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+            tvTeacherEmail.setPaintFlags(tvTeacherEmail.getPaintFlags()|Paint.UNDERLINE_TEXT_FLAG);
             tvTeacherEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) { /** send email to teacher **/

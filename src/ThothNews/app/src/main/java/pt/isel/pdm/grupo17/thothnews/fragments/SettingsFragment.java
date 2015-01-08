@@ -19,7 +19,6 @@ import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassesPickActivity;
 import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
-import pt.isel.pdm.grupo17.thothnews.utils.ConnectionUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
@@ -40,18 +39,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         multiSelectListPreference = (MultiSelectListPreference) findPreference(TagUtils.TAG_MULTILIST_SEMESTERS_PREF_KEY);
-        multiSelectListPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                boolean hasValues = ((MultiSelectListPreference)preference).getEntryValues().length > 0;
-                if(ConnectionUtils.checkConnection(getActivity(), !hasValues))
-                    ThothUpdateService.startActionSemestersUpdate(getActivity());
-                if(!hasValues)
-                    ((MultiSelectListPreference)preference).getDialog().dismiss();
-                return true;
-            }
-        });
-
+        setEntriesToMultiSelectListPref(sharedPreferences);
         setSemestersSummary();
 
         classPreference = findPreference(TagUtils.TAG_PICK_CLASSES_KEY);

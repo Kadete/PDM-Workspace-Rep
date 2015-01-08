@@ -7,69 +7,62 @@
     android:id="@+id/class_sections_layout">
     <FrameLayout
         android:id="@+id/frame_teacher_info_id"
-        style="@style/Widget.SampleMessageTile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical">
+        android:layout_gravity="center_vertical"
+        >
         <LinearLayout
+            android:id="@+id/tv1_info"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp">
-            <FrameLayout
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:padding="2dp">
-                <com.github.siyamed.shapeimageview.CircularImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_image_camera"
-                    app:siBorderWidth="1dp"
-                    android:id="@+id/iv_teacher_avatar"/>
-            </FrameLayout>
-            <LinearLayout
-                android:id="@+id/tv1_info"
+            android:gravity="center">
+            <TextView
+                style="@style/Widget.SampleMessage"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:id="@+id/tv_class_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp">
-                <TextView
-                    style="@style/Widget.SampleMessage"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:id="@+id/tv_class_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/tv_class_name"/>
+                android:text="@string/tv_class_name"/>
+            <com.github.siyamed.shapeimageview.CircularImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_image_camera"
+                app:siBorderWidth="1dp"
+                android:id="@+id/iv_teacher_avatar"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="20dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
                 <TextView
                     style="@style/Widget.SampleMessage"
                     android:textSize="13sp"
                     android:textStyle="bold"
-                    android:layout_marginTop="-2dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:id="@+id/tv_teacher_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tv_teacher_name"/>
-            </LinearLayout>
+                <TextView
+                    style="@style/Widget.SampleMessage"
+                    android:textSize="13sp"
+                    android:textStyle="bold|italic"
+                    android:layout_marginTop="-3dp"
+                    android:textColor="@android:color/holo_blue_light"
+                    android:id="@+id/tv_teacher_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tv_teacher_email"/>
+                </LinearLayout>
+
         </LinearLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:layout_marginRight="@dimen/activity_horizontal_margin">
-            <TextView
-                android:layout_alignParentRight="true"
-                style="@style/Widget.SampleMessage"
-                android:textSize="13sp"
-                android:textStyle="bold|italic"
-                android:textColor="@android:color/holo_blue_light"
-                android:id="@+id/tv_teacher_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tv_teacher_email"/>
-        </RelativeLayout>
+
     </FrameLayout>
     <View
         android:layout_width="match_parent"

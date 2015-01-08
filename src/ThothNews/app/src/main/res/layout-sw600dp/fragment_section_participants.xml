@@ -12,12 +12,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:numColumns="4"
-            android:background="@android:color/darker_gray"
-            android:horizontalSpacing="2dp"
             android:stretchMode="columnWidth"
-            android:listSelector="@android:color/transparent"
-            android:verticalSpacing="2dp"
-            android:padding="2dp"/>
+            android:listSelector="@android:color/transparent"/>
         <TextView
             android:id="@android:id/empty"
             android:layout_width="wrap_content"
