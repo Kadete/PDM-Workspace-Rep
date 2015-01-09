@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
-import android.os.Bundle;
 import android.widget.Toast;
 
+import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
@@ -18,33 +18,19 @@ public class NetworkReceiver extends BroadcastReceiver {
 
     private static NetworkInfo.State previousState;
     private static boolean firstTime = true;
-    private static boolean enableDataMobile = false;
-
-    public static final String ACTION_DATA_MOBILE_CHANGE = "action_data_mobile_change";
-    public static final String DATA_MOBILE_EXTRA = "data_mobile_extra";
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
         d(TAG_BROADCAST, "Received intent with action = " + intent.getAction());
         String action = intent.getAction();
-        if (! action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION) && !action.equals(ACTION_DATA_MOBILE_CHANGE))
+        if (! action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION))
             return;
 
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni_wifi = cm.getActiveNetworkInfo();
         if (ni_wifi == null)
             return;
-
-        if(action.equals(ACTION_DATA_MOBILE_CHANGE)){
-            Bundle extra = intent.getExtras();
-            enableDataMobile = extra.getBoolean(DATA_MOBILE_EXTRA);
-        }
-
-        if(ni_wifi.getType() == ConnectivityManager.TYPE_MOBILE && !enableDataMobile){
-            Toast.makeText(context,"Application Data Mobile Disable",Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         if (action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
             if(firstTime) {
@@ -61,6 +47,19 @@ public class NetworkReceiver extends BroadcastReceiver {
                 previousState = NetworkInfo.State.DISCONNECTED;
             }
         }
+    }
+
+    public static boolean enableDataMobile = false;
+
+    public static boolean checkConnection(Context context, boolean toastOnFail){
+        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        boolean connected = (networkInfo != null && networkInfo.isConnected());
+        if(toastOnFail && !connected)
+            Toast.makeText(context, context.getString(R.string.toast_no_connectivity), Toast.LENGTH_SHORT).show();
+        else if((networkInfo.getType() == ConnectivityManager.TYPE_MOBILE && !enableDataMobile))
+            return false;
+        return connected;
     }
 
 }

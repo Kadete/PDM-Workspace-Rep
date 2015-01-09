@@ -5,7 +5,6 @@
     android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -31,12 +30,8 @@
                 android:layout_gravity="bottom|right"
                 android:layout_margin="16dp"
                 android:src="@drawable/ic_content_add_circle"
-                fab:fab_colorNormal="#ff005246"
-                fab:fab_colorPressed="#d7ff4400"
-                fab:fab_colorRipple="#00FFFF" />
-
+                fab:fab_colorNormal="#FFFFFF"
+                fab:fab_colorPressed="#ff005246"
+                fab:fab_colorRipple="#d7ff4400" />
         </FrameLayout>
-
-
-
 </pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout>

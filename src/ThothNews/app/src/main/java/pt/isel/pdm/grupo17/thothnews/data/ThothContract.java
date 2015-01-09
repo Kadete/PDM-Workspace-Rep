@@ -198,7 +198,8 @@ public final class ThothContract {
                 START_DATE = "startDate",
                 DUE_DATE = "dueDate",
                 URL = "myUrl",
-                CLASS_ID = "classId";
+                CLASS_ID = "classId",
+                EVENT_ID ="_eventID";
 
         /**
          * MIME type for lists of news.
@@ -220,7 +221,7 @@ public final class ThothContract {
                 + WorkItems._ID + TYPE_INTEGER + PRIMARY_KEY + COMMA_SEP
                 + WorkItems.TITLE + TYPE_TEXT + COMMA_SEP + WorkItems.URL + COMMA_SEP
                 + WorkItems.START_DATE + TYPE_TEXT + COMMA_SEP + WorkItems.DUE_DATE + TYPE_TEXT + COMMA_SEP
-                + WorkItems.CLASS_ID + TYPE_INTEGER + ")";
+                + WorkItems.CLASS_ID + TYPE_INTEGER + COMMA_SEP + WorkItems.EVENT_ID + TYPE_INTEGER + ")";
     }
 
 

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.fragments.NewsListFragment;
 import pt.isel.pdm.grupo17.thothnews.fragments.SingleNewFragment;
@@ -34,7 +35,6 @@ import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.models.ThothWorkItem;
 import pt.isel.pdm.grupo17.thothnews.utils.BitmapUtils;
-import pt.isel.pdm.grupo17.thothnews.utils.ConnectionUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
@@ -211,7 +211,7 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
                 readAllDialogFragment.show(getSupportFragmentManager(), "Read All News Dialog Fragment");
                 return true;
             case R.id.action_webview:
-                if(!ConnectionUtils.checkConnection(getApplicationContext(), true))
+                if(!NetworkReceiver.checkConnection(getApplicationContext(), true))
                     break;
                 Intent intent = new Intent(this, WebViewActivity.class);
                 String fullName = sThothClass.getFullName().replaceAll(" ", "");

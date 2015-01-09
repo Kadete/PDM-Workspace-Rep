@@ -4,18 +4,19 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:layout_gravity="center_vertical"
     android:background="@drawable/list_selector"
-    android:padding="5dp">
+    android:padding="4dp">
     <TextView
         android:id="@+id/participant_item_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"/>
     <FrameLayout
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_gravity="center_vertical">
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginBottom="3dp">
         <com.github.siyamed.shapeimageview.CircularImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -24,11 +25,11 @@
             android:id="@+id/student_item_avatar"/>
     </FrameLayout>
     <LinearLayout
-        android:gravity="center_vertical"
         android:layout_marginLeft="5dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_vertical">
         <TextView
             android:textStyle="bold"
             android:id="@+id/participant_item_number_and_group"

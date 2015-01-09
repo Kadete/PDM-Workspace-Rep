@@ -112,4 +112,10 @@
     <string name="start_date_label"><![CDATA[<small>Start Date:</small>]]></string>
     <string name="due_date_label"><![CDATA[<small>Due Date:</small>]]></string>
     <string name="create_date_label"><![CDATA[<small>Create Date:</small>]]></string>
+    <string name="data_mobile_switch_title">Data Mobile</string>
+    <string name="vibration_switch_title">Vibration</string>
+    <string name="auto_add_events_switch_key">auto_add_events_switch_key</string>
+    <string name="category_calendar_title">Calendar</string>
+    <string name="auto_add_events_title">Events</string>
+    <string name="auto_add_events_summary">Automatically add events</string>
 </resources>

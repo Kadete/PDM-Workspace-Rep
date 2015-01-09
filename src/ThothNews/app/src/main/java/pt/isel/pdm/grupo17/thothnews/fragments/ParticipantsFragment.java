@@ -19,10 +19,10 @@ import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
 import pt.isel.pdm.grupo17.thothnews.adapters.ParticipantsAdapter;
+import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
-import pt.isel.pdm.grupo17.thothnews.utils.ConnectionUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
@@ -119,10 +119,10 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     }
 
     public void refreshAndUpdate() {
-        if(!isFragmentUIActive() || !ConnectionUtils.checkConnection(getActivity(), true))
+        if(!NetworkReceiver.checkConnection(getActivity(), true)){
+            mSwipeRefreshLayout.setRefreshing(false);
             return;
-
-        mSwipeRefreshLayout.setRefreshing(true);
+        }
         ThothUpdateService.startActionClassParticipantsUpdate(getActivity(), sThothClass.getID());
         getLoaderManager().restartLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
         mSwipeRefreshLayout.setRefreshing(false);

@@ -59,16 +59,16 @@
                 android:visibility="gone"/>
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/layout_work_item_visibility"
+            android:id="@+id/layout_work_item_add_event"
             android:background="@drawable/grad_light_gold"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
             <ImageView
                 android:layout_gravity="center"
-                android:id="@+id/iv_workitem_webview"
+                android:id="@+id/iv_workitem_event_options"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_action_webview"
+                android:src="@drawable/ic_action_event"
                 android:layout_width="match_parent" />
         </LinearLayout>
 

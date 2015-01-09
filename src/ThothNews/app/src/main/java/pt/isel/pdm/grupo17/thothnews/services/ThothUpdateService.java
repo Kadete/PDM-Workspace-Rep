@@ -22,8 +22,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,8 +36,11 @@ import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity;
 import pt.isel.pdm.grupo17.thothnews.activities.WebViewActivity;
+import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
+import pt.isel.pdm.grupo17.thothnews.utils.CalendarUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
@@ -177,6 +182,8 @@ public class ThothUpdateService extends IntentService {
     }
 
     public static void startActionSemestersUpdate(Context context) {
+        if(!NetworkReceiver.checkConnection(context, false))
+            return;
         Intent intent = new Intent(context, ThothUpdateService.class);
         intent.setAction(ACTION_SEMESTERS_UPDATE);
         context.startService(intent);
@@ -189,6 +196,8 @@ public class ThothUpdateService extends IntentService {
      * @see IntentService
      */
     public static void startActionNewsUpdate(Context context) {
+        if(!NetworkReceiver.checkConnection(context, false))
+            return;
         Intent intent = new Intent(context, ThothUpdateService.class);
         intent.setAction(ACTION_NEWS_UPDATE);
         context.startService(intent);
@@ -201,6 +210,8 @@ public class ThothUpdateService extends IntentService {
      * @see IntentService
      */
     public static void startActionClassesUpdate(Context context) {
+        if(!NetworkReceiver.checkConnection(context, false))
+            return;
         Intent intent = new Intent(context, ThothUpdateService.class);
         intent.setAction(ACTION_CLASSES_UPDATE);
         context.startService(intent);
@@ -213,8 +224,8 @@ public class ThothUpdateService extends IntentService {
      * @see IntentService
      */
     public static void startActionClassNewsUpdate(Context context, long classID) {
-        if(classID == ARG_CLASS_ID_DEFAULT_VALUE) return;
-
+        if(classID == ARG_CLASS_ID_DEFAULT_VALUE || !NetworkReceiver.checkConnection(context, false))
+            return;
         Intent intent = new Intent(context, ThothUpdateService.class);
         intent.setAction(ACTION_CLASS_NEWS_UPDATE);
         intent.putExtra(ARG_CLASS_ID, classID);
@@ -229,8 +240,8 @@ public class ThothUpdateService extends IntentService {
      * @see IntentService
      */
     public static void startActionClassParticipantsUpdate(Context context, long classID) {
-        if(classID == ARG_CLASS_ID_DEFAULT_VALUE) return;
-
+        if(classID == ARG_CLASS_ID_DEFAULT_VALUE || !NetworkReceiver.checkConnection(context, false))
+            return;
         Intent intent = new Intent(context, ThothUpdateService.class);
         intent.setAction(ACTION_CLASS_PARTICIPANTS_UPDATE);
         intent.putExtra(ARG_CLASS_ID, classID);
@@ -244,6 +255,8 @@ public class ThothUpdateService extends IntentService {
      * @see IntentService
      */
     public static void startActionWorkItemsUpdate(Context context, long classID) {
+        if(!NetworkReceiver.checkConnection(context, false))
+            return;
         Intent intent = new Intent(context, ThothUpdateService.class);
         intent.setAction(ACTION_CLASS_WORK_ITEMS_UPDATE);
         intent.putExtra(ARG_CLASS_ID, classID);
@@ -403,7 +416,6 @@ public class ThothUpdateService extends IntentService {
                 final JSONArray thothNews = ParseUtils.parseElement(newsData, JsonThothNew.ARRAY_NEWS_ITEMS);
                 ContentResolver resolver = getContentResolver();
                 // TODO: Insert in batch instead of one by one
-                // TODO: Only make request for content of the news that don't exist in the database
                 Cursor classNewsIDsCursor = resolver.query(UriUtils.Classes.parseNewsFromClassID(classID), new String[]{ThothContract.News._ID}, null, null, null);
                 List<Long> classNewsIDs = getListFromCursor(classNewsIDsCursor);
                 classNewsIDsCursor.close();
@@ -447,6 +459,8 @@ public class ThothUpdateService extends IntentService {
     private NotificationManager notificationManager = null;
     private Notification.Builder builder = null;
 
+    public static boolean isToVibrate = false;
+
     private void sendNotifications(Set<Long> classesID) {
         Intent intent = null;
         if(builder == null){
@@ -487,8 +501,6 @@ public class ThothUpdateService extends IntentService {
 
         notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
-
-    public static boolean isToVibrate = true;
 
     public static void cleanNotifications(Context context){
         ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancelAll();
@@ -551,6 +563,8 @@ public class ThothUpdateService extends IntentService {
         }
     }
 
+    public static boolean isToAutoInsertEvent = false;
+
     /**
      * Handle action CLASS_WORK_ITEMS_UPDATE in the provided background thread with the provided
      * parameters.
@@ -561,7 +575,7 @@ public class ThothUpdateService extends IntentService {
             return;
 
         try {
-            String urlPath = String.format(URI_CLASS_WORK_ITEMS,classID);
+            String urlPath = String.format(URI_CLASS_WORK_ITEMS, classID);
             URL url = new URL(urlPath);
             HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
             try {
@@ -574,27 +588,12 @@ public class ThothUpdateService extends IntentService {
                 List<Long> classWorkItemsIDs = getListFromCursor(workItemsIDsCursor);
                 workItemsIDsCursor.close();
                 long currWorkItemID;
-                ContentValues currValues = new ContentValues();
                 // TODO: Insert in batch instead of one by one
-                // TODO: Only make request for content of the news that don't exist in the database
                 for (int idx = 0; idx < thothWorkItems.length(); ++idx) {
                     JSONObject jWorkItem = thothWorkItems.getJSONObject(idx);
                     currWorkItemID = jWorkItem.getLong(JsonThothWorkItem.ID);
                     if(!classWorkItemsIDs.contains(currWorkItemID)){
-                        currValues.clear();
-                        currValues.put(ThothContract.WorkItems._ID, currWorkItemID);
-                        currValues.put(ThothContract.WorkItems.TITLE, jWorkItem.getString(JsonThothWorkItem.TITLE));
-                        String strStartDate = jWorkItem.getString(JsonThothWorkItem.START_DATE);
-                        String strDueDate = jWorkItem.getString(JsonThothWorkItem.DUE_DATE);
-                        currValues.put(ThothContract.WorkItems.START_DATE, strStartDate);
-                        currValues.put(ThothContract.WorkItems.DUE_DATE, strDueDate);
-                        Cursor classCursor = resolver.query(UriUtils.Classes.parseClass(classID), new String[]{ThothContract.Classes.FULL_NAME}, null, null, null);
-                        if(classCursor.moveToNext())
-                            currValues.put(ThothContract.WorkItems.URL, String.format("%s/%s/workitems/%d",
-                                WebViewActivity.URI_CLASSES_ROOT, classCursor.getString(classCursor.getColumnIndex(ThothContract.Classes.FULL_NAME)).replace(" ", ""), currWorkItemID));
-                        classCursor.close();
-                        currValues.put(ThothContract.WorkItems.CLASS_ID,classID);
-                        resolver.insert(ThothContract.WorkItems.CONTENT_URI, currValues);
+                        insertWorkItem(jWorkItem, currWorkItemID, classID);
                     }
                 }
             } catch (JSONException e) {
@@ -644,6 +643,37 @@ public class ThothUpdateService extends IntentService {
         values.put(ThothContract.Classes_Students.KEY_STUDENT_ID, studentID);
         values.put(ThothContract.Classes_Students.GROUP, group);
         getContentResolver().insert(ThothContract.Classes_Students.CONTENT_URI, values);
+    }
+
+    public void insertWorkItem(JSONObject jsonWorkItem, long workItemID, long classID) throws JSONException {
+        ContentValues currValues = new ContentValues();
+        currValues.put(ThothContract.WorkItems._ID, workItemID);
+        String title = jsonWorkItem.getString(JsonThothWorkItem.TITLE);
+        currValues.put(ThothContract.WorkItems.TITLE, title);
+        String strStartDate = jsonWorkItem.getString(JsonThothWorkItem.START_DATE);
+        String strDueDate = jsonWorkItem.getString(JsonThothWorkItem.DUE_DATE);
+        currValues.put(ThothContract.WorkItems.START_DATE, strStartDate);
+        currValues.put(ThothContract.WorkItems.DUE_DATE, strDueDate);
+
+        Cursor classCursor = getContentResolver().query(UriUtils.Classes.parseClass(classID), new String[]{ThothContract.Classes.FULL_NAME}, null, null, null);
+        String classFullName = null;
+        if(classCursor.moveToNext()){
+            classFullName = classCursor.getString(classCursor.getColumnIndex(ThothContract.Classes.FULL_NAME));
+            currValues.put(ThothContract.WorkItems.URL, String.format("%s/%s/workitems/%d",
+                    WebViewActivity.URI_CLASSES_ROOT, classFullName.replace(" ", ""), workItemID));
+        }
+        classCursor.close();
+        currValues.put(ThothContract.WorkItems.CLASS_ID,classID);
+        if(isToAutoInsertEvent) {
+            try {
+                final Date dueDate = DateUtils.SAVE_DATE_FORMAT.parse(strDueDate);
+                long eventID = CalendarUtils.addAppointment(getApplicationContext(), title, classFullName, dueDate.getTime());
+                currValues.put(ThothContract.WorkItems.EVENT_ID, eventID);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        getContentResolver().insert(ThothContract.WorkItems.CONTENT_URI, currValues);
     }
 
     public static boolean isNumeric(String str) {

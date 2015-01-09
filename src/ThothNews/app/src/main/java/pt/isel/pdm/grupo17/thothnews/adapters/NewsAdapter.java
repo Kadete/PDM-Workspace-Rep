@@ -22,6 +22,7 @@ import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNewsList;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.ResolverUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
 import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
@@ -29,15 +30,15 @@ import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ADAPTER;
 
 public class NewsAdapter extends CursorAdapter {
 
-    private Drawable dwVisibility;
-    private Drawable dwVisibilityOff;
+    private Drawable dwView;
+    private Drawable dwNotView;
 
     class NewViewHolder {
         public TextView id;
         public TextView title;
         public TextView when;
         public CheckBox checkRead;
-        public ImageView ivVisibility;
+        public ImageView ivReady;
     }
 
     public static final long NO_NEW_SELECTED = -1;
@@ -55,8 +56,8 @@ public class NewsAdapter extends CursorAdapter {
         super(context, null, 0);
         mContext = context;
         sLayoutInflater = LayoutInflater.from(mContext);
-        dwVisibility = mContext.getResources().getDrawable(R.drawable.ic_action_visibility);
-        dwVisibilityOff = mContext.getResources().getDrawable(R.drawable.ic_action_visibility_off);
+        dwView = mContext.getResources().getDrawable(R.drawable.ic_action_visibility);
+        dwNotView = mContext.getResources().getDrawable(R.drawable.ic_action_visibility_off);
     }
 
     @Override
@@ -94,17 +95,18 @@ public class NewsAdapter extends CursorAdapter {
         holder.title.setPaintFlags(holder.title.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
         holder.when = (TextView)newView.findViewById(R.id.item_new_when);
         holder.checkRead = (CheckBox)newView.findViewById(R.id.item_new_checkread);
-        holder.ivVisibility = (ImageView)newView.findViewById(R.id.iv_new_visibility);
+        holder.ivReady = (ImageView)newView.findViewById(R.id.iv_new_visibility);
+
         newView.setTag(holder);
         return newView;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        NewViewHolder holder = (NewViewHolder)view.getTag();
+        final NewViewHolder holder = (NewViewHolder)view.getTag();
 
-        final String id = cursor.getString(cursor.getColumnIndex(ThothContract.News._ID));
-        holder.id.setText(id);
+        final long id = cursor.getLong(cursor.getColumnIndex(ThothContract.News._ID));
+        holder.id.setText(String.valueOf(id));
         holder.title.setText(cursor.getString(cursor.getColumnIndex(ThothContract.News.TITLE)));
         try {
             Date date = DateUtils.SAVE_DATE_FORMAT.parse(cursor.getString(cursor.getColumnIndex(ThothContract.News.WHEN_CREATED)));
@@ -113,25 +115,32 @@ public class NewsAdapter extends CursorAdapter {
             d(TAG_ADAPTER, "FAIL TO PARSE DATE");
         }
 
-        Boolean read = cursor.getString(cursor.getColumnIndex(ThothContract.News.READ)).equals(TRUE);
+        final Boolean read = cursor.getString(cursor.getColumnIndex(ThothContract.News.READ)).equals(TRUE);
         holder.checkRead.setChecked(read);
 
         if(ClassSectionsActivity.isTwoPane()){
             if(newSelectID == Long.valueOf(id)){
                 view.findViewById(R.id.layout_new_info).setBackground(mContext.getResources().getDrawable(R.drawable.bg_new_selected));
                 view.findViewById(R.id.layout_new_visibility).setVisibility(View.GONE);
-                holder.ivVisibility.setVisibility(View.GONE);
+                holder.ivReady.setVisibility(View.GONE);
             }else{
                 view.findViewById(R.id.layout_new_info).setBackground(mContext.getResources().getDrawable((read) ? R.drawable.grad_light_blue : R.drawable.grad_light_red));
                 view.findViewById(R.id.layout_new_visibility).setVisibility(View.VISIBLE);
-                holder.ivVisibility.setVisibility(View.VISIBLE);
-                holder.ivVisibility.setImageDrawable((read) ? dwVisibility : dwVisibilityOff);
+                holder.ivReady.setVisibility(View.VISIBLE);
+                holder.ivReady.setImageDrawable((read) ? dwView : dwNotView);
             }
         }
         else {
             view.findViewById(R.id.layout_new_info).setBackground(mContext.getResources().getDrawable((read) ? R.drawable.grad_light_blue : R.drawable.grad_light_red));
+            holder.ivReady.setImageDrawable((read) ? dwView : dwNotView);
         }
+
+        view.findViewById(R.id.layout_new_visibility).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.ivReady.setImageDrawable((!read) ? dwView : dwNotView);
+                ResolverUtils.updateNew(mContext, id, !read);
+            }
+        });
     }
-
-
 }

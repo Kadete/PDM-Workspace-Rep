@@ -22,20 +22,29 @@
 
     <PreferenceCategory
         android:title="@string/category_notifications_title"
-        android:key="notification_category">
+        android:key="notification_category_key">
         <SwitchPreference
             android:key="@string/vibration_switch_key"
             android:icon="@drawable/ic_notification_vibration"
-            android:title="Vibration" />
+            android:title="@string/vibration_switch_title" />
     </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/category_connectivity_title"
-        android:key="notification_category">
+        android:key="notification_category_key">
         <SwitchPreference
             android:key="@string/data_mobile_switch_key"
-            android:title="Data Mobile"
+            android:title="@string/data_mobile_switch_title"
             android:icon="@drawable/ic_sim_data_mobile"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/category_calendar_title"
+        android:key="calendar_events_category_key">
+        <SwitchPreference
+            android:key="@string/auto_add_events_switch_key"
+            android:title="@string/auto_add_events_title"
+            android:summary="@string/auto_add_events_summary"
+            android:icon="@drawable/ic_action_event"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

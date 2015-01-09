@@ -8,8 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.fragments.ClassesFragment;
-import pt.isel.pdm.grupo17.thothnews.utils.ConnectionUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
@@ -42,7 +42,7 @@ public class ClassesActivity extends FragmentActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_webview:
-                if(!ConnectionUtils.checkConnection(getApplicationContext(), true))
+                if(!NetworkReceiver.checkConnection(getApplicationContext(), true))
                     break;
                 Intent intent = new Intent(this, WebViewActivity.class);
                 intent.putExtra(TagUtils.TAG_EXTRA_WEB_VIEW_URL, WebViewActivity.URI_CLASSES_ROOT);

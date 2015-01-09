@@ -53,6 +53,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 return true;
             }
         });
+
+        ThothUpdateService.startActionSemestersUpdate(getActivity());
     }
 
     @Override
@@ -68,12 +70,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 setClassesSummary(sharedPreferences);
                 return;
             case TagUtils.TAG_VIBRATION_SWITCH_PREF_KEY:
-                ThothUpdateService.isToVibrate = sharedPreferences.getBoolean(TagUtils.TAG_VIBRATION_SWITCH_PREF_KEY, true);
+                ThothUpdateService.isToVibrate = sharedPreferences.getBoolean(TagUtils.TAG_VIBRATION_SWITCH_PREF_KEY, false);
                 return;
             case TagUtils.TAG_DATA_MOBILE_SWITCH_PREF_KEY:
-                Intent intent = new Intent(NetworkReceiver.ACTION_DATA_MOBILE_CHANGE);
-                intent.putExtra(NetworkReceiver.DATA_MOBILE_EXTRA, sharedPreferences.getBoolean(TagUtils.TAG_DATA_MOBILE_SWITCH_PREF_KEY, true));
-                getActivity().sendBroadcast(intent);
+                NetworkReceiver.enableDataMobile = sharedPreferences.getBoolean(TagUtils.TAG_DATA_MOBILE_SWITCH_PREF_KEY, false);
+                return;
+            case TagUtils.TAG_AUTO_INSERT_EVENT_SWITCH_PREF_KEY:
+                ThothUpdateService.isToAutoInsertEvent = sharedPreferences.getBoolean(TagUtils.TAG_VIBRATION_SWITCH_PREF_KEY, false);
                 return;
             default:
         }

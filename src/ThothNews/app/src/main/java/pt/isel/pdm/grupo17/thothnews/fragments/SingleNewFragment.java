@@ -1,6 +1,5 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
-import android.content.ContentValues;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,11 +11,9 @@ import android.widget.TextView;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
-import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
-import pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.ResolverUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
-import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
 public class SingleNewFragment extends Fragment {
 
@@ -65,25 +62,18 @@ public class SingleNewFragment extends Fragment {
 //            String body = String.format(template, content);
             webViewContent.loadDataWithBaseURL(null, mThothNew.getContent(), "text/html", "UTF-8", null);
             if(ClassSectionsActivity.isTwoPane())
-                updateNew();
+                ResolverUtils.updateNew(getActivity(),mThothNew.getID(),true);
         }else
             title.setText("Some Error Occur");
 
         return view;
     }
 
-    public void updateNew(){
-        ContentValues values = new ContentValues();
-        values.put(ThothContract.News.READ, SQLiteUtils.TRUE);
-        if(mThothNew != null)
-            getActivity().getContentResolver().update(UriUtils.News.parseNewID(mThothNew.getID()), values, null, null );
-    }
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            updateNew();
+            ResolverUtils.updateNew(getActivity(),mThothNew.getID(),true);
         }
     }
 }

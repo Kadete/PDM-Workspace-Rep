@@ -27,10 +27,10 @@ import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassesPickActivity;
 import pt.isel.pdm.grupo17.thothnews.activities.SettingsActivity;
 import pt.isel.pdm.grupo17.thothnews.adapters.ClassesAdapter;
+import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
-import pt.isel.pdm.grupo17.thothnews.utils.ConnectionUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
@@ -133,10 +133,10 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     public void refreshAndUpdate() {
-        if(!ConnectionUtils.checkConnection(getActivity(), true))
+        if(!NetworkReceiver.checkConnection(getActivity(), true)){
+            mSwipeRefreshLayout.setRefreshing(false);
             return;
-
-        mSwipeRefreshLayout.setRefreshing(true);
+        }
         ThothUpdateService.startActionNewsUpdate(getActivity());
         getLoaderManager().restartLoader(CLASSES_CURSOR_LOADER_ID, null, this);
         mSwipeRefreshLayout.setRefreshing(false);

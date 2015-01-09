@@ -2,7 +2,6 @@ package pt.isel.pdm.grupo17.thothnews.fragments;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,14 +19,12 @@ import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
-import pt.isel.pdm.grupo17.thothnews.activities.WebViewActivity;
 import pt.isel.pdm.grupo17.thothnews.adapters.WorkItemsAdapter;
+import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothWorkItem;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
-import pt.isel.pdm.grupo17.thothnews.utils.ConnectionUtils;
-import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
@@ -36,7 +33,7 @@ public class WorkItemsListFragment extends ListFragment implements LoaderManager
     private static final int WORK_ITEMS_CURSOR_LOADER_ID = 3;
 
     private static final String[] CURSOR_COLUMNS = {ThothContract.WorkItems._ID, ThothContract.WorkItems.TITLE,
-            ThothContract.WorkItems.START_DATE, ThothContract.WorkItems.DUE_DATE, ThothContract.WorkItems.URL};
+            ThothContract.WorkItems.START_DATE, ThothContract.WorkItems.DUE_DATE, ThothContract.WorkItems.URL, ThothContract.WorkItems.EVENT_ID};
     private static final String SELECTION = ThothContract.WorkItems.CLASS_ID + " = ? ";
 
     private static final String STATE_ACTIVATED_POSITION_WORK_ITEM = "STATE_ACTIVATED_POSITION_WORK_ITEM";
@@ -85,7 +82,6 @@ public class WorkItemsListFragment extends ListFragment implements LoaderManager
             setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION_WORK_ITEM));
 
         sThothClass = ClassSectionsActivity.getThothClass();
-
 
         mListAdapter = new WorkItemsAdapter(getActivity());
         AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mListAdapter);
@@ -155,12 +151,6 @@ public class WorkItemsListFragment extends ListFragment implements LoaderManager
             mListAdapter.setSelectedWorkItemID(workItem.getID());
             mCallbacks.onItemSelected((ThothWorkItem) mListAdapter.getItem(position));
             getLoaderManager().restartLoader(WORK_ITEMS_CURSOR_LOADER_ID, null, this);
-        } else {
-            if(!ConnectionUtils.checkConnection(getActivity(), true))
-                return;
-            Intent intent = new Intent(getActivity(), WebViewActivity.class);
-            intent.putExtra(TagUtils.TAG_EXTRA_WEB_VIEW_URL, workItem.getUrl());
-            startActivity(intent);
         }
     }
 
@@ -182,10 +172,10 @@ public class WorkItemsListFragment extends ListFragment implements LoaderManager
     }
 
     public void refreshAndUpdate() {
-        if(!ConnectionUtils.checkConnection(getActivity(), true))
+        if(!NetworkReceiver.checkConnection(getActivity(), true)){
+            mSwipeRefreshLayout.setRefreshing(false);
             return;
-
-        mSwipeRefreshLayout.setRefreshing(true);
+        }
         ThothUpdateService.startActionWorkItemsUpdate(getActivity(), sThothClass.getID());
         getLoaderManager().restartLoader(WORK_ITEMS_CURSOR_LOADER_ID, null, this);
         mSwipeRefreshLayout.setRefreshing(false);

@@ -29,11 +29,11 @@ public class UriUtils {
         }
     }
 
-//    public static class WorkItems {
-//        public static Uri parseWorkItemID(long workItemID){
-//            return Uri.parse(String.format("%s/%d", ThothContract.WorkItems.CONTENT_URI, workItemID));
-//        }
-//    }
+    public static class WorkItems {
+        public static Uri parseWorkItemID(long workItemID){
+            return Uri.parse(String.format("%s/%d", ThothContract.WorkItems.CONTENT_URI, workItemID));
+        }
+    }
 
     public static class Teachers {
         public static Uri parseTeacherID(long teacherID){
