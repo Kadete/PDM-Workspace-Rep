@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
+import pt.isel.pdm.grupo17.thothnews.receivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.fragments.ClassesFragment;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;

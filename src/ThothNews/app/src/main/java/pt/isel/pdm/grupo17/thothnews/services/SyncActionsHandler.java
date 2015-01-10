@@ -32,6 +32,7 @@ import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
+import pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
@@ -197,7 +198,7 @@ public class SyncActionsHandler {
                     .withValue(ThothContract.News.TITLE, thothNew.getTitle())
                     .withValue(ThothContract.News.WHEN_CREATED, thothNew.getWhenToSave())
                     .withValue(ThothContract.News.CONTENT, thothNew.getContent())
-                    .withValue(ThothContract.News.READ, false)
+                    .withValue(ThothContract.News.READ, SQLiteUtils.FALSE)
                     .withValue(ThothContract.News.CLASS_ID, classID)
                     .build());
             syncResult.stats.numInserts++;
@@ -275,6 +276,24 @@ public class SyncActionsHandler {
         mContentResolver.insert(ThothContract.Classes.CONTENT_URI, currValuesClass); /** INSERT CLASS **/
         return teacherID;
     }
+
+    private long insertClassBatch(JSONObject classObj) throws JSONException, IOException {
+        long classID = classObj.getLong(JsonThothClass.ID);
+        ContentValues currValuesClass = new ContentValues();
+        currValuesClass.put(ThothContract.Classes._ID, classID);
+        currValuesClass.put(ThothContract.Classes.FULL_NAME, classObj.getString(JsonThothClass.FULL_NAME));
+        currValuesClass.put(ThothContract.Classes.COURSE, classObj.getString(JsonThothClass.COURSE_NAME));
+        currValuesClass.put(ThothContract.Classes.SEMESTER, classObj.getString(JsonThothClass.LECTIVE_SEMESTER));
+        currValuesClass.put(ThothContract.Classes.SHORT_NAME, classObj.getString(JsonThothClass.NAME));
+        currValuesClass.put(ThothContract.Classes.SEMESTER, classObj.getString(JsonThothClass.LECTIVE_SEMESTER));
+        currValuesClass.put(ThothContract.Classes.LINKS, classObj.getString(JsonThothClass.LINKS));
+        currValuesClass.put(ThothContract.Classes.TEACHER_NAME, classObj.getString(JsonThothClass.TEACHER));
+        long teacherID = getJSONObjectFromUri(classID, URI_CLASS_INFO).getLong(JsonThothFullClass.TEACHER_ID);
+        currValuesClass.put(ThothContract.Classes.TEACHER_ID, teacherID);
+        mContentResolver.insert(ThothContract.Classes.CONTENT_URI, currValuesClass); /** INSERT CLASS **/
+        return teacherID;
+    }
+
 
     private void insertTeacher(JSONObject jFullTeacher) throws JSONException, IOException {
         ContentValues currValuesTeacher = new ContentValues();

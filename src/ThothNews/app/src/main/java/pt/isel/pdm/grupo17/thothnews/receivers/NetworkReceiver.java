@@ -1,4 +1,4 @@
-package pt.isel.pdm.grupo17.thothnews.broadcastreceivers;
+package pt.isel.pdm.grupo17.thothnews.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateActionsHandler;
-import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 import pt.isel.pdm.grupo17.thothnews.utils.SettingsUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.LogUtils.d;
@@ -42,7 +41,7 @@ public class NetworkReceiver extends BroadcastReceiver {
             }
 
             if(ni_wifi.isConnected() && previousState == NetworkInfo.State.DISCONNECTED){
-                ThothUpdateService.startActionNewsUpdate(context);
+//                ThothUpdateService.startActionNewsUpdate(context); // this will be done by syncAdapter
                 previousState = NetworkInfo.State.CONNECTED;
             }
             else if(previousState == NetworkInfo.State.CONNECTED){

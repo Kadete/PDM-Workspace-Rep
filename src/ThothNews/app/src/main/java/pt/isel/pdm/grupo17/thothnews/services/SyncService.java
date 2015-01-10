@@ -37,7 +37,6 @@ public class SyncService extends Service {
 
     private static final Object sSyncAdapterLock = new Object();
     private static SyncAdapter sSyncAdapter = null;
-
     /**
      * Thread-safe constructor, creates static {@link SyncAdapter} instance.
      */

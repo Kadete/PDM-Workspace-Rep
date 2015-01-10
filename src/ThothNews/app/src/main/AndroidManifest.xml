@@ -30,7 +30,7 @@
 
     <!--android:debuggable="true"-->
     <application
-        android:icon="@drawable/ic_thoth"
+        android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme"
         android:allowBackup="true"
         android:vmSafeMode="true"
@@ -63,7 +63,7 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.NoTitleBar"/>
 
-        <receiver android:name=".broadcastreceivers.NetworkReceiver" >
+        <receiver android:name=".receivers.NetworkReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.STATE_CHANGE" />

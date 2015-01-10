@@ -1,13 +1,11 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
-import android.accounts.Account;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -17,23 +15,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.accounts.GenericAccountService;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
 import pt.isel.pdm.grupo17.thothnews.activities.SingeNewActivity;
 import pt.isel.pdm.grupo17.thothnews.adapters.NewsAdapter;
-import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
+import pt.isel.pdm.grupo17.thothnews.receivers.BgProcessingResultReceiver;
+import pt.isel.pdm.grupo17.thothnews.receivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.services.SyncUtils;
+import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
-public class NewsListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
+import static pt.isel.pdm.grupo17.thothnews.receivers.BgProcessingResultReceiver.*;
+
+public class NewsListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, Receiver{
 
     private static final int NEWS_CURSOR_LOADER_ID = 2;
 
@@ -50,7 +52,57 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     private ListView mListView;
     private NewsAdapter mListAdapter;
 
-    private Object mSyncObserverHandle;
+
+    public BgProcessingResultReceiver mReceiver;
+
+    static boolean isActive = false;
+    private LoaderManager loader;
+
+    @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+        isActive = true;
+        loader = getLoaderManager();
+
+        if (!(activity instanceof CallbackNew)) {
+            throw new IllegalStateException("Activity must implement fragment's callbacks.");
+        }
+        SyncUtils.CreateSyncAccount(activity);  // Create account, if needed
+
+        mCallback = (CallbackNew) activity;
+    }
+
+    @Override
+    public void onDetach(){
+        super.onDetach();
+        loader = null;
+        isActive = false;
+        mCallback = sDummyCallback;
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        if(!isActive){
+            return;
+        }
+        switch (resultCode) {
+            case STATUS_RUNNING:
+                //show progress
+                mSwipeRefreshLayout.setRefreshing(true);
+                break;
+            case STATUS_FINISHED:
+                // hide progress & analyze bundle
+                mSwipeRefreshLayout.setRefreshing(false);
+                if(isActive && loader != null)
+                    loader.restartLoader(NEWS_CURSOR_LOADER_ID, null, this);
+                break;
+            case STATUS_ERROR:
+                // handle the error;
+                mSwipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
 
     public interface CallbackNew {
         public void onItemSelected(ThothNew thothNew);
@@ -74,6 +126,9 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
         View sNewsView = inflater.inflate(R.layout.fragment_section_news, container, false);
         mSwipeRefreshLayout = (MultiSwipeRefreshLayout) sNewsView.findViewById(R.id.swipe_refresh);
         mListView = (ListView) sNewsView.findViewById(android.R.id.list);
+        // register a receiver for IntentService broadcasts
+        mReceiver = new BgProcessingResultReceiver(new Handler());
+        mReceiver.setReceiver(this);
         return sNewsView;
     }
 
@@ -100,25 +155,7 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
         });
         mSwipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
 
-        getLoaderManager().initLoader(NEWS_CURSOR_LOADER_ID, null, this);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        if (!(activity instanceof CallbackNew)) {
-            throw new IllegalStateException("Activity must implement fragment's callbacks.");
-        }
-        SyncUtils.CreateSyncAccount(activity);  // Create account, if needed
-
-        mCallback = (CallbackNew) activity;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mCallback = sDummyCallback;
+        loader.initLoader(NEWS_CURSOR_LOADER_ID, null, this);
     }
 
     @Override
@@ -136,20 +173,7 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onResume() {
         super.onResume();
-        mSyncStatusObserver.onStatusChanged(0);
-
-        final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING | ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
-        mSyncObserverHandle = ContentResolver.addStatusChangeListener(mask, mSyncStatusObserver);
-        getLoaderManager().restartLoader(NEWS_CURSOR_LOADER_ID, null, this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mSyncObserverHandle != null) {
-            ContentResolver.removeStatusChangeListener(mSyncObserverHandle);
-            mSyncObserverHandle = null;
-        }
+        loader.restartLoader(NEWS_CURSOR_LOADER_ID, null, this);
     }
 
     @Override
@@ -191,28 +215,9 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
             mSwipeRefreshLayout.setRefreshing(false);
             return;
         }
-//        ThothUpdateService.startActionClassNewsUpdate(getActivity(), sThothClass.getID());
-        getLoaderManager().restartLoader(NEWS_CURSOR_LOADER_ID, null, this);
-        mSwipeRefreshLayout.setRefreshing(false);
+        ThothUpdateService.startActionClassNewsUpdate(getActivity(), mReceiver, sThothClass.getID());
     }
 
-    private SyncStatusObserver mSyncStatusObserver = new SyncStatusObserver() {
-        @Override
-        public void onStatusChanged(int which) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Account account = GenericAccountService.GetAccount();
-                    if (account == null) {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                        return;
-                    }
-                    boolean syncActive = ContentResolver.isSyncActive(account, ThothContract.CONTENT_AUTHORITY);
-                    boolean syncPending = ContentResolver.isSyncPending(account, ThothContract.CONTENT_AUTHORITY);
-                    mSwipeRefreshLayout.setRefreshing(syncActive || syncPending);
-                }
-            });
-        }
-    };
+
 
 }

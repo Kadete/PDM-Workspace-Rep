@@ -51,13 +51,9 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final int COLUMN_CLASS_ID = 0;
     private final ContentResolver mContentResolver;
 
-    public SyncAdapter(Context context, boolean autoInitialize) {
-        super(context, autoInitialize);
-        mContentResolver = context.getContentResolver();
-    }
-
     public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
+
         mContentResolver = context.getContentResolver();
     }
 
@@ -65,15 +61,17 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
 
+        d(ThothUpdateService.class.getName(), "SyncAdapter.onPerformSync started...");
         SyncActionsHandler handler = new SyncActionsHandler(getContext(), mContentResolver);
-        syncResult = updateLocalClassesData(handler, syncResult);
+//            syncResult = updateLocalClassesData(handler, syncResult);
         updateLocalNewsData(handler, syncResult);
+        d(ThothUpdateService.class.getName(), "SyncAdapter.onPerformSync started...");
     }
 
-    private SyncResult updateLocalClassesData(SyncActionsHandler handler, SyncResult syncResult) {
+//    private SyncResult updateLocalClassesData(SyncActionsHandler handler, SyncResult syncResult) {
 //        handler.handleClassesUpdate(syncResult);
-        return syncResult;
-    }
+//        return syncResult;
+//    }
 
     public SyncResult updateLocalNewsData(SyncActionsHandler handler, SyncResult result){
 
@@ -93,11 +91,9 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 d(TAG_SYNC_ADAPTER, "Streaming data from network: " + location);
                 try {
                     stream = downloadUrlStr(location);
-
                     result = handler.handleClassNewsUpdate(batch, result, stream, classID);
                     if(result.stats.numInserts > 0){
                         listClassesToNotify.add(classID);
-
                     }
                 } catch (JSONException e) {
                     d(TAG_SYNC_ADAPTER, "ERROR: handleClassNewsUpdate(..) while parsing JSON response");
@@ -117,7 +113,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                     }
                 }
             }
-
             if(result != null){
                 mContentResolver.applyBatch(ThothContract.CONTENT_AUTHORITY, batch);
                 mContentResolver.notifyChange(
@@ -127,10 +122,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             }
 
             handler.sendNotifications(listClassesToNotify);
-            cursor.close();
             // Makes sure that the InputStream is closed after the app is
             // finished using it.
-
         } catch (MalformedURLException e) {
             d(TAG_SYNC_ADAPTER, "Feed URL is malformed" + e.toString());
             result.stats.numParseExceptions++;
@@ -143,6 +136,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             d(TAG_SYNC_ADAPTER, "Error updating database: " + e.toString());
             result.databaseError = true;
             return result;
+        } finally {
+            cursor.close();
         }
         Log.i(TAG_SYNC_ADAPTER, "Network synchronization complete");
         return result;

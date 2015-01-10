@@ -1,7 +1,11 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
+import android.accounts.Account;
+import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,18 +27,18 @@ import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter
 import java.util.Set;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.accounts.GenericAccountService;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassesPickActivity;
 import pt.isel.pdm.grupo17.thothnews.activities.SettingsActivity;
 import pt.isel.pdm.grupo17.thothnews.adapters.ClassesAdapter;
-import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
-import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
+import pt.isel.pdm.grupo17.thothnews.services.SyncUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
-public class ClassesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ClassesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     static final int CLASSES_CURSOR_LOADER_ID = 0;
     static final String[] CURSOR_COLUMNS = {ThothContract.Classes._ID, ThothContract.Classes.FULL_NAME, ThothContract.Classes.TEACHER_NAME, ThothContract.Classes.SHORT_NAME,
@@ -45,6 +49,25 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
     private GridView mGridView;
     private View mEmptyView;
     private ClassesAdapter mListAdapter;
+
+    private Object mSyncObserverHandle;
+
+    static boolean isActive = false;
+    private LoaderManager loader;
+
+    @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+        isActive = true;
+        loader = getLoaderManager();
+    }
+
+    @Override
+    public void onDetach(){
+        super.onDetach();
+        loader = null;
+        isActive = false;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,9 +88,21 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        getLoaderManager().restartLoader(CLASSES_CURSOR_LOADER_ID, null, this);
+        mSyncStatusObserver.onStatusChanged(0);
+        final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING | ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
+        mSyncObserverHandle = ContentResolver.addStatusChangeListener(mask, mSyncStatusObserver);
+        refreshLoader();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mSyncObserverHandle != null) {
+            ContentResolver.removeStatusChangeListener(mSyncObserverHandle);
+            mSyncObserverHandle = null;
+        }
     }
 
     @Override
@@ -107,13 +142,19 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshAndUpdate();
+                SyncUtils.TriggerRefresh();
+                refreshLoader();
             }
         });
         mSwipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
 
         getLoaderManager().initLoader(CLASSES_CURSOR_LOADER_ID, null, this);
 
+    }
+
+    private void refreshLoader() {
+        if(isActive && loader != null)
+            loader.restartLoader(CLASSES_CURSOR_LOADER_ID, null, this);
     }
 
     @Override
@@ -132,14 +173,24 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
         mListAdapter.swapCursor(null);
     }
 
-    public void refreshAndUpdate() {
-        if(!NetworkReceiver.checkConnection(getActivity(), true)){
-            mSwipeRefreshLayout.setRefreshing(false);
-            return;
+    private SyncStatusObserver mSyncStatusObserver = new SyncStatusObserver() {
+        @Override
+        public void onStatusChanged(int which) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Account account = GenericAccountService.GetAccount();
+                    if (account == null) {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        return;
+                    }
+                    boolean syncActive = ContentResolver.isSyncActive(account, ThothContract.CONTENT_AUTHORITY);
+                    boolean syncPending = ContentResolver.isSyncPending(account, ThothContract.CONTENT_AUTHORITY);
+                    mSwipeRefreshLayout.setRefreshing(syncActive || syncPending);
+                    refreshLoader();
+                }
+            });
         }
-        ThothUpdateService.startActionNewsUpdate(getActivity());
-        getLoaderManager().restartLoader(CLASSES_CURSOR_LOADER_ID, null, this);
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
+    };
+    
 }

@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -13,20 +14,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
 import pt.isel.pdm.grupo17.thothnews.adapters.ParticipantsAdapter;
-import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
+import pt.isel.pdm.grupo17.thothnews.receivers.BgProcessingResultReceiver;
+import pt.isel.pdm.grupo17.thothnews.receivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
-public class ParticipantsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+import static pt.isel.pdm.grupo17.thothnews.receivers.BgProcessingResultReceiver.*;
+
+public class ParticipantsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Receiver {
 
     public static ParticipantsFragment newInstance() {
         Bundle bundle = new Bundle();
@@ -48,6 +53,44 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     private static ThothClass sThothClass;
     private static ContentResolver sContentResolver;
 
+    public BgProcessingResultReceiver mReceiver;
+    static boolean isActive = false;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        isActive = true;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        isActive = false;
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        if(!isActive){
+            return;
+        }
+        switch (resultCode) {
+            case STATUS_RUNNING:
+                //show progress
+                mSwipeRefreshLayout.setRefreshing(true);
+                break;
+            case STATUS_FINISHED:
+                // hide progress & analyze bundle
+                mSwipeRefreshLayout.setRefreshing(false);
+                getLoaderManager().restartLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
+                break;
+            case STATUS_ERROR:
+                // handle the error;
+                mSwipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +103,10 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
         mGridView = (GridView) view.findViewById(android.R.id.list);
         mEmptyView = view.findViewById(android.R.id.empty);
         sContentResolver = getActivity().getContentResolver();
+
+        // register a receiver for IntentService broadcasts
+        mReceiver = new BgProcessingResultReceiver(new Handler());
+        mReceiver.setReceiver(this);
         return view;
     }
 
@@ -83,16 +130,17 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
             }
         });
         mSwipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
+    }
 
+    @Override
+    public void onResume(){
+        super.onResume();
         Cursor studentsCursor = sContentResolver.query(ParseUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), null, null, null, null);
-        if(studentsCursor.moveToNext()){
-            studentsCursor.close();
+        if(studentsCursor.moveToNext())
             getLoaderManager().initLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
-        }
-        else {
-            studentsCursor.close();
+        else
             refreshAndUpdate();
-        }
+        studentsCursor.close();
     }
 
     private boolean isFragmentUIActive() {
@@ -123,9 +171,7 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
             mSwipeRefreshLayout.setRefreshing(false);
             return;
         }
-        ThothUpdateService.startActionClassParticipantsUpdate(getActivity(), sThothClass.getID());
-        getLoaderManager().restartLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
-        mSwipeRefreshLayout.setRefreshing(false);
+        ThothUpdateService.startActionClassParticipantsUpdate(getActivity(), mReceiver, sThothClass.getID());
     }
 
 }

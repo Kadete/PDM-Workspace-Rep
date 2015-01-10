@@ -1,5 +1,6 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -41,18 +43,21 @@ import java.util.Set;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
 import pt.isel.pdm.grupo17.thothnews.adapters.ClassesPickAdapter;
-import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
+import pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
+import pt.isel.pdm.grupo17.thothnews.receivers.BgProcessingResultReceiver;
+import pt.isel.pdm.grupo17.thothnews.receivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
-import pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.SettingsUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
 import static pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils.TRUE;
+import static pt.isel.pdm.grupo17.thothnews.receivers.BgProcessingResultReceiver.*;
 
-public class ClassesPickFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener{
+public class ClassesPickFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener, Receiver{
 
     private static final boolean CANCEL = false;
     private static final boolean SAVE = true;
@@ -69,7 +74,52 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
     private View mEmptyView;
     private ClassesPickAdapter mListAdapter;
     private String mCurFilter;
-    private SearchView mSearchView;
+
+    public BgProcessingResultReceiver mReceiver;
+
+    static boolean isActive = false;
+    private LoaderManager loader;
+
+    @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+        isActive = true;
+        loader = getLoaderManager();
+    }
+
+    @Override
+    public void onDetach(){
+        super.onDetach();
+        loader = null;
+        isActive = false;
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        if(!isActive){
+            return;
+        }
+        switch (resultCode) {
+            case STATUS_RUNNING:
+                //show progress
+                mSwipeRefreshLayout.setRefreshing(true);
+                Toast.makeText(getActivity(), "Please Wait", Toast.LENGTH_SHORT).show();
+                break;
+            case STATUS_FINISHED:
+                // hide progress & analyze bundle
+                mSwipeRefreshLayout.setRefreshing(false);
+                if(!isActive || loader == null)
+                    return;
+                loader.restartLoader(CLASSES_SELECTION_CURSOR_LOADER_ID, null, this);
+                Toast.makeText(getActivity(), "Done", Toast.LENGTH_SHORT).show();
+                break;
+            case STATUS_ERROR:
+                // handle the error;
+                mSwipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +152,10 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
             }
         });
 
+        // register a receiver for IntentService broadcasts
+        mReceiver = new BgProcessingResultReceiver(new Handler());
+        mReceiver.setReceiver(this);
+        loader = getLoaderManager();
         return view;
     }
 
@@ -122,7 +176,7 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
                 nrClassesToUpdate++;
         }
         if(nrClassesToUpdate != 0)
-            ThothUpdateService.startActionNewsUpdate(activity);
+            ThothUpdateService.startActionNewsUpdate(activity, mReceiver);
 
         if(toSave){
             Cursor cursor = resolver.query(ThothContract.Classes.ENROLLED_URI, null, selection, selectionArgs, null);
@@ -191,19 +245,18 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
                 }
             }
         }
+
         /********************************/
 
         Cursor classesCursor = getActivity().getContentResolver()
                 .query(ThothContract.Classes.CONTENT_URI, null, selection, selectionArgs, null);
 
-        if(classesCursor.moveToNext()){
-            classesCursor.close();
+        if(!SettingsUtils.semesterSelectedChanged && classesCursor.moveToNext()){
             getLoaderManager().initLoader(CLASSES_SELECTION_CURSOR_LOADER_ID, null, this);
         }
         else {
-            classesCursor.close();
-            Toast.makeText(getActivity(),getString(R.string.toast_wait_message),Toast.LENGTH_SHORT).show();
             refreshAndUpdate();
+            SettingsUtils.semesterSelectedChanged = false;
         }
     }
 
@@ -235,24 +288,22 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
             mSwipeRefreshLayout.setRefreshing(false);
             return;
         }
-        ThothUpdateService.startActionClassesUpdate(getActivity());
-        getLoaderManager().restartLoader(CLASSES_SELECTION_CURSOR_LOADER_ID, null, this);
-        mSwipeRefreshLayout.setRefreshing(false);
+        ThothUpdateService.startActionClassesUpdate(getActivity(), mReceiver);
     }
 
    public void myCreateOptionsMenu(Menu menu) {
        MenuItem searchViewMenuItem = menu.findItem(R.id.action_search);
-       mSearchView = new SearchView(getActivity());
-       mSearchView.setOnQueryTextListener(this);
+       SearchView searchView = new SearchView(getActivity());
+       searchView.setOnQueryTextListener(this);
 
-       int textId = mSearchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-       ((TextView) mSearchView.findViewById(textId)).setTextColor(Color.WHITE);
+       int textId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+       ((TextView) searchView.findViewById(textId)).setTextColor(Color.WHITE);
 
        int searchImgId = getResources().getIdentifier("android:id/search_button", null, null);
-       ImageView v = (ImageView) mSearchView.findViewById(searchImgId);
+       ImageView v = (ImageView) searchView.findViewById(searchImgId);
        v.setImageResource(R.drawable.ic_action_search);
 
-       searchViewMenuItem.setActionView(mSearchView);
+       searchViewMenuItem.setActionView(searchView);
     }
 
     @Override
@@ -263,7 +314,7 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
     @Override
     public boolean onQueryTextChange(String newText) {
         mCurFilter = !TextUtils.isEmpty(newText) ? newText : null;
-        getLoaderManager().restartLoader(CLASSES_SELECTION_CURSOR_LOADER_ID, null, this);
+        loader.restartLoader(CLASSES_SELECTION_CURSOR_LOADER_ID, null, this);
         return true;
     }
 }

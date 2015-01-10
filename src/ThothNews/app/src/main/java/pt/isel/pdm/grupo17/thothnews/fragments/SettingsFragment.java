@@ -64,6 +64,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 setEntriesToMultiSelectListPref(sharedPreferences);
                 return;
             case TagUtils.TAG_MULTILIST_SEMESTERS_PREF_KEY:
+                SettingsUtils.semesterSelectedChanged = true;
                 setSemestersSummary();
                 return;
             case TagUtils.TAG_SELECTED_CLASSES:

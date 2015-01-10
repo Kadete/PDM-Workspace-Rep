@@ -15,7 +15,12 @@ import static pt.isel.pdm.grupo17.thothnews.utils.LogUtils.d;
 
 public class ThothProvider extends ContentProvider {
     private static UriMatcher _matcher;
-    private ThothDBHelper _helper;
+    private static ThothDBHelper _helper;
+
+    public static ThothDBHelper getHelper(){
+        return _helper;
+    }
+
     private static final int ROUTE_CLASSES = 0;
     private static final int ROUTE_CLASSES_ID = 1;
     private static final int ROUTE_CLASSES_ENROLLED = 2;
@@ -81,8 +86,6 @@ public class ThothProvider extends ContentProvider {
         switch (match){
             case ROUTE_CLASSES:
                 d("Uri = %s, ROUTE_CLASSES", uri.toString());
-                values.put(ThothContract.Classes.ENROLLED,false);
-                values.put(ThothContract.Classes.UNREAD_NEWS,false);
                 insertResult = db.insertWithOnConflict(ThothContract.Classes.TABLE_NAME, null, values,SQLiteDatabase.CONFLICT_IGNORE);
                 break;
             case ROUTE_CLASSES_ID_NEWS:
