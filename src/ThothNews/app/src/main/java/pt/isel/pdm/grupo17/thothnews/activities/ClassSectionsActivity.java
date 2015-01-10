@@ -35,6 +35,7 @@ import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
 import pt.isel.pdm.grupo17.thothnews.models.ThothWorkItem;
 import pt.isel.pdm.grupo17.thothnews.utils.BitmapUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
@@ -81,7 +82,7 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
         tvTeacher.setText(sThothClass.getTeacherName());
 
         long teacherID = sThothClass.getTeacherID();
-        Uri teacherUri = UriUtils.Teachers.parseTeacherID(teacherID);
+        Uri teacherUri = ParseUtils.Teachers.parseTeacherID(teacherID);
         String [] cursorColumns = new String[] {ThothContract.Teachers._ID, ThothContract.Teachers.ACADEMIC_EMAIL, ThothContract.Avatars.AVATAR_URL, ThothContract.Avatars.AVATAR_PATH};
         Cursor teacherCursor = getApplication().getContentResolver().query(teacherUri,cursorColumns , null, null, null);
 
@@ -125,7 +126,7 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
             ImageHandlerThread th = new ImageHandlerThread();
             th.start();
             ImageHandler ih = new ImageHandler(svh, th.getLooper());
-            ih.fetchImage(ivTeacherAvatar, avatarUrl, UriUtils.Teachers.parseTeacherID(teacherID), storagePath); // external url
+            ih.fetchImage(ivTeacherAvatar, avatarUrl, ParseUtils.Teachers.parseTeacherID(teacherID), storagePath); // external url
         }
         else{ /** AsyncTask to get the photo and show when ready: getBitmapFromFile **/
             new BitmapUtils.LoadBitmapTask(ivTeacherAvatar).execute(avatarPath);
@@ -215,12 +216,9 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
                     break;
                 Intent intent = new Intent(this, WebViewActivity.class);
                 String fullName = sThothClass.getFullName().replaceAll(" ", "");
-                String full_path = String.format("%s/%s", WebViewActivity.URI_CLASSES_ROOT, fullName);
+                String full_path = String.format("%s/%s", UriUtils.URI_CLASSES_ROOT, fullName);
                 intent.putExtra(TagUtils.TAG_EXTRA_WEB_VIEW_URL, full_path);
                 startActivity(intent);
-                return true;
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);

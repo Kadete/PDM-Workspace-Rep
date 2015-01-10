@@ -9,7 +9,7 @@ import java.util.Date;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
+import static pt.isel.pdm.grupo17.thothnews.utils.LogUtils.d;
 import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ADAPTER;
 
 public class ThothWorkItem implements Serializable {

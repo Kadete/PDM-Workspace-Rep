@@ -22,6 +22,7 @@ public class TagUtils {
 
     public static final String TAG_ACTIVITY = "TAG_ACTIVITY";
     public static final String TAG_ADAPTER = "TAG_ADAPTER";
+    public static final String TAG_SYNC_ADAPTER = "TAG_SYNC_ADAPTER";
     public static final String TAG_ASYNC_TASK = "TAG_ASYNC_TASK";
     public static final String TAG_BROADCAST = "TAG_BROADCAST";
     public static final String TAG_FRAGMENT = "TAG_FRAGMENT";

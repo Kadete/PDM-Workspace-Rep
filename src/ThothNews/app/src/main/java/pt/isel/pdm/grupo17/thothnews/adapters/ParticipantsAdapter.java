@@ -21,7 +21,7 @@ import pt.isel.pdm.grupo17.thothnews.handlers.SetViewAndUpdateHandler;
 import pt.isel.pdm.grupo17.thothnews.models.ThothStudent;
 import pt.isel.pdm.grupo17.thothnews.models.ThothStudentsList;
 import pt.isel.pdm.grupo17.thothnews.utils.BitmapUtils;
-import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 
 import static pt.isel.pdm.grupo17.thothnews.utils.BitmapUtils.EnumModel;
 import static pt.isel.pdm.grupo17.thothnews.utils.BitmapUtils.EnumModel.DIR_PATH_STUDENT;
@@ -127,7 +127,7 @@ public class ParticipantsAdapter extends CursorAdapter {
 
     private void setStudentAvatar(ImageView ivStudentAvatar, Cursor cursor, long id) {
 
-        Cursor studentAvatarPath = mContext.getContentResolver().query(UriUtils.Students.parseStudentID(id),null, null, null, null);
+        Cursor studentAvatarPath = mContext.getContentResolver().query(ParseUtils.Students.parseStudentID(id),null, null, null, null);
         String avatarPath = null;
         if(studentAvatarPath.moveToNext())
             avatarPath = studentAvatarPath.getString(studentAvatarPath.getColumnIndex(ThothContract.Avatars.AVATAR_PATH));
@@ -142,7 +142,7 @@ public class ParticipantsAdapter extends CursorAdapter {
             ImageHandlerThread th = new ImageHandlerThread();
             th.start();
             ImageHandler ih = new ImageHandler(svh, th.getLooper());
-            ih.fetchImage(ivStudentAvatar, avatarUrl, UriUtils.Students.parseStudentID(id), storagePath); // external url
+            ih.fetchImage(ivStudentAvatar, avatarUrl, ParseUtils.Students.parseStudentID(id), storagePath); // external url
 
         }
         else{ /** AsyncTask to get the photo and show when ready: getBitmapFromFile **/

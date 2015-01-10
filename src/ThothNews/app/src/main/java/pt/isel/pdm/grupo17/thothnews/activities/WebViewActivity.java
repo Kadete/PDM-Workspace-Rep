@@ -11,9 +11,6 @@ import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
 public class WebViewActivity extends FragmentActivity {
 
-    public static final String THOTH_HOST = "thoth.cc.e.ipl.pt";
-    public static final String URI_CLASSES_ROOT= "http://thoth.cc.e.ipl.pt/classes";
-
     private WebViewFragment mWebViewFragment;
 
     @Override

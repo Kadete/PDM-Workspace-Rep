@@ -14,7 +14,7 @@ import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.FALSE;
+import static pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils.FALSE;
 
 public class CleanPreferencesDialogFragment extends DialogFragment {
 

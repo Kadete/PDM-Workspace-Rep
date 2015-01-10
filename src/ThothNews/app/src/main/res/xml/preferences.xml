@@ -35,6 +35,7 @@
         <SwitchPreference
             android:key="@string/data_mobile_switch_key"
             android:title="@string/data_mobile_switch_title"
+            android:summary="Sync when connected with data mobile"
             android:icon="@drawable/ic_sim_data_mobile"/>
     </PreferenceCategory>
     <PreferenceCategory

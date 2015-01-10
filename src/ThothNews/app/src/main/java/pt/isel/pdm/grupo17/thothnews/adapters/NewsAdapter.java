@@ -24,8 +24,8 @@ import pt.isel.pdm.grupo17.thothnews.models.ThothNewsList;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.ResolverUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
-import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
+import static pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils.TRUE;
+import static pt.isel.pdm.grupo17.thothnews.utils.LogUtils.d;
 import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ADAPTER;
 
 public class NewsAdapter extends CursorAdapter {
@@ -77,7 +77,8 @@ public class NewsAdapter extends CursorAdapter {
             newCursor.moveToFirst();
             while(!newCursor.isAfterLast()) {
                 ThothNew thothNew = ThothNew.fromCursor(newCursor);
-                mNews.add(thothNew);
+                if(thothNew != null)
+                    mNews.add(thothNew);
                 newCursor.moveToNext();
             }
         }

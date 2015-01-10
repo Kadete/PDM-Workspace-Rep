@@ -21,10 +21,10 @@ import java.util.Map;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
-import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.FALSE;
-import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
+import static pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils.FALSE;
+import static pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils.TRUE;
 
 public class ClassesPickAdapter extends CursorAdapter {
 
@@ -121,7 +121,7 @@ public class ClassesPickAdapter extends CursorAdapter {
                 ContentValues values = new ContentValues();
                 values.put(ThothContract.Classes.ENROLLED, (toggleChecked) ? TRUE : FALSE);
 
-                mContext.getContentResolver().update(UriUtils.Classes.parseClass(id), values, null, null );
+                mContext.getContentResolver().update(ParseUtils.Classes.parseClass(id), values, null, null );
 
                 view.setBackground(new ColorDrawable((toggleChecked) ? 0x33440000 : 0xffb7dde1));
 

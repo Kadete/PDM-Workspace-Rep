@@ -25,7 +25,7 @@ import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothWorkItem;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
-import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
 public class WorkItemsListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -97,7 +97,7 @@ public class WorkItemsListFragment extends ListFragment implements LoaderManager
         });
         mSwipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
 
-        Cursor workItemsCursor = sContentResolver.query(UriUtils.Classes.parseWorkItemsFromClassID(sThothClass.getID()), null, null, null, null);
+        Cursor workItemsCursor = sContentResolver.query(ParseUtils.Classes.parseWorkItemsFromClassID(sThothClass.getID()), null, null, null, null);
         if(workItemsCursor.moveToNext()){
             workItemsCursor.close();
             getLoaderManager().initLoader(WORK_ITEMS_CURSOR_LOADER_ID, null, this);

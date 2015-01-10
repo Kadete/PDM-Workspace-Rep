@@ -3,48 +3,50 @@ package pt.isel.pdm.grupo17.thothnews.utils;
 import android.net.Uri;
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.Scanner;
-
-import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 public class ParseUtils {
 
-    public static String readAllFrom(InputStream is){
-        Scanner s = new Scanner(is);
-        try{
-            s.useDelimiter("\\A");
-            return s.hasNext() ? s.next() : null;
-        }finally{
-            s.close();
+    /** ThothProvider**/
+    public static class Classes {
+        public static Uri parseNewsFromClassID(long classID){
+            return Uri.parse(String.format("%s/%d/news", ThothContract.Classes.CONTENT_URI, classID));
+        }
+        public static Uri parseWorkItemsFromClassID(long classID){
+            return Uri.parse(String.format("%s/%d/workitems", ThothContract.Classes.CONTENT_URI, classID));
+        }
+
+        public static Uri parseParticipantsFromClassID(long classID){
+            return Uri.parse(String.format("%s/%d/participants", ThothContract.Classes.CONTENT_URI, classID));
+        }
+
+        public static Uri parseClass(long classID){
+            return Uri.parse(String.format("%s/%d", ThothContract.Classes.CONTENT_URI, classID));
         }
     }
 
-    public static JSONArray parseClasses(String s) throws JSONException {
-        JSONObject root = new JSONObject(s);
-        return root.getJSONArray("classes");
-    }
-    public static JSONArray parseElement(String s, String elem) throws JSONException {
-        JSONObject root = new JSONObject(s);
-        return root.getJSONArray(elem);
+    public static class News {
+        public static Uri parseNewID(long newID){
+            return Uri.parse(String.format("%s/%d", ThothContract.News.CONTENT_URI, newID));
+        }
     }
 
-    public static void d(String tagActivity, String message){
-        Log.d(tagActivity, message);
+    public static class WorkItems {
+        public static Uri parseWorkItemID(long workItemID){
+            return Uri.parse(String.format("%s/%d", ThothContract.WorkItems.CONTENT_URI, workItemID));
+        }
     }
 
-    public static void e(String tagActivity, String message) {
-        Log.e(tagActivity, message);
+    public static class Teachers {
+        public static Uri parseTeacherID(long teacherID){
+            return Uri.parse(String.format("%s/%d", ThothContract.Teachers.CONTENT_URI, teacherID));
+        }
+    }
+    public static class Students {
+        public static Uri parseStudentID(long studentID){
+            return Uri.parse(String.format("%s/%d", ThothContract.Students.CONTENT_URI, studentID));
+        }
     }
 
-
-    public static String getUriSegment(Uri uri, int position){
-        List<String> segments = uri.getPathSegments();
-        return segments.get(position);
-    }
 }
 

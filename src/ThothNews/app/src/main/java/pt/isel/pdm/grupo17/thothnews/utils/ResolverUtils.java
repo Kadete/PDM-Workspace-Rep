@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
+import pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils;
 
 public class ResolverUtils {
 
@@ -11,7 +12,7 @@ public class ResolverUtils {
         ContentValues values = new ContentValues();
         values.put(ThothContract.News.READ, (read) ? SQLiteUtils.TRUE : SQLiteUtils.FALSE);
         if(newID > 0)
-            context.getContentResolver().update(UriUtils.News.parseNewID(newID), values, null, null );
+            context.getContentResolver().update(ParseUtils.News.parseNewID(newID), values, null, null );
     }
 
     public static void updateWorkItem(Context context, long eventId, String workItemID){
@@ -19,6 +20,6 @@ public class ResolverUtils {
         values.put(ThothContract.WorkItems.EVENT_ID, eventId);
         String where = ThothContract.WorkItems._ID + " = ?";
         String []whereArgs = new String[]{workItemID};
-        context.getContentResolver().update(UriUtils.WorkItems.parseWorkItemID(Long.parseLong(workItemID)), values, where, whereArgs);
+        context.getContentResolver().update(ParseUtils.WorkItems.parseWorkItemID(Long.parseLong(workItemID)), values, where, whereArgs);
     }
 }

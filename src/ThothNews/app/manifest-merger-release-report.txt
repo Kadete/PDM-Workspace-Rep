@@ -140,7 +140,7 @@ action#action_data_mobile_change
 ADDED from AndroidManifest.xml:60:17
 	android:name
 		ADDED from AndroidManifest.xml:60:25
-provider#pt.isel.pdm.grupo17.thothnews.data.ThothProvider
+provider#pt.isel.pdm.grupo17.thothnews.data.providers.ThothProvider
 ADDED from AndroidManifest.xml:64:9
 	android:authorities
 		ADDED from AndroidManifest.xml:66:13

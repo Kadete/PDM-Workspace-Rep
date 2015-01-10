@@ -1,20 +1,10 @@
-package pt.isel.pdm.grupo17.thothnews.utils;
-
-import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.widget.Toast;
-
-import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.activities.SettingsActivity;
-import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
+package pt.isel.pdm.grupo17.thothnews.data.providers;
 
 public class SQLiteUtils {
 
     public static final String TRUE = "1", FALSE = "0";
 
-    private static String wherePrefixOr = " OR (",
-            wherePrefixAnd = " AND (",
+    private static final String wherePrefixAnd = " AND (",
             whereInitialPrefix = " (",
             whereSuffix = " LIKE ? )";
 
@@ -69,16 +59,5 @@ public class SQLiteUtils {
         return retArr;
     }
 
-    public static void startPrefsIfNoClassesEnrolled(Context context){
-        Cursor cClassesEnrolled = context.getContentResolver().query(ThothContract.Classes.ENROLLED_URI, null, null, null, null);
-        if(!cClassesEnrolled.moveToNext()){
-            Toast.makeText(context, context.getString(R.string.setup_classes_request), Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(context, SettingsActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            cClassesEnrolled.close();
-            context.startActivity(intent);
-        }
-        cClassesEnrolled.close();
-    }
 
 }

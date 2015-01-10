@@ -19,9 +19,9 @@ import java.util.List;
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
-import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.FALSE;
+import static pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils.FALSE;
 
 public class ClassesAdapter extends CursorAdapter {
 
@@ -91,7 +91,7 @@ public class ClassesAdapter extends CursorAdapter {
          String selection = ThothContract.News.READ + " =  ? ";
         String [] selectionArgs =  new String[] { FALSE };
         String orderBy = ThothContract.News.READ;
-        Uri classNewsUri = UriUtils.Classes.parseNewsFromClassID(classeID);
+        Uri classNewsUri = ParseUtils.Classes.parseNewsFromClassID(classeID);
         Cursor cursorNewsRead = mContext.getContentResolver().query(classNewsUri, new String[] {ThothContract.Classes._ID}, selection, selectionArgs, orderBy);
 
         Boolean newsToRead = cursorNewsRead.moveToNext();

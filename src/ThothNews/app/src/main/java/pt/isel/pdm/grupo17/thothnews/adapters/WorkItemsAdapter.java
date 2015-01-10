@@ -27,7 +27,7 @@ import pt.isel.pdm.grupo17.thothnews.utils.CalendarUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.ResolverUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
+import static pt.isel.pdm.grupo17.thothnews.utils.LogUtils.d;
 import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ADAPTER;
 
 public class WorkItemsAdapter extends CursorAdapter {

@@ -45,12 +45,12 @@ import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
-import pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
+import pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
-import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
+import static pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils.TRUE;
 
 public class ClassesPickFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener{
 
@@ -117,7 +117,7 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
             ContentValues values = new ContentValues();
             boolean enrolled = ((toSave) ? entryClass.getValue().finalState : entryClass.getValue().initialState);
             values.put(ThothContract.Classes.ENROLLED, enrolled ? SQLiteUtils.TRUE : SQLiteUtils.FALSE);
-            resolver.update(UriUtils.Classes.parseClass(entryClass.getKey()), values, null, null );
+            resolver.update(ParseUtils.Classes.parseClass(entryClass.getKey()), values, null, null );
             if(toSave && enrolled)
                 nrClassesToUpdate++;
         }

@@ -12,7 +12,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.activities.WebViewActivity;
+import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
 public class WebViewFragment extends Fragment {
 
@@ -49,7 +49,7 @@ public class WebViewFragment extends Fragment {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url){
             String host = Uri.parse(url).getHost();
-            if (host.equals(WebViewActivity.THOTH_HOST)) {
+            if (host.equals(UriUtils.THOTH_HOST)) {
                 return false;
             }
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));

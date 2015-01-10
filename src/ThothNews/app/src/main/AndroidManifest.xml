@@ -10,7 +10,7 @@
 
     <!-- NetworkReceiver -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- WebView && NetworkReceiver -->
+    <!-- Required for fetching feed data. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Notification -->
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -20,6 +20,13 @@
     <!-- Save & Edit & Delete Calendar Events -->
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+
+    <!-- Required to register a SyncStatusObserver to display a "syncing..." progress indicator. -->
+    <uses-permission android:name="android.permission.READ_SYNC_STATS"/>
+    <!-- Required to enable our SyncAdapter after it's created. -->
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <!-- Required because we're manually creating a new account. -->
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
 
     <!--android:debuggable="true"-->
     <application
@@ -65,7 +72,7 @@
         </receiver>
 
         <provider
-            android:name=".data.ThothProvider"
+            android:name=".data.providers.ThothProvider"
             android:authorities="pt.isel.pdm.grupo17.thothnews"
             android:enabled="true"
             android:exported="false" >
@@ -76,6 +83,36 @@
             android:exported="false" >
         </service>
 
+        <!-- This service implements our SyncAdapter. It needs to be exported, so that the system
+        sync framework can access it. -->
+        <service android:name=".services.SyncService"
+            android:exported="true"
+            android:permission="true">
+            <!-- This intent filter is required. It allows the system to launch our sync service
+            as needed. -->
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <!-- This points to a required XML file which describes our SyncAdapter. -->
+            <meta-data android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+        </service>
+        <!-- This implements the account we'll use as an attachment point for our SyncAdapter. Since
+        our SyncAdapter doesn't need to authenticate the current user (it just fetches a public RSS
+        feed), this account's implementation is largely empty.
+
+        It's also possible to attach a SyncAdapter to an existing account provided by another
+        package. In that case, this element could be omitted here. -->
+        <service android:name=".accounts.GenericAccountService"
+            android:exported="false" >
+            <!-- Required filter used by the system to launch our account service. -->
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <!-- This points to an XMLf ile which describes our account service. -->
+            <meta-data android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
     </application>
 
 </manifest>

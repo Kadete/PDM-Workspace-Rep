@@ -8,8 +8,8 @@ import java.util.Date;
 
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.LogUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
 import static pt.isel.pdm.grupo17.thothnews.utils.TagUtils.TAG_ADAPTER;
 
 public class ThothNew implements Serializable {
@@ -18,7 +18,7 @@ public class ThothNew implements Serializable {
     static final int READ = 1;
 
     long _id;
-    String title;
+    String _title;
     Date _when = new Date();
     String _content;
     Boolean _read = false;
@@ -31,16 +31,20 @@ public class ThothNew implements Serializable {
     }
 
     public String getTitle() {
-        return title;
+        return _title;
     }
     public void setTitle(String title) {
-        this.title = title;
+        this._title = title;
     }
 
     public Date getWhen() {
         return _when;
     }
     public void setWhen(Date when){_when = when;}
+
+    public String getWhenToSave() {
+        return DateUtils.SAVE_DATE_FORMAT.format(_when);
+    }
     public String getFormattedWhen() {
         return DateUtils.SHOW_DATE_FORMAT.format(_when);
     }
@@ -66,32 +70,40 @@ public class ThothNew implements Serializable {
 
     public ThothNew(long id, String title, Date when, Boolean read, String content){
         _id = id;
-        this.title = title;
+        _title = title;
         _when = when;
         _read = read;
         _content = content;
     }
 
-    public static ThothNew fromCursor(Cursor cursor){
+    public ThothNew(long id, String title, String when, Boolean read, String content) throws ParseException {
+        _id = id;
+        _title = title;
+        _when = DateUtils.SAVE_DATE_FORMAT.parse(when);
+        _read = read;
+        _content = content;
+    }
+
+    public static ThothNew fromCursor(Cursor cursor) {
 
         Date when = new Date();
         try {
             String whenStr = cursor.getString(cursor.getColumnIndex(ThothContract.News.WHEN_CREATED));
             when = DateUtils.SAVE_DATE_FORMAT.parse(whenStr);
         } catch (ParseException e) {
-            d(TAG_ADAPTER, "Error on Parse Date >> NewsAdapter.SwapCursor");
+            LogUtils.d(TAG_ADAPTER, "Error on Parse Date >> NewsAdapter.SwapCursor");
         }
 
         return new ThothNew(
-            cursor.getLong(cursor.getColumnIndex(ThothContract.News._ID)),
-            cursor.getString(cursor.getColumnIndex(ThothContract.News.TITLE)),
-            when,
-            (cursor.getString(cursor.getColumnIndex(ThothContract.News.READ)).equals(READ)),
-            cursor.getString(cursor.getColumnIndex(ThothContract.News.CONTENT))
+                cursor.getLong(cursor.getColumnIndex(ThothContract.News._ID)),
+                cursor.getString(cursor.getColumnIndex(ThothContract.News.TITLE)),
+                when,
+                (cursor.getString(cursor.getColumnIndex(ThothContract.News.READ)).equals(READ)),
+                cursor.getString(cursor.getColumnIndex(ThothContract.News.CONTENT))
         );
     }
 
     public String toString() {
-        return _id + ITEM_SEP + title + ITEM_SEP + DateUtils.SAVE_DATE_FORMAT.format(_when) + ITEM_SEP + _read+ ITEM_SEP + _content;
+        return _id + ITEM_SEP + _title + ITEM_SEP + DateUtils.SAVE_DATE_FORMAT.format(_when) + ITEM_SEP + _read+ ITEM_SEP + _content;
     }
 }

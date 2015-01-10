@@ -17,8 +17,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
+import pt.isel.pdm.grupo17.thothnews.data.providers.ThothProviderUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.BitmapUtils;
-import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 
 public class ImageHandler extends Handler {
 
@@ -39,7 +39,7 @@ public class ImageHandler extends Handler {
             if(data.im != null)
                 _h.publishImage(data.im, bm);
 
-            long id = Long.parseLong(ParseUtils.getUriSegment(data.routeUri, 1));
+            long id = Long.parseLong(ThothProviderUtils.getUriSegment(data.routeUri, 1));
             File photoFile = BitmapUtils.createImageFile(id, data.path);
             String mCurrentPhotoPath = photoFile.getAbsolutePath();
             BitmapUtils.storeBitmapToFile(bm, mCurrentPhotoPath);

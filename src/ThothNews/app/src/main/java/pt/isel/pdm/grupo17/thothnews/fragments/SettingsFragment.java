@@ -17,8 +17,8 @@ import java.util.Set;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassesPickActivity;
-import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
+import pt.isel.pdm.grupo17.thothnews.utils.SettingsUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
@@ -70,13 +70,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 setClassesSummary(sharedPreferences);
                 return;
             case TagUtils.TAG_VIBRATION_SWITCH_PREF_KEY:
-                ThothUpdateService.isToVibrate = sharedPreferences.getBoolean(TagUtils.TAG_VIBRATION_SWITCH_PREF_KEY, false);
+                SettingsUtils.isToVibrate = sharedPreferences.getBoolean(TagUtils.TAG_VIBRATION_SWITCH_PREF_KEY, false);
                 return;
             case TagUtils.TAG_DATA_MOBILE_SWITCH_PREF_KEY:
-                NetworkReceiver.enableDataMobile = sharedPreferences.getBoolean(TagUtils.TAG_DATA_MOBILE_SWITCH_PREF_KEY, false);
+                SettingsUtils.enableDataMobile = sharedPreferences.getBoolean(TagUtils.TAG_DATA_MOBILE_SWITCH_PREF_KEY, false);
                 return;
             case TagUtils.TAG_AUTO_INSERT_EVENT_SWITCH_PREF_KEY:
-                ThothUpdateService.isToAutoInsertEvent = sharedPreferences.getBoolean(TagUtils.TAG_VIBRATION_SWITCH_PREF_KEY, false);
+                SettingsUtils.isToAutoInsertEvent = sharedPreferences.getBoolean(TagUtils.TAG_VIBRATION_SWITCH_PREF_KEY, false);
                 return;
             default:
         }

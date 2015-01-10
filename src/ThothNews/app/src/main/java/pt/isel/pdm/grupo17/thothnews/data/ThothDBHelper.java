@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.ParseUtils.d;
+import static pt.isel.pdm.grupo17.thothnews.utils.LogUtils.d;
 
 public class ThothDBHelper extends SQLiteOpenHelper {
 

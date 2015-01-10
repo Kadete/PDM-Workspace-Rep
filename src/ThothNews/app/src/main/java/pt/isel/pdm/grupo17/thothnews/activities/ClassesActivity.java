@@ -1,17 +1,21 @@
 package pt.isel.pdm.grupo17.thothnews.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
+import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.fragments.ClassesFragment;
-import pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
 
 public class ClassesActivity extends FragmentActivity{
 
@@ -20,7 +24,7 @@ public class ClassesActivity extends FragmentActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_frame_classes);
 
-        SQLiteUtils.startPrefsIfNoClassesEnrolled(this);
+        startPrefsIfNoClassesEnrolled(this);
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -45,7 +49,7 @@ public class ClassesActivity extends FragmentActivity{
                 if(!NetworkReceiver.checkConnection(getApplicationContext(), true))
                     break;
                 Intent intent = new Intent(this, WebViewActivity.class);
-                intent.putExtra(TagUtils.TAG_EXTRA_WEB_VIEW_URL, WebViewActivity.URI_CLASSES_ROOT);
+                intent.putExtra(TagUtils.TAG_EXTRA_WEB_VIEW_URL, UriUtils.URI_CLASSES_ROOT);
                 startActivity(intent);
                 return true;
             case R.id.action_settings:
@@ -53,5 +57,17 @@ public class ClassesActivity extends FragmentActivity{
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void startPrefsIfNoClassesEnrolled(Context context){
+        Cursor cClassesEnrolled = context.getContentResolver().query(ThothContract.Classes.ENROLLED_URI, null, null, null, null);
+        if(!cClassesEnrolled.moveToNext()){
+            Toast.makeText(context, context.getString(R.string.setup_classes_request), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(context, SettingsActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            cClassesEnrolled.close();
+            context.startActivity(intent);
+        }
+        cClassesEnrolled.close();
     }
 }

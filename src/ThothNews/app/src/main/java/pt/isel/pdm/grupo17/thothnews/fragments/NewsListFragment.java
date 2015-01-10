@@ -1,7 +1,10 @@
 package pt.isel.pdm.grupo17.thothnews.fragments;
 
+import android.accounts.Account;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,6 +21,7 @@ import android.widget.ListView;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import pt.isel.pdm.grupo17.thothnews.R;
+import pt.isel.pdm.grupo17.thothnews.accounts.GenericAccountService;
 import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
 import pt.isel.pdm.grupo17.thothnews.activities.SingeNewActivity;
 import pt.isel.pdm.grupo17.thothnews.adapters.NewsAdapter;
@@ -25,7 +29,7 @@ import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.models.ThothNew;
-import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
+import pt.isel.pdm.grupo17.thothnews.services.SyncUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
@@ -42,17 +46,16 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     private static int mActivatedPosition = ListView.INVALID_POSITION;
     private static ThothClass sThothClass;
 
-    private CallbackNew mCallback = sDummyCallback;
-
     private static MultiSwipeRefreshLayout mSwipeRefreshLayout;
     private ListView mListView;
-
     private NewsAdapter mListAdapter;
+
+    private Object mSyncObserverHandle;
 
     public interface CallbackNew {
         public void onItemSelected(ThothNew thothNew);
     }
-
+    private CallbackNew mCallback = sDummyCallback;
     private static CallbackNew sDummyCallback = new CallbackNew() {
         @Override
         public void onItemSelected(ThothNew thothNew) {
@@ -107,6 +110,8 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
         if (!(activity instanceof CallbackNew)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
+        SyncUtils.CreateSyncAccount(activity);  // Create account, if needed
+
         mCallback = (CallbackNew) activity;
     }
 
@@ -131,7 +136,20 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onResume() {
         super.onResume();
+        mSyncStatusObserver.onStatusChanged(0);
+
+        final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING | ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
+        mSyncObserverHandle = ContentResolver.addStatusChangeListener(mask, mSyncStatusObserver);
         getLoaderManager().restartLoader(NEWS_CURSOR_LOADER_ID, null, this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mSyncObserverHandle != null) {
+            ContentResolver.removeStatusChangeListener(mSyncObserverHandle);
+            mSyncObserverHandle = null;
+        }
     }
 
     @Override
@@ -173,9 +191,28 @@ public class NewsListFragment extends ListFragment implements LoaderManager.Load
             mSwipeRefreshLayout.setRefreshing(false);
             return;
         }
-        ThothUpdateService.startActionClassNewsUpdate(getActivity(), sThothClass.getID());
+//        ThothUpdateService.startActionClassNewsUpdate(getActivity(), sThothClass.getID());
         getLoaderManager().restartLoader(NEWS_CURSOR_LOADER_ID, null, this);
         mSwipeRefreshLayout.setRefreshing(false);
     }
+
+    private SyncStatusObserver mSyncStatusObserver = new SyncStatusObserver() {
+        @Override
+        public void onStatusChanged(int which) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Account account = GenericAccountService.GetAccount();
+                    if (account == null) {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        return;
+                    }
+                    boolean syncActive = ContentResolver.isSyncActive(account, ThothContract.CONTENT_AUTHORITY);
+                    boolean syncPending = ContentResolver.isSyncPending(account, ThothContract.CONTENT_AUTHORITY);
+                    mSwipeRefreshLayout.setRefreshing(syncActive || syncPending);
+                }
+            });
+        }
+    };
 
 }

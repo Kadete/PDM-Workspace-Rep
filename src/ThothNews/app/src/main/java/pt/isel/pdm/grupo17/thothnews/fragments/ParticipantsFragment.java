@@ -23,7 +23,7 @@ import pt.isel.pdm.grupo17.thothnews.broadcastreceivers.NetworkReceiver;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
-import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 import pt.isel.pdm.grupo17.thothnews.view.MultiSwipeRefreshLayout;
 
 public class ParticipantsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -84,7 +84,7 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
         });
         mSwipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
 
-        Cursor studentsCursor = sContentResolver.query(UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), null, null, null, null);
+        Cursor studentsCursor = sContentResolver.query(ParseUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), null, null, null, null);
         if(studentsCursor.moveToNext()){
             studentsCursor.close();
             getLoaderManager().initLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
@@ -103,7 +103,7 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         if(isFragmentUIActive()){
             return new CursorLoader(getActivity(),
-                    UriUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), CURSOR_COLUMNS, null, null, ORDER_BY);
+                ParseUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), CURSOR_COLUMNS, null, null, ORDER_BY);
         }
         return null;
     }

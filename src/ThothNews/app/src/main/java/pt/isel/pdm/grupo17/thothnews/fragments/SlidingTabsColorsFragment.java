@@ -16,10 +16,10 @@ import java.util.List;
 
 import pt.isel.pdm.grupo17.thothnews.R;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
-import pt.isel.pdm.grupo17.thothnews.utils.UriUtils;
+import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 import pt.isel.pdm.grupo17.thothnews.view.SlidingTabLayout;
 
-import static pt.isel.pdm.grupo17.thothnews.utils.SQLiteUtils.TRUE;
+import static pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils.TRUE;
 
 public class SlidingTabsColorsFragment extends Fragment {
 
@@ -130,7 +130,7 @@ public class SlidingTabsColorsFragment extends Fragment {
     public void updateReadAll(long classID) {
         ContentValues values = new ContentValues();
         values.put(ThothContract.News.READ, TRUE);
-        getActivity().getContentResolver().update(UriUtils.Classes.parseNewsFromClassID(classID), values, null, null );
+        getActivity().getContentResolver().update(ParseUtils.Classes.parseNewsFromClassID(classID), values, null, null );
         refreshNewsLoader();
     }
 
