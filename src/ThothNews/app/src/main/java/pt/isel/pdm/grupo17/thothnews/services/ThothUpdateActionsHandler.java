@@ -128,9 +128,7 @@ public class ThothUpdateActionsHandler {
                 semestersToFilter.add(String.valueOf(semester));
         }
         else { return; }
-
         try {
-
             InputStream is = downloadUrlStr(URI_CLASSES_LIST);
             String classesData = readAllFrom(is);
             is.close();
@@ -145,24 +143,23 @@ public class ThothUpdateActionsHandler {
             }
             if(jsonClasses.isEmpty()) { return; }
             final String[] CURSOR_COLUMNS = {ThothContract.Teachers._ID};
-            Cursor classTeacherIDCursor = _dbReadable.query(ThothContract.Teachers.TABLE_NAME, CURSOR_COLUMNS, null, null, null, null, null);
-            List<Long> teachersIDs = getListFromCursor(classTeacherIDCursor);
+            try (Cursor classTeacherIDCursor = _dbReadable.query(ThothContract.Teachers.TABLE_NAME, CURSOR_COLUMNS, null, null, null, null, null)) {
+                List<Long> teachersIDs = getListFromCursor(classTeacherIDCursor);
 
-            try {
                 _dbWritable.beginTransaction();
                 for (JSONObject classObj : jsonClasses) {
                     long teacherID = insertClass(classObj); /** INSERT CLASS **/
-                    /*check if is already the teacher on the db, if not extract that info from Thoth JSONObject teacher */
+                /*check if is already the teacher on the db, if not extract that info from Thoth JSONObject teacher */
                     if (!teachersIDs.contains(teacherID)) {
                         insertTeacher(getJSONObjectFromUri(teacherID, URI_TEACHER_INFO)); /** INSERT TEACHER **/
                         teachersIDs.add(teacherID);
                     }
                 }
                 _dbWritable.setTransactionSuccessful();
+
             } finally {
                 _dbWritable.endTransaction();
             }
-
         } catch (JSONException e) {
             d(SERVICE_TAG, "ERROR: handleClassesUpdate(..) while parsing JSON response");
             d(SERVICE_TAG, e.getMessage());
@@ -178,19 +175,17 @@ public class ThothUpdateActionsHandler {
      * Handle action NEWS_UPDATE in the provided background.
      */
     void handleNewsUpdate(){
-        Cursor cursor = _dbReadable.query(ThothContract.Classes.TABLE_NAME, new String[]{ThothContract.Classes._ID}
-                ,String.format("%s = 1", ThothContract.Classes.ENROLLED), null, null, null, null);
+        try(Cursor cursor = _dbReadable.query(ThothContract.Classes.TABLE_NAME, new String[]{ThothContract.Classes._ID}
+                ,String.format("%s = 1", ThothContract.Classes.ENROLLED), null, null, null, null)){
+            Set<Long> listClassesToNotify = new TreeSet<>();
 
-        Set<Long> listClassesToNotify = new TreeSet<>();
-
-        while (cursor.moveToNext()) {
-            long classID = cursor.getLong(COLUMN_CLASS_ID);
-            if (handleClassNewsUpdate(classID))
-                listClassesToNotify.add(classID);
+            while (cursor.moveToNext()) {
+                long classID = cursor.getLong(COLUMN_CLASS_ID);
+                if (handleClassNewsUpdate(classID))
+                    listClassesToNotify.add(classID);
+            }
+            sendNotifications(listClassesToNotify);
         }
-
-        sendNotifications(listClassesToNotify);
-        cursor.close();
     }
 
     /**
@@ -209,13 +204,12 @@ public class ThothUpdateActionsHandler {
             is.close();
 
             final JSONArray thothNews = getJSONArrayFromData(newsData, JsonThothNew.ARRAY_NEWS_ITEMS);
-            Cursor classNewsIDsCursor = _dbReadable.query(ThothContract.News.TABLE_NAME, CURSOR_COLUMNS, ThothContract.News.CLASS_ID + " = ?",
-                    new String[]{String.valueOf(classID)}, null, null, null);
-//            Cursor classNewsIDsCursor = mContentResolver.query(ParseUtils.Classes.parseNewsFromClassID(classID), new String[]{ThothContract.News._ID}, null, null, null);
-            List<Long> classNewsIDs = getListFromCursor(classNewsIDsCursor);
-
             int addedNews = 0;
-            try {
+            try ( Cursor classNewsIDsCursor = _dbReadable.query(ThothContract.News.TABLE_NAME, CURSOR_COLUMNS, ThothContract.News.CLASS_ID + " = ?",
+                    new String[]{String.valueOf(classID)}, null, null, null)){
+
+                List<Long> classNewsIDs = getListFromCursor(classNewsIDsCursor);
+
                 _dbWritable.beginTransaction();
                 for (int idx = 0; idx < thothNews.length(); ++idx) {
                     JSONObject jNew = thothNews.getJSONObject(idx);
@@ -262,19 +256,19 @@ public class ThothUpdateActionsHandler {
             case 0:
                 return;
             case 1:
-//                Cursor classInfo = mContentResolver.query(ParseUtils.Classes.parseClass(classesID.iterator().next()), null, null, null, null);
-                Cursor classInfo = _dbReadable.query(ThothContract.Classes.TABLE_NAME, null, ThothContract.Classes._ID + " = ?",
-                        new String[]{String.valueOf(classesID.iterator().next())}, null, null, null);
+                try(Cursor classInfo = _dbReadable.query(ThothContract.Classes.TABLE_NAME, null, ThothContract.Classes._ID + " = ?",
+                        new String[]{String.valueOf(classesID.iterator().next())}, null, null, null)) {
 
-                if (classInfo.moveToNext()) {
-                    ThothClass thothClass = ThothClass.fromCursor(classInfo);
-                    intent = new Intent(mContext, ClassSectionsActivity.class);
-                    intent.putExtra(TagUtils.TAG_SERIALIZABLE_CLASS, thothClass);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    builder.setContentTitle("You got news from " + thothClass.getFullName())
-                            .setContentText("Click to open the new from " + thothClass.getFullName());
+                    if (classInfo.moveToNext()) {
+                        ThothClass thothClass = ThothClass.fromCursor(classInfo);
+                        intent = new Intent(mContext, ClassSectionsActivity.class);
+                        intent.putExtra(TagUtils.TAG_SERIALIZABLE_CLASS, thothClass);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        builder.setContentTitle("You got news from " + thothClass.getFullName())
+                                .setContentText("Click to open the new from " + thothClass.getFullName());
+                    }
                 }
-                classInfo.close();
+
                 break;
             default:
                 intent = new Intent(mContext, ClassesActivity.class);
@@ -295,54 +289,58 @@ public class ThothUpdateActionsHandler {
         ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancelAll();
     }
 
+    private static final String[] CURSOR_COLUMNS_STUDENT = {ThothContract.Students._ID};
+    private static final String[] CURSOR_COLUMNS_PARTICIPANT = {ThothContract.Classes_Students.KEY_STUDENT_ID};
+    private static final String SELECTION_PARTICIPANTS = ThothContract.Classes_Students.KEY_CLASS_ID + " = ?";
+    private static final String ORDER_BY = ThothContract.Students._ID + " ASC";
+
     /**
      * Handle action CLASS_PARTICIPANTS_UPDATE in the provided background thread with the provided
      * parameters.
      * @param classID
      */
     void handleClassParticipantsUpdate(long classID) {
-        final String[] CURSOR_COLUMNS_STUDENT = {ThothContract.Students._ID};
-        final String[] CURSOR_COLUMNS_PARTICIPANT = {ThothContract.Classes_Students.KEY_STUDENT_ID};
-        final String ORDER_BY = ThothContract.Students._ID + " ASC";
-
         if( classID == ARG_CLASS_ID_DEFAULT_VALUE){
             return;
         }
+
+
         try {
             InputStream is = downloadUrlStr(String.format(URI_CLASS_PARTICIPANTS, classID));
             String participantsData = readAllFrom(is);
             is.close();
+
             final JSONArray thothParticipants = getJSONArrayFromData(participantsData, JsonThothParticipant.ARRAY_STUDENTS);
+            final String[] SELECTION_ARGS = new String[]{String.valueOf(classID)};
 
-            Cursor participantsIDsCursor = _dbReadable.query(ThothContract.Classes_Students.TABLE_NAME, CURSOR_COLUMNS_PARTICIPANT, ThothContract.Classes_Students.KEY_CLASS_ID + " = ?",
-                    new String[]{String.valueOf(classID)}, null, null, ORDER_BY);
-            Cursor studentsIDsCursor = _dbReadable.query(ThothContract.Students.TABLE_NAME, CURSOR_COLUMNS_STUDENT, null, null, null, null, ORDER_BY);
+            try (Cursor studentsIDsCursor = _dbReadable.query(ThothContract.Students.TABLE_NAME, CURSOR_COLUMNS_STUDENT, null, null, null, null, ORDER_BY);
+                 Cursor participantsIDsCursor = _dbReadable.query(ThothContract.Classes_Students.TABLE_NAME, CURSOR_COLUMNS_PARTICIPANT,
+                                                                    SELECTION_PARTICIPANTS, SELECTION_ARGS, null, null, ORDER_BY)) {
+                List<Long> participantsIDs = getListFromCursor(participantsIDsCursor);
+                List<Long> studentsIDs = getListFromCursor(studentsIDsCursor);
 
-//            Cursor participantsIDsCursor = mContentResolver.query((ParseUtils.Classes.parseParticipantsFromClassID(classID)), CURSOR_COLUMNS, null, null, ORDER_BY);
-//            Cursor studentsIDsCursor = mContentResolver.query(ThothContract.Students.CONTENT_URI, CURSOR_COLUMNS, null, null, ORDER_BY);
-            List<Long>participantsIDs = getListFromCursor(participantsIDsCursor);
-            List<Long>studentsIDs = getListFromCursor(studentsIDsCursor);
+                try {
+                    _dbWritable.beginTransaction();
 
-            try {
-                _dbWritable.beginTransaction();
+                    for (int idx = 0; idx < thothParticipants.length(); ++idx) {
+                        JSONObject jParticipant = thothParticipants.getJSONObject(idx);
+                        long currParticipantID = jParticipant.getLong(JsonThothParticipant.ID);
 
-                for (int idx = 0; idx < thothParticipants.length(); ++idx) {
-                    JSONObject jParticipant = thothParticipants.getJSONObject(idx);
-                    long currParticipantID = jParticipant.getLong(JsonThothParticipant.ID);
+                        if (participantsIDs.contains(currParticipantID))
+                            continue;
 
-                    if(participantsIDs.contains(currParticipantID))
-                        continue;
+                        if (!studentsIDs.contains(currParticipantID))
+                            insertStudent(jParticipant, classID);
 
-                    if(!studentsIDs.contains(currParticipantID))
-                        insertStudent(jParticipant, classID);
+                        String group = jParticipant.getString(JsonThothParticipant.GROUP);
+                        int nGroup = (!isNumeric(group) ? 0 : Integer.parseInt(group));
+                        assigningStudentToClass(classID, currParticipantID, nGroup);
 
-                    String group = jParticipant.getString(JsonThothParticipant.GROUP);
-                    int nGroup = (!isNumeric(group) ? 0 : Integer.parseInt(group));
-                    assigningStudentToClass(classID, currParticipantID, nGroup);
-
-                }_dbWritable.setTransactionSuccessful();
-            } finally {
-                _dbWritable.endTransaction();
+                    }
+                    _dbWritable.setTransactionSuccessful();
+                } finally {
+                    _dbWritable.endTransaction();
+                }
             }
 
         } catch (JSONException e) {
@@ -377,11 +375,8 @@ public class ThothUpdateActionsHandler {
             is.close();
             final JSONArray thothWorkItems = getJSONArrayFromData(workItemsData, JsonThothWorkItem.ARRAY_WORK_ITEMS);
 
-            Cursor workItemsIDsCursor = _dbReadable.query(ThothContract.WorkItems.TABLE_NAME, CURSOR_COLUMNS, ThothContract.WorkItems.CLASS_ID + " = ?",
-                    new String[]{String.valueOf(classID)}, null, null, null);
-
-//            Cursor workItemsIDsCursor = mContentResolver.query(ParseUtils.Classes.parseWorkItemsFromClassID(classID), new String[]{ThothContract.WorkItems._ID, ThothContract.WorkItems.CLASS_ID}, null, null, null);
-            try {
+            try ( Cursor workItemsIDsCursor = _dbReadable.query(ThothContract.WorkItems.TABLE_NAME, CURSOR_COLUMNS, ThothContract.WorkItems.CLASS_ID + " = ?",
+                    new String[]{String.valueOf(classID)}, null, null, null)) {
                 _dbWritable.beginTransaction();
                 List<Long> classWorkItemsIDs = getListFromCursor(workItemsIDsCursor);
                 long currWorkItemID;
@@ -485,28 +480,28 @@ public class ThothUpdateActionsHandler {
         currValues.put(ThothContract.WorkItems.DUE_DATE, strDueDate);
 
 
-        Cursor classCursor = _dbReadable.query(ThothContract.Classes.TABLE_NAME, new String[]{ThothContract.Classes.FULL_NAME}, ThothContract.Classes._ID + " = ?",
-                new String[]{String.valueOf(classID)}, null, null, null);
+        try (Cursor classCursor = _dbReadable.query(ThothContract.Classes.TABLE_NAME, new String[]{ThothContract.Classes.FULL_NAME}, ThothContract.Classes._ID + " = ?",
+                new String[]{String.valueOf(classID)}, null, null, null)) {
 
-//        Cursor classCursor = mContentResolver.query(ParseUtils.Classes.parseClass(classID), new String[]{ThothContract.Classes.FULL_NAME}, null, null, null);
-        String classFullName = null;
-        if(classCursor.moveToNext()){
-            classFullName = classCursor.getString(classCursor.getColumnIndex(ThothContract.Classes.FULL_NAME));
-            currValues.put(ThothContract.WorkItems.URL, String.format("%s/%s/workitems/%d",
-                    UriUtils.URI_CLASSES_ROOT, classFullName.replace(" ", ""), workItemID));
-        }
-        classCursor.close();
-        currValues.put(ThothContract.WorkItems.CLASS_ID,classID);
-        if(SettingsUtils.isToAutoInsertEvent) {
-            try {
-                final Date dueDate = DateUtils.SAVE_DATE_FORMAT.parse(strDueDate);
-                long eventID = CalendarUtils.addAppointment(mContext, title, classFullName, dueDate.getTime());
-                currValues.put(ThothContract.WorkItems.EVENT_ID, eventID);
-            } catch (ParseException e) {
-                e.printStackTrace();
+            String classFullName = null;
+            if (classCursor.moveToNext()) {
+                classFullName = classCursor.getString(classCursor.getColumnIndex(ThothContract.Classes.FULL_NAME));
+                currValues.put(ThothContract.WorkItems.URL, String.format("%s/%s/workitems/%d",
+                        UriUtils.URI_CLASSES_ROOT, classFullName.replace(" ", ""), workItemID));
             }
+
+            currValues.put(ThothContract.WorkItems.CLASS_ID,classID);
+            if(SettingsUtils.isToAutoInsertEvent) {
+                try {
+                    final Date dueDate = DateUtils.SAVE_DATE_FORMAT.parse(strDueDate);
+                    long eventID = CalendarUtils.addAppointment(mContext, title, classFullName, dueDate.getTime());
+                    currValues.put(ThothContract.WorkItems.EVENT_ID, eventID);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            _dbWritable.insert(ThothContract.WorkItems.TABLE_NAME, null, currValues); /** INSERT WORK ITEM **/
         }
-        _dbWritable.insert(ThothContract.WorkItems.TABLE_NAME, null, currValues); /** INSERT WORK ITEM **/
     }
 
 }

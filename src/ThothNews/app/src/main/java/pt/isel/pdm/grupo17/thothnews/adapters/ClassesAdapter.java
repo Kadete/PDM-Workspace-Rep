@@ -91,14 +91,13 @@ public class ClassesAdapter extends CursorAdapter {
          String selection = ThothContract.News.READ + " =  ? ";
         String [] selectionArgs =  new String[] { FALSE };
         String orderBy = ThothContract.News.READ;
+
         Uri classNewsUri = ParseUtils.Classes.parseNewsFromClassID(classeID);
-        Cursor cursorNewsRead = mContext.getContentResolver().query(classNewsUri, new String[] {ThothContract.Classes._ID}, selection, selectionArgs, orderBy);
-
-        Boolean newsToRead = cursorNewsRead.moveToNext();
-
-        holder.new_news.setImageResource((newsToRead) ? R.drawable.ic_news_to_read : R.drawable.ic_action_done_all);
-        cursorNewsRead.close();
-        view.setBackground(new ColorDrawable((newsToRead) ? 0x33440000 : 0xffb7dde1));
+        try(Cursor cursorNewsRead = mContext.getContentResolver().query(classNewsUri, new String[] {ThothContract.Classes._ID}, selection, selectionArgs, orderBy)) {
+            Boolean newsToRead = cursorNewsRead.moveToNext();
+            holder.new_news.setImageResource((newsToRead) ? R.drawable.ic_news_to_read : R.drawable.ic_action_done_all);
+            view.setBackground(new ColorDrawable((newsToRead) ? 0x33440000 : 0xffb7dde1));
+        }
     }
 
 }

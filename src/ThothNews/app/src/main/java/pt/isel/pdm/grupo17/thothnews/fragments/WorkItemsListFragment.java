@@ -177,12 +177,12 @@ public class WorkItemsListFragment extends ListFragment implements LoaderManager
     @Override
     public void onResume(){
         super.onResume();
-        Cursor workItemsCursor = sContentResolver.query(ParseUtils.Classes.parseWorkItemsFromClassID(sThothClass.getID()), null, null, null, null);
-        if(workItemsCursor.moveToNext())
-            getLoaderManager().initLoader(WORK_ITEMS_CURSOR_LOADER_ID, null, this);
-        else
-            refreshAndUpdate();
-        workItemsCursor.close();
+        try(Cursor workItemsCursor = sContentResolver.query(ParseUtils.Classes.parseWorkItemsFromClassID(sThothClass.getID()), null, null, null, null)){
+            if(workItemsCursor.moveToNext())
+                getLoaderManager().initLoader(WORK_ITEMS_CURSOR_LOADER_ID, null, this);
+            else
+                refreshAndUpdate();
+        }
     }
 
     @Override

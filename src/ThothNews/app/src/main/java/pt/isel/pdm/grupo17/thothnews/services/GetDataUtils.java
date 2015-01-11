@@ -32,7 +32,6 @@ public class GetDataUtils {
         while (c.moveToNext()){
             ids.add(c.getLong(0));
         }
-        c.close();
         return ids;
     }
 

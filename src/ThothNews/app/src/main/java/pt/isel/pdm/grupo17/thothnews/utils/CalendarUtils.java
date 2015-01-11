@@ -36,12 +36,12 @@ public class CalendarUtils {
 
         Uri uri = CalendarContract.Calendars.CONTENT_URI;
         String[] projection = new String[] { CalendarContract.Calendars._ID };
-        Cursor calendarCursor = context.getContentResolver().query(uri, projection, null, null, null);
         int calendarID = -1;
-        if(calendarCursor.moveToNext())
-            calendarID = calendarCursor.getInt(calendarCursor.getColumnIndex(CalendarContract.Calendars._ID));
-        calendarCursor.close();
-        if(calendarID == -1)
+        try(Cursor calendarCursor = context.getContentResolver().query(uri, projection, null, null, null)) {
+            if (calendarCursor.moveToNext())
+                calendarID = calendarCursor.getInt(calendarCursor.getColumnIndex(CalendarContract.Calendars._ID));
+        }
+        if (calendarID == -1)
             return INVALID_EVENT_ID;
 
         ContentValues eventValues = new ContentValues();

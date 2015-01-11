@@ -121,27 +121,25 @@ public class WorkItemsAdapter extends CursorAdapter {
                 @Override
                 public void onClick(View v) {
 
-                    Cursor cursor = mContext.getContentResolver().query(CalendarContract.Events.CONTENT_URI,
-                            null, CalendarContract.Events._ID + " = ? " , new String[]{String.valueOf(eventId)},null);
+                   try(Cursor cursor = mContext.getContentResolver().query(CalendarContract.Events.CONTENT_URI,
+                            null, CalendarContract.Events._ID + " = ? " , new String[]{String.valueOf(eventId)},null)) {
 
-                    boolean hasEvent = cursor.moveToNext();
-                    cursor.close();
-                    v.findViewById(R.id.iv_workitem_event_options).setBackground((hasEvent)
-                            ? mContext.getResources().getDrawable(R.drawable.ic_editor_event)
-                            : mContext.getResources().getDrawable(R.drawable.ic_add_event));
+                       boolean hasEvent = cursor.moveToNext();
+                       v.findViewById(R.id.iv_workitem_event_options).setBackground((hasEvent)
+                               ? mContext.getResources().getDrawable(R.drawable.ic_editor_event)
+                               : mContext.getResources().getDrawable(R.drawable.ic_add_event));
 
-
-                    if(!hasEvent || eventId == CalendarUtils.INVALID_EVENT_ID){ // ADD
-                        long newEventId = CalendarUtils.addAppointment(mContext,
-                                title, ClassSectionsActivity.getThothClass().getFullName(), dateDue.getTime());
-                        if(newEventId != CalendarUtils.INVALID_EVENT_ID){
-                            ResolverUtils.updateWorkItem(mContext, newEventId, workItemID);
-                            Toast.makeText(mContext,"Event " + title + " ADDED with Success!!",Toast.LENGTH_SHORT).show();
-                        }else
-                            Toast.makeText(mContext,"Some ERROR occur!!",Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
+                       if (!hasEvent || eventId == CalendarUtils.INVALID_EVENT_ID) { // ADD
+                           long newEventId = CalendarUtils.addAppointment(mContext,
+                                   title, ClassSectionsActivity.getThothClass().getFullName(), dateDue.getTime());
+                           if (newEventId != CalendarUtils.INVALID_EVENT_ID) {
+                               ResolverUtils.updateWorkItem(mContext, newEventId, workItemID);
+                               Toast.makeText(mContext, "Event " + title + " ADDED with Success!!", Toast.LENGTH_SHORT).show();
+                           } else
+                               Toast.makeText(mContext, "Some ERROR occur!!", Toast.LENGTH_SHORT).show();
+                           return;
+                       }
+                   }
 
                     AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
                     ab.setTitle("Calendar Event");
@@ -182,12 +180,11 @@ public class WorkItemsAdapter extends CursorAdapter {
                 view.findViewById(R.id.iv_workitem_event_options).setVisibility(View.VISIBLE);
             }
         }
-        Cursor cursorEvent = mContext.getContentResolver().query(CalendarContract.Events.CONTENT_URI,
-                null, CalendarContract.Events._ID + " = ? " , new String[]{String.valueOf(eventId)},null);
-
-        boolean hasEvent = cursorEvent.moveToNext();
-        cursorEvent.close();
-        view.findViewById(R.id.iv_workitem_event_options).setBackground((hasEvent) ? dwEditEvent : dwAddEvent);
+        try (Cursor cursorEvent = mContext.getContentResolver().query(CalendarContract.Events.CONTENT_URI,
+                null, CalendarContract.Events._ID + " = ? " , new String[]{String.valueOf(eventId)},null)) {
+            boolean hasEvent = cursorEvent.moveToNext();
+            view.findViewById(R.id.iv_workitem_event_options).setBackground((hasEvent) ? dwEditEvent : dwAddEvent);
+        }
     }
 
 }

@@ -126,27 +126,23 @@ public class ParticipantsAdapter extends CursorAdapter {
     }
 
     private void setStudentAvatar(ImageView ivStudentAvatar, Cursor cursor, long id) {
+        try(Cursor studentAvatarPath = mContext.getContentResolver().query(ParseUtils.Students.parseStudentID(id),null, null, null, null)) {
+            String avatarPath = null;
+            if (studentAvatarPath.moveToNext())
+                avatarPath = studentAvatarPath.getString(studentAvatarPath.getColumnIndex(ThothContract.Avatars.AVATAR_PATH));
+            if (avatarPath == null || avatarPath.isEmpty()) { /** photo not saved yet. Get avatar via req HTTP and then save the file on phone ROM **/
+                String storagePath = BitmapUtils.initStoragePath(mContext, DIR_PATH_STUDENT);
+                String avatarUrl = cursor.getString(cursor.getColumnIndex(ThothContract.Avatars.AVATAR_URL));
+                SetViewAndUpdateHandler svh = new SetViewAndUpdateHandler(Looper.getMainLooper(), mContext.getContentResolver());
 
-        Cursor studentAvatarPath = mContext.getContentResolver().query(ParseUtils.Students.parseStudentID(id),null, null, null, null);
-        String avatarPath = null;
-        if(studentAvatarPath.moveToNext())
-            avatarPath = studentAvatarPath.getString(studentAvatarPath.getColumnIndex(ThothContract.Avatars.AVATAR_PATH));
-        studentAvatarPath.close();
-
-        if (avatarPath == null || avatarPath.isEmpty()) { /** photo not saved yet. Get avatar via req HTTP and then save the file on phone ROM **/
-
-            String storagePath = BitmapUtils.initStoragePath(mContext, DIR_PATH_STUDENT);
-            String avatarUrl = cursor.getString(cursor.getColumnIndex(ThothContract.Avatars.AVATAR_URL));
-            SetViewAndUpdateHandler svh = new SetViewAndUpdateHandler(Looper.getMainLooper(), mContext.getContentResolver());
-
-            ImageHandlerThread th = new ImageHandlerThread();
-            th.start();
-            ImageHandler ih = new ImageHandler(svh, th.getLooper());
-            ih.fetchImage(ivStudentAvatar, avatarUrl, ParseUtils.Students.parseStudentID(id), storagePath); // external url
-
-        }
-        else{ /** AsyncTask to get the photo and show when ready: getBitmapFromFile **/
-            new BitmapUtils.LoadBitmapTask(ivStudentAvatar).execute(avatarPath);
+                ImageHandlerThread th = new ImageHandlerThread();
+                th.start();
+                ImageHandler ih = new ImageHandler(svh, th.getLooper());
+                ih.fetchImage(ivStudentAvatar, avatarUrl, ParseUtils.Students.parseStudentID(id), storagePath); // external url
+            }
+            else{ /** AsyncTask to get the photo and show when ready: getBitmapFromFile **/
+                new BitmapUtils.LoadBitmapTask(ivStudentAvatar).execute(avatarPath);
+            }
         }
     }
 }

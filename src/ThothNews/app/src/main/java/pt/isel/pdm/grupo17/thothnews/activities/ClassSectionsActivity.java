@@ -84,33 +84,32 @@ public class ClassSectionsActivity extends FragmentActivity implements NewsListF
         long teacherID = sThothClass.getTeacherID();
         Uri teacherUri = ParseUtils.Teachers.parseTeacherID(teacherID);
         String [] cursorColumns = new String[] {ThothContract.Teachers._ID, ThothContract.Teachers.ACADEMIC_EMAIL, ThothContract.Avatars.AVATAR_URL, ThothContract.Avatars.AVATAR_PATH};
-        Cursor teacherCursor = getApplication().getContentResolver().query(teacherUri,cursorColumns , null, null, null);
-
-        if(teacherCursor.moveToNext()) {
-            final TextView tvTeacherEmail = (TextView) findViewById(R.id.tv_teacher_email);
-            tvTeacherEmail.setMovementMethod(LinkMovementMethod.getInstance());
-            final String teacherEmail = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teachers.ACADEMIC_EMAIL));
-            tvTeacherEmail.setText(teacherEmail);
-            tvTeacherEmail.setPaintFlags(tvTeacherEmail.getPaintFlags()|Paint.UNDERLINE_TEXT_FLAG);
-            tvTeacherEmail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) { /** send email to teacher **/
-                    Intent i = new Intent(Intent.ACTION_SEND);
-                    i.setType("message/rfc822");
-                    i.putExtra(Intent.EXTRA_EMAIL, new String[] {teacherEmail});
-                    i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.send_email_subject));
-                    i.putExtra(Intent.EXTRA_TEXT, getString(R.string.send_email_body));
-                    try {
-                        startActivity(Intent.createChooser(i, getString(R.string.send_mail_to) + sThothClass.getTeacherName()));
-                    } catch (android.content.ActivityNotFoundException ex) {
-                        Toast.makeText(ClassSectionsActivity.this, getString(R.string.send_mail_fail_no_app), Toast.LENGTH_SHORT).show();
+        try(Cursor teacherCursor = getApplication().getContentResolver().query(teacherUri,cursorColumns , null, null, null)){
+            if(teacherCursor.moveToNext()) {
+                final TextView tvTeacherEmail = (TextView) findViewById(R.id.tv_teacher_email);
+                tvTeacherEmail.setMovementMethod(LinkMovementMethod.getInstance());
+                final String teacherEmail = teacherCursor.getString(teacherCursor.getColumnIndex(ThothContract.Teachers.ACADEMIC_EMAIL));
+                tvTeacherEmail.setText(teacherEmail);
+                tvTeacherEmail.setPaintFlags(tvTeacherEmail.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                tvTeacherEmail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) { /** send email to teacher **/
+                        Intent i = new Intent(Intent.ACTION_SEND);
+                        i.setType("message/rfc822");
+                        i.putExtra(Intent.EXTRA_EMAIL, new String[]{teacherEmail});
+                        i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.send_email_subject));
+                        i.putExtra(Intent.EXTRA_TEXT, getString(R.string.send_email_body));
+                        try {
+                            startActivity(Intent.createChooser(i, getString(R.string.send_mail_to) + sThothClass.getTeacherName()));
+                        } catch (android.content.ActivityNotFoundException ex) {
+                            Toast.makeText(ClassSectionsActivity.this, getString(R.string.send_mail_fail_no_app), Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-            });
-            final ImageView ivTeacherAvatar = (ImageView) findViewById(R.id.iv_teacher_avatar);
-            setTeacherAvatar(ivTeacherAvatar, teacherCursor, teacherID);
+                });
+                final ImageView ivTeacherAvatar = (ImageView) findViewById(R.id.iv_teacher_avatar);
+                setTeacherAvatar(ivTeacherAvatar, teacherCursor, teacherID);
+            }
         }
-        teacherCursor.close();
     }
 
     private void setTeacherAvatar(ImageView ivTeacherAvatar, Cursor teacherCursor, long teacherID) {

@@ -5,7 +5,7 @@ android {
 
     defaultConfig {
         applicationId "pt.isel.pdm.grupo17.thothnews"
-        minSdkVersion 18
+        minSdkVersion 19
         targetSdkVersion 21
     }
 

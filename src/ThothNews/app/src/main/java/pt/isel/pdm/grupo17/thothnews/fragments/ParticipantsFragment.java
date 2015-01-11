@@ -135,12 +135,12 @@ public class ParticipantsFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onResume(){
         super.onResume();
-        Cursor studentsCursor = sContentResolver.query(ParseUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), null, null, null, null);
-        if(studentsCursor.moveToNext())
-            getLoaderManager().initLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
-        else
-            refreshAndUpdate();
-        studentsCursor.close();
+        try(Cursor studentsCursor = sContentResolver.query(ParseUtils.Classes.parseParticipantsFromClassID(sThothClass.getID()), null, null, null, null)){
+            if(studentsCursor.moveToNext())
+                getLoaderManager().initLoader(PARTICIPANTS_CURSOR_LOADER_ID, null, this);
+            else
+                refreshAndUpdate();
+        }
     }
 
     private boolean isFragmentUIActive() {

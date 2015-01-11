@@ -63,57 +63,39 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         d(ThothUpdateService.class.getName(), "SyncAdapter.onPerformSync started...");
         SyncActionsHandler handler = new SyncActionsHandler(getContext(), mContentResolver);
-//            syncResult = updateLocalClassesData(handler, syncResult);
-        updateLocalNewsData(handler, syncResult);
-        d(ThothUpdateService.class.getName(), "SyncAdapter.onPerformSync started...");
-    }
-
-//    private SyncResult updateLocalClassesData(SyncActionsHandler handler, SyncResult syncResult) {
-//        handler.handleClassesUpdate(syncResult);
-//        return syncResult;
-//    }
-
-    public SyncResult updateLocalNewsData(SyncActionsHandler handler, SyncResult result){
-
         d(TAG_SYNC_ADAPTER, "Beginning network synchronization for news");
-
-        Cursor cursor = mContentResolver.query(ThothContract.Classes.ENROLLED_URI, new String[]{ThothContract.Classes._ID}
-                ,String.format("%s = 1", ThothContract.Classes.ENROLLED), null, null);
 
         ArrayList<ContentProviderOperation> batch = new ArrayList<>();
 
         Set<Long> listClassesToNotify = new HashSet<>();
-        try {
-            while(cursor.moveToNext()) {
+        try (Cursor cursor = mContentResolver.query(ThothContract.Classes.ENROLLED_URI,
+                new String[]{ThothContract.Classes._ID}, String.format("%s = 1", ThothContract.Classes.ENROLLED), null, null)) {
+            while (cursor.moveToNext()) {
                 long classID = cursor.getLong(COLUMN_CLASS_ID);
                 final String location = String.format(URI_CLASS_NEWS_ITEMS, classID);
                 InputStream stream = null;
                 d(TAG_SYNC_ADAPTER, "Streaming data from network: " + location);
                 try {
                     stream = downloadUrlStr(location);
-                    result = handler.handleClassNewsUpdate(batch, result, stream, classID);
-                    if(result.stats.numInserts > 0){
+                    handler.handleClassNewsUpdate(batch, syncResult, stream, classID);
+                    if (syncResult.stats.numInserts > 0)
                         listClassesToNotify.add(classID);
-                    }
+
                 } catch (JSONException e) {
                     d(TAG_SYNC_ADAPTER, "ERROR: handleClassNewsUpdate(..) while parsing JSON response");
                     d(TAG_SYNC_ADAPTER, e.getMessage());
-                } catch (MalformedURLException e) {
+                } catch (MalformedURLException | ParseException e) {
                     d(TAG_SYNC_ADAPTER, "An error occurred while trying to create URL to request participants list given classID:" + classID + "\nMessage: " + e.getMessage());
-                    result.stats.numParseExceptions++;
+                    syncResult.stats.numParseExceptions++;
                 } catch (IOException e) {
                     d(TAG_SYNC_ADAPTER, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
-                    result.stats.numIoExceptions++;
-                } catch (ParseException e) {
-                    d(TAG_SYNC_ADAPTER, "Error parsing feed: " + e.toString());
-                    result.stats.numParseExceptions++;
+                    syncResult.stats.numIoExceptions++;
                 } finally {
-                    if (stream != null) {
+                    if (stream != null)
                         stream.close();
-                    }
                 }
             }
-            if(result != null){
+            if (syncResult != null) {
                 mContentResolver.applyBatch(ThothContract.CONTENT_AUTHORITY, batch);
                 mContentResolver.notifyChange(
                         ThothContract.News.CONTENT_URI, // URI where data was modified
@@ -126,20 +108,17 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             // finished using it.
         } catch (MalformedURLException e) {
             d(TAG_SYNC_ADAPTER, "Feed URL is malformed" + e.toString());
-            result.stats.numParseExceptions++;
-            return result;
+            syncResult.stats.numParseExceptions++;
         } catch (IOException e) {
             d(TAG_SYNC_ADAPTER, "Error reading from network: " + e.toString());
-            result.stats.numIoExceptions++;
-            return result;
+            syncResult.stats.numIoExceptions++;
         } catch (RemoteException | OperationApplicationException e) {
             d(TAG_SYNC_ADAPTER, "Error updating database: " + e.toString());
-            result.databaseError = true;
-            return result;
-        } finally {
-            cursor.close();
+            syncResult.databaseError = true;
         }
         Log.i(TAG_SYNC_ADAPTER, "Network synchronization complete");
-        return result;
+
+        d(ThothUpdateService.class.getName(), "SyncAdapter.onPerformSync started...");
     }
+
 }
