@@ -84,12 +84,11 @@
     <string name="tab_work_items">Trabalhos</string>
     <string name="teacher_label"><![CDATA[<small>Docente:</small> ]]>" "</string>
     <string name="due_date_label"><![CDATA[<small>Data de entrega:</small>]]></string>
-    <string name="create_date_label"><![CDATA[<small>Data de criação:</small>]]></string>
-    <string name="start_date_label">Data de criação</string>
+    <string name="start_date_label"><![CDATA[<small>Data de início:</small>]]></string>
     <string name="category_calendar_title">Calendário</string>
     <string name="auto_add_events_title">Eventos</string>
     <string name="auto_add_events_summary">Automaticamente adicionar eventos</string>
     <string name="data_mobile_switch_title">Dados Móveis</string>
-    <string name="loading"></string>
+    <string name="create_date_label"><![CDATA[<small>Data de criação:</small>]]></string>
 
 </resources>
