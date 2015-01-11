@@ -143,7 +143,6 @@ public class ClassesFragment extends Fragment implements LoaderManager.LoaderCal
             @Override
             public void onRefresh() {
                 SyncUtils.TriggerRefresh();
-                refreshLoader();
             }
         });
         mSwipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);

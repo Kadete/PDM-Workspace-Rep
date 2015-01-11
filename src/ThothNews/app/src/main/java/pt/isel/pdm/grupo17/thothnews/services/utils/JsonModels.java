@@ -1,22 +1,19 @@
-package pt.isel.pdm.grupo17.thothnews.services;
+package pt.isel.pdm.grupo17.thothnews.services.utils;
 
-/**
- * Created by Kadete on 09/01/2015.
- */
-class JsonModels {
+public class JsonModels {
 
 //    class JsonThothLink{
 //        public static final String SELF = "self";
 //    }
 
-        static class JsonThothAvatar{
+        public static class JsonThothAvatar{
             //        public static final String SIZE24 = "size24";
 //        public static final String SIZE32 = "size32";
             public static final String SIZE64 = "size64";
 //        public static final String SIZE128 = "size128";
         }
 
-        static class JsonThothTeacher{
+        public static class JsonThothTeacher{
             /** Props **/
             public static final String ID = "id";
             public static final String NUMBER = "number";
@@ -29,7 +26,7 @@ class JsonModels {
             public static final String LINKS = "_links";
         }
 
-        static class JsonThothClass{
+        public static class JsonThothClass{
             /** Array **/
             public static final String ARRAY_CLASSES = "classes";
             /** Props **/
@@ -43,11 +40,11 @@ class JsonModels {
             public static final String LINKS = "_links";
         }
 
-        static class JsonThothFullClass{
+        public static class JsonThothFullClass{
             public static final String TEACHER_ID = "mainTeacherId";
         }
 
-        static class JsonThothNew {
+        public static class JsonThothNew {
             /** Array **/
             public static final String ARRAY_NEWS_ITEMS = "newsItems";
             /** Props **/
@@ -56,7 +53,7 @@ class JsonModels {
             public static final String WHEN = "when";
             public static final String CONTENT = "content";
         }
-        static class JsonThothParticipant{
+        public static class JsonThothParticipant{
             /** Array **/
             public static final String ARRAY_STUDENTS = "students";
             /** Props **/
@@ -68,7 +65,7 @@ class JsonModels {
             public static final String ENROLL_DATE = "enrollmentDate";
             public static final String GROUP = "currentGroup";
         }
-        static class JsonThothWorkItem{
+        public static class JsonThothWorkItem{
             /** Array **/
             public static final String ARRAY_WORK_ITEMS = "workItems";
             /** Props **/

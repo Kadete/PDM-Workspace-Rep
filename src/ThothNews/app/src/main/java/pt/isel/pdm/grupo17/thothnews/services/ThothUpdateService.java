@@ -10,8 +10,11 @@ import java.util.HashSet;
 
 import pt.isel.pdm.grupo17.thothnews.receivers.BgProcessingResultReceiver;
 import pt.isel.pdm.grupo17.thothnews.receivers.NetworkReceiver;
+import pt.isel.pdm.grupo17.thothnews.services.utils.Notifications;
+import pt.isel.pdm.grupo17.thothnews.utils.TagUtils;
 
-import static pt.isel.pdm.grupo17.thothnews.receivers.BgProcessingResultReceiver.*;
+import static pt.isel.pdm.grupo17.thothnews.receivers.BgProcessingResultReceiver.STATUS_FINISHED;
+import static pt.isel.pdm.grupo17.thothnews.receivers.BgProcessingResultReceiver.STATUS_RUNNING;
 import static pt.isel.pdm.grupo17.thothnews.services.ThothUpdateActionsHandler.ARG_CLASS_ID_DEFAULT_VALUE;
 import static pt.isel.pdm.grupo17.thothnews.utils.LogUtils.d;
 
@@ -25,7 +28,7 @@ public class ThothUpdateService extends IntentService { // request update onDema
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     private static final String ACTION_SEMESTERS_UPDATE = "pt.isel.pdm.grupo17.thothnews.services.action.SEMESTERS_UPDATE";
     private static final String ACTION_CLASSES_UPDATE = "pt.isel.pdm.grupo17.thothnews.services.action.CLASSES_UPDATE";
-    private static final String ACTION_NEWS_UPDATE = "pt.isel.pdm.grupo17.thothnews.services.action.NEWS_UPDATE";
+//    private static final String ACTION_NEWS_UPDATE = "pt.isel.pdm.grupo17.thothnews.services.action.NEWS_UPDATE";
     private static final String ACTION_CLASS_NEWS_UPDATE = "pt.isel.pdm.grupo17.thothnews.services.action.CLASS_NEWS_UPDATE";
     private static final String ACTION_CLASS_PARTICIPANTS_UPDATE = "pt.isel.pdm.grupo17.thothnews.services.action.CLASS_PARTICIPANTS_UPDATE";
     private static final String ACTION_CLASS_WORK_ITEMS_UPDATE = "pt.isel.pdm.grupo17.thothnews.services.action.CLASS_WORK_ITEMS_UPDATE";
@@ -42,7 +45,7 @@ public class ThothUpdateService extends IntentService { // request update onDema
         if (intent != null) {
 
             ThothUpdateActionsHandler handler = new ThothUpdateActionsHandler(getApplicationContext());
-            final ResultReceiver receiver = intent.getParcelableExtra("mReceiver");
+            final ResultReceiver receiver = intent.getParcelableExtra(TagUtils.TAG_EXTRA_RESULT_RECEIVER);
             if(receiver != null)
                 receiver.send(STATUS_RUNNING, Bundle.EMPTY);
             try {
@@ -53,15 +56,14 @@ public class ThothUpdateService extends IntentService { // request update onDema
                     case ACTION_CLASSES_UPDATE:
                         handler.handleClassesUpdate();
                         break;
-                    case ACTION_NEWS_UPDATE:
-                        handler.handleNewsUpdate();
-                        break;
+                    /** SyncAdapter Job **/
+//                    case ACTION_NEWS_UPDATE:
+//                        handler.handleNewsUpdate();
+//                        break;
                     case ACTION_CLASS_NEWS_UPDATE:
                         final long classID = intent.getLongExtra(ARG_CLASS_ID, ARG_CLASS_ID_DEFAULT_VALUE);
                         if (handler.handleClassNewsUpdate(classID))
-                            handler.sendNotifications(new HashSet<Long>() {{
-                                add(classID);
-                            }});
+                            Notifications.sendNotifications(new HashSet<Long>() {{add(classID);}}, getApplicationContext() );
                         break;
                     case ACTION_CLASS_PARTICIPANTS_UPDATE:
                         handler.handleClassParticipantsUpdate(intent.getLongExtra(ARG_CLASS_ID, ARG_CLASS_ID_DEFAULT_VALUE));
@@ -86,20 +88,20 @@ public class ThothUpdateService extends IntentService { // request update onDema
         context.startService(intent);
     }
 
-    /**
-     * Starts this service to perform action NewsUpdate, updating the news list of all classes enrolled.
-     * If the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    public static void startActionNewsUpdate(Context context, BgProcessingResultReceiver receiver) {
-        if(!NetworkReceiver.checkConnection(context, false))
-            return;
-        Intent intent = new Intent(context, ThothUpdateService.class);
-        intent.setAction(ACTION_NEWS_UPDATE);
-        intent.putExtra("mReceiver", receiver);
-        context.startService(intent);
-    }
+//    /**
+//     * Starts this service to perform action NewsUpdate, updating the news list of all classes enrolled.
+//     * If the service is already performing a task this action will be queued.
+//     *
+//     * @see IntentService
+//     */
+//    public static void startActionNewsUpdate(Context context, BgProcessingResultReceiver receiver) {
+//        if(!NetworkReceiver.checkConnection(context, false))
+//            return;
+//        Intent intent = new Intent(context, ThothUpdateService.class);
+//        intent.setAction(ACTION_NEWS_UPDATE);
+//        intent.putExtra(TagUtils.TAG_EXTRA_RESULT_RECEIVER, receiver);
+//        context.startService(intent);
+//    }
 
     /**
      * Starts this service to perform action ClassesUpdate, updating classes list, showing all available.
@@ -112,7 +114,7 @@ public class ThothUpdateService extends IntentService { // request update onDema
             return;
         Intent intent = new Intent(context, ThothUpdateService.class);
         intent.setAction(ACTION_CLASSES_UPDATE);
-        intent.putExtra("mReceiver", receiver);
+        intent.putExtra(TagUtils.TAG_EXTRA_RESULT_RECEIVER, receiver);
         context.startService(intent);
     }
 
@@ -129,7 +131,7 @@ public class ThothUpdateService extends IntentService { // request update onDema
         Intent intent = new Intent(context, ThothUpdateService.class);
         intent.setAction(ACTION_CLASS_NEWS_UPDATE);
         intent.putExtra(ARG_CLASS_ID, classID);
-        intent.putExtra("mReceiver", receiver);
+        intent.putExtra(TagUtils.TAG_EXTRA_RESULT_RECEIVER, receiver);
         context.startService(intent);
     }
 
@@ -146,7 +148,7 @@ public class ThothUpdateService extends IntentService { // request update onDema
         Intent intent = new Intent(context, ThothUpdateService.class);
         intent.setAction(ACTION_CLASS_PARTICIPANTS_UPDATE);
         intent.putExtra(ARG_CLASS_ID, classID);
-        intent.putExtra("mReceiver", receiver);
+        intent.putExtra(TagUtils.TAG_EXTRA_RESULT_RECEIVER, receiver);
         context.startService(intent);
     }
 
@@ -162,7 +164,7 @@ public class ThothUpdateService extends IntentService { // request update onDema
         Intent intent = new Intent(context, ThothUpdateService.class);
         intent.setAction(ACTION_CLASS_WORK_ITEMS_UPDATE);
         intent.putExtra(ARG_CLASS_ID, classID);
-        intent.putExtra("mReceiver", receiver);
+        intent.putExtra(TagUtils.TAG_EXTRA_RESULT_RECEIVER, receiver);
         context.startService(intent);
     }
 

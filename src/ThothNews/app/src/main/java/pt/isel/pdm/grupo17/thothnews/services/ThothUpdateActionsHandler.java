@@ -1,11 +1,7 @@
 package pt.isel.pdm.grupo17.thothnews.services;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -28,13 +24,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import pt.isel.pdm.grupo17.thothnews.R;
-import pt.isel.pdm.grupo17.thothnews.activities.ClassSectionsActivity;
-import pt.isel.pdm.grupo17.thothnews.activities.ClassesActivity;
 import pt.isel.pdm.grupo17.thothnews.data.ThothContract;
 import pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils;
 import pt.isel.pdm.grupo17.thothnews.data.providers.ThothProvider;
-import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
+import pt.isel.pdm.grupo17.thothnews.services.utils.Notifications;
 import pt.isel.pdm.grupo17.thothnews.utils.CalendarUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.DateUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.SettingsUtils;
@@ -48,18 +41,18 @@ import static pt.isel.pdm.grupo17.thothnews.data.providers.ThothProviderUris.URI
 import static pt.isel.pdm.grupo17.thothnews.data.providers.ThothProviderUris.URI_CLASS_WORK_ITEMS;
 import static pt.isel.pdm.grupo17.thothnews.data.providers.ThothProviderUris.URI_NEW_INFO;
 import static pt.isel.pdm.grupo17.thothnews.data.providers.ThothProviderUris.URI_TEACHER_INFO;
-import static pt.isel.pdm.grupo17.thothnews.services.GetDataUtils.downloadUrlStr;
-import static pt.isel.pdm.grupo17.thothnews.services.GetDataUtils.getJSONArrayFromData;
-import static pt.isel.pdm.grupo17.thothnews.services.GetDataUtils.getJSONObjectFromUri;
-import static pt.isel.pdm.grupo17.thothnews.services.GetDataUtils.getListFromCursor;
-import static pt.isel.pdm.grupo17.thothnews.services.GetDataUtils.readAllFrom;
-import static pt.isel.pdm.grupo17.thothnews.services.JsonModels.JsonThothAvatar;
-import static pt.isel.pdm.grupo17.thothnews.services.JsonModels.JsonThothClass;
-import static pt.isel.pdm.grupo17.thothnews.services.JsonModels.JsonThothFullClass;
-import static pt.isel.pdm.grupo17.thothnews.services.JsonModels.JsonThothNew;
-import static pt.isel.pdm.grupo17.thothnews.services.JsonModels.JsonThothParticipant;
-import static pt.isel.pdm.grupo17.thothnews.services.JsonModels.JsonThothTeacher;
-import static pt.isel.pdm.grupo17.thothnews.services.JsonModels.JsonThothWorkItem;
+import static pt.isel.pdm.grupo17.thothnews.services.utils.GetData.downloadUrlStr;
+import static pt.isel.pdm.grupo17.thothnews.services.utils.GetData.getJSONArrayFromData;
+import static pt.isel.pdm.grupo17.thothnews.services.utils.GetData.getJSONObjectFromUri;
+import static pt.isel.pdm.grupo17.thothnews.services.utils.GetData.getListFromCursor;
+import static pt.isel.pdm.grupo17.thothnews.services.utils.GetData.readAllFrom;
+import static pt.isel.pdm.grupo17.thothnews.services.utils.JsonModels.JsonThothAvatar;
+import static pt.isel.pdm.grupo17.thothnews.services.utils.JsonModels.JsonThothClass;
+import static pt.isel.pdm.grupo17.thothnews.services.utils.JsonModels.JsonThothFullClass;
+import static pt.isel.pdm.grupo17.thothnews.services.utils.JsonModels.JsonThothNew;
+import static pt.isel.pdm.grupo17.thothnews.services.utils.JsonModels.JsonThothParticipant;
+import static pt.isel.pdm.grupo17.thothnews.services.utils.JsonModels.JsonThothTeacher;
+import static pt.isel.pdm.grupo17.thothnews.services.utils.JsonModels.JsonThothWorkItem;
 import static pt.isel.pdm.grupo17.thothnews.utils.LogUtils.d;
 
 
@@ -81,7 +74,6 @@ public class ThothUpdateActionsHandler {
     static final int ARG_CLASS_ID_DEFAULT_VALUE = -1;
 
     private static final int COLUMN_CLASS_ID = 0;
-    private static final int NOTIFICATION_ID = 1;
 
     /**
      * Handle action SEMESTERS_UPDATE in the provided background thread with the provided
@@ -184,7 +176,7 @@ public class ThothUpdateActionsHandler {
                 if (handleClassNewsUpdate(classID))
                     listClassesToNotify.add(classID);
             }
-            sendNotifications(listClassesToNotify);
+            Notifications.sendNotifications(listClassesToNotify, mContext);
         }
     }
 
@@ -235,58 +227,6 @@ public class ThothUpdateActionsHandler {
             d(SERVICE_TAG, "An error ocurred while trying to estabilish connection to Thoth API!\nMessage: " + e.getMessage());
         }
         return false;
-    }
-
-    private static final long[] mVibratePattern = { 0, 200, 200, 300 };
-    private NotificationManager notificationManager = null;
-    private Notification.Builder builder = null;
-
-    void sendNotifications(Set<Long> classesID) {
-        Intent intent = null;
-        if(builder == null){
-            builder = new Notification.Builder(mContext)
-                    .setAutoCancel(true)
-                    .setSmallIcon(R.drawable.ic_thoth)
-                    .setOngoing(false);
-        }
-        if(notificationManager == null)
-            notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        switch (classesID.size()) {
-            case 0:
-                return;
-            case 1:
-                try(Cursor classInfo = _dbReadable.query(ThothContract.Classes.TABLE_NAME, null, ThothContract.Classes._ID + " = ?",
-                        new String[]{String.valueOf(classesID.iterator().next())}, null, null, null)) {
-
-                    if (classInfo.moveToNext()) {
-                        ThothClass thothClass = ThothClass.fromCursor(classInfo);
-                        intent = new Intent(mContext, ClassSectionsActivity.class);
-                        intent.putExtra(TagUtils.TAG_SERIALIZABLE_CLASS, thothClass);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        builder.setContentTitle("You got news from " + thothClass.getFullName())
-                                .setContentText("Click to open the new from " + thothClass.getFullName());
-                    }
-                }
-
-                break;
-            default:
-                intent = new Intent(mContext, ClassesActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                builder.setContentTitle("You have new news from " + classesID.size() + " classes.")
-                        .setContentText("Click to open ThothNews Application.");
-                break;
-        }
-
-        PendingIntent pIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        builder.setContentIntent(pIntent)
-                .setVibrate((!SettingsUtils.isToVibrate) ? null : mVibratePattern);
-
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
-    }
-
-    public static void cleanNotifications(Context context){
-        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancelAll();
     }
 
     private static final String[] CURSOR_COLUMNS_STUDENT = {ThothContract.Students._ID};

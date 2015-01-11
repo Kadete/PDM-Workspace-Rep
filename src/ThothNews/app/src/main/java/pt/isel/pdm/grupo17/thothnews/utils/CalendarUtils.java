@@ -15,7 +15,6 @@ import static android.provider.CalendarContract.Events;
 
 public class CalendarUtils {
 
-    public static final int MOBILE_PRIMARY_ID = 1;
     public static final long INVALID_EVENT_ID = -1;
 
     public static void editAppointment(Context context, long eventId)
@@ -68,7 +67,7 @@ public class CalendarUtils {
         /***************** Event: Reminder(with alert) Adding reminder to event *******************/
         ContentValues reminderValues = new ContentValues();
         reminderValues.put(CalendarContract.Reminders.EVENT_ID, eventID);
-        reminderValues.put(CalendarContract.Reminders.MINUTES, 5); // Default value of the system. Minutes is a integer
+        reminderValues.put(CalendarContract.Reminders.MINUTES, 5);
         reminderValues.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
 
         context.getContentResolver().insert(CalendarContract.Reminders.CONTENT_URI, reminderValues);

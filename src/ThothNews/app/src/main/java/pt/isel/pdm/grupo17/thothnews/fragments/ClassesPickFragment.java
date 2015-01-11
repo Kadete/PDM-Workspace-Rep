@@ -48,6 +48,7 @@ import pt.isel.pdm.grupo17.thothnews.data.providers.SQLiteUtils;
 import pt.isel.pdm.grupo17.thothnews.models.ThothClass;
 import pt.isel.pdm.grupo17.thothnews.receivers.BgProcessingResultReceiver;
 import pt.isel.pdm.grupo17.thothnews.receivers.NetworkReceiver;
+import pt.isel.pdm.grupo17.thothnews.services.SyncUtils;
 import pt.isel.pdm.grupo17.thothnews.services.ThothUpdateService;
 import pt.isel.pdm.grupo17.thothnews.utils.ParseUtils;
 import pt.isel.pdm.grupo17.thothnews.utils.SettingsUtils;
@@ -176,7 +177,7 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
                 nrClassesToUpdate++;
         }
         if(nrClassesToUpdate != 0)
-            ThothUpdateService.startActionNewsUpdate(activity, mReceiver);
+            SyncUtils.TriggerRefresh();
 
         if(toSave){
             try(Cursor cursor = resolver.query(ThothContract.Classes.ENROLLED_URI, null, selection, selectionArgs, null)){

@@ -1,4 +1,4 @@
-package pt.isel.pdm.grupo17.thothnews.services;
+package pt.isel.pdm.grupo17.thothnews.services.utils;
 
 import android.database.Cursor;
 
@@ -14,20 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class GetDataUtils {
-    protected static JSONArray getJSONArrayFromData(String streamData, String elem) throws JSONException {
+public class GetData {
+    public static JSONArray getJSONArrayFromData(String streamData, String elem) throws JSONException {
         JSONObject root = new JSONObject(streamData);
         return root.getJSONArray(elem);
     }
 
-    protected static JSONObject getJSONObjectFromUri(long id, String strUri) throws IOException, JSONException {
+    public static JSONObject getJSONObjectFromUri(long id, String strUri) throws IOException, JSONException {
         InputStream inputStream = downloadUrlStr(String.format(strUri, id));
         String newsData = readAllFrom(inputStream);
         inputStream.close();
         return new JSONObject(newsData);
     }
 
-    protected static List<Long> getListFromCursor(Cursor c){
+    public static List<Long> getListFromCursor(Cursor c){
         List<Long> ids = new ArrayList<>();
         while (c.moveToNext()){
             ids.add(c.getLong(0));
@@ -35,7 +35,7 @@ public class GetDataUtils {
         return ids;
     }
 
-    protected static String readAllFrom(InputStream is){
+    public static String readAllFrom(InputStream is){
         Scanner s = new Scanner(is);
         try{
             s.useDelimiter("\\A");
@@ -45,7 +45,7 @@ public class GetDataUtils {
         }
     }
 
-    protected static InputStream downloadUrlStr(String urlString) throws IOException {
+    public static InputStream downloadUrlStr(String urlString) throws IOException {
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000 /* 10sec */);
