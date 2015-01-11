@@ -179,14 +179,15 @@ public class ClassesPickFragment extends Fragment implements LoaderManager.Loade
             ThothUpdateService.startActionNewsUpdate(activity, mReceiver);
 
         if(toSave){
-            Cursor cursor = resolver.query(ThothContract.Classes.ENROLLED_URI, null, selection, selectionArgs, null);
-            List<String> classes = new LinkedList<>();
-            while(cursor.moveToNext()){
-                if(cursor.getString(cursor.getColumnIndex(ThothContract.Classes.ENROLLED)).equals(TRUE))
-                    classes.add(cursor.getString(cursor.getColumnIndex(ThothContract.Classes.FULL_NAME)).replaceAll("\\s+",""));
+            try(Cursor cursor = resolver.query(ThothContract.Classes.ENROLLED_URI, null, selection, selectionArgs, null)){
+                List<String> classes = new LinkedList<>();
+                while(cursor.moveToNext()){
+                    if(cursor.getString(cursor.getColumnIndex(ThothContract.Classes.ENROLLED)).equals(TRUE))
+                        classes.add(cursor.getString(cursor.getColumnIndex(ThothContract.Classes.FULL_NAME)).replaceAll("\\s+",""));
+                }
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                sharedPreferences.edit().putStringSet(TagUtils.TAG_SELECTED_CLASSES, new HashSet<>(classes)).apply();
             }
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
-            sharedPreferences.edit().putStringSet(TagUtils.TAG_SELECTED_CLASSES, new HashSet<>(classes)).apply();
         }
         clearSelectedList();
 
