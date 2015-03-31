@@ -81,6 +81,9 @@ public class ThothUpdateService extends IntentService { // request update onDema
     }
 
     public static void startActionSemestersUpdate(Context context) {
+
+        d(ThothUpdateService.class.getName(), "################ startActionSemestersUpdate ...");
+
         if(!NetworkReceiver.checkConnection(context, false))
             return;
         Intent intent = new Intent(context, ThothUpdateService.class);

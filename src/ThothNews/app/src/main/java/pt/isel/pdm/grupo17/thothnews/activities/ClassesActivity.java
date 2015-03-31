@@ -24,7 +24,7 @@ public class ClassesActivity extends FragmentActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_frame_classes);
 
-        startPrefsIfNoClassesEnrolled(this);
+//        startPrefsIfNoClassesEnrolled(this);
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

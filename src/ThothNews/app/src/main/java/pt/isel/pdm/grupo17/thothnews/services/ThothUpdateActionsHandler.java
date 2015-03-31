@@ -112,6 +112,8 @@ public class ThothUpdateActionsHandler {
      */
     void handleClassesUpdate() {
 
+        d(ThothUpdateActionsHandler.class.getName(), "handleClassesUpdate started...");
+
         List<String> semestersToFilter = new LinkedList<>(); // <Semester, toFilter>
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         final Set<String> semestersSet = sharedPrefs.getStringSet(TagUtils.TAG_MULTILIST_SEMESTERS_PREF_KEY, null);
@@ -163,22 +165,22 @@ public class ThothUpdateActionsHandler {
         }
     }
 
-    /**
-     * Handle action NEWS_UPDATE in the provided background.
-     */
-    void handleNewsUpdate(){
-        try(Cursor cursor = _dbReadable.query(ThothContract.Classes.TABLE_NAME, new String[]{ThothContract.Classes._ID}
-                ,String.format("%s = 1", ThothContract.Classes.ENROLLED), null, null, null, null)){
-            Set<Long> listClassesToNotify = new TreeSet<>();
-
-            while (cursor.moveToNext()) {
-                long classID = cursor.getLong(COLUMN_CLASS_ID);
-                if (handleClassNewsUpdate(classID))
-                    listClassesToNotify.add(classID);
-            }
-            Notifications.sendNotifications(listClassesToNotify, mContext);
-        }
-    }
+//    /**
+//     * Handle action NEWS_UPDATE in the provided background.
+//     */
+//    void handleNewsUpdate(){
+//        try(Cursor cursor = _dbReadable.query(ThothContract.Classes.TABLE_NAME, new String[]{ThothContract.Classes._ID}
+//                ,String.format("%s = 1", ThothContract.Classes.ENROLLED), null, null, null, null)){
+//            Set<Long> listClassesToNotify = new TreeSet<>();
+//
+//            while (cursor.moveToNext()) {
+//                long classID = cursor.getLong(COLUMN_CLASS_ID);
+//                if (handleClassNewsUpdate(classID))
+//                    listClassesToNotify.add(classID);
+//            }
+//            Notifications.sendNotifications(listClassesToNotify, mContext);
+//        }
+//    }
 
     /**
      * Handle action CLASS_NEWS_UPDATE in the provided background thread with the provided

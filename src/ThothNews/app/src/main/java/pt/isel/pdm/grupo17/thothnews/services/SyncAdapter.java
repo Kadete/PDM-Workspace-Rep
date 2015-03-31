@@ -74,6 +74,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
 
+        Log.d("TEST", "####################################### - onPerformSync");
+
         d(ThothUpdateService.class.getName(), "SyncAdapter.onPerformSync started...");
         d(TAG_SYNC_ADAPTER, "Beginning network synchronization for news");
 
@@ -144,6 +146,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      * @param classID
      */
     void handleClassNewsUpdate(ArrayList<ContentProviderOperation> batch, SyncResult syncResult, InputStream stream, long classID) throws JSONException, IOException, ParseException {
+
+        Log.d("TEST", "####################################### - handleClassNewsUpdate");
 
         if(classID == ARG_CLASS_ID_DEFAULT_VALUE)
             return;

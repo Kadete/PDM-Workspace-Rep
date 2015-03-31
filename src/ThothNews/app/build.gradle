@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 android {
-    compileSdkVersion 21
+    compileSdkVersion 22
     buildToolsVersion '21.1.2'
 
     defaultConfig {
         applicationId "pt.isel.pdm.grupo17.thothnews"
         minSdkVersion 19
-        targetSdkVersion 21
+        targetSdkVersion 22
     }
 
     buildTypes {
@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:support-v4:22.0.0'
 
     compile 'com.melnykov:floatingactionbutton:1.1.0'
 
